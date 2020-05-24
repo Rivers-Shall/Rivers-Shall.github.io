@@ -1,0 +1,39 @@
+\documentclass[tikz, margin=5mm]{standalone}
+
+\usetikzlibrary{calc, arrows}
+
+\begin{document}
+
+\begin{tikzpicture}[>=stealth]
+
+  \def\R{4}
+
+  % PROC list
+  \foreach \y in {0, \R, 2 * \R, 4 *\R} {
+    \draw ($(0, -\y)$) rectangle ($(0.4*\R,-\y-0.4*\R)$);
+    \draw ($(0, -\y-0.4*\R)$) rectangle ($(0.5*\R, -\y-0.5*\R)$);
+    \draw ($(0.4*\R, -\y)$) rectangle ($(0.5*\R, -\y-0.4*\R)$);
+    \draw (-0.7, -\y-0.25*\R) node {\texttt{PROC}};
+  }
+  \foreach \y in {0, \R, 2 * \R, 3 * \R} {
+    \draw [|->] ($(0.25*\R, -\y-0.45*\R)$) -- ($(0.25*\R, -\y-\R)$);
+  }
+  \draw [|-|] ($(0.25*\R, -4*\R-0.45*\R)$) -- ($(0.25*\R, -4*\R-0.75*\R)$);
+
+  \foreach \y in {-3.1 * \R, -3.25 *\R, -3.4*\R} {
+    \draw (0.25*\R, \y) node {$\cdots$};
+  }
+
+  % CHILD list
+  \foreach \x in {\R, 2 * \R} {
+    \draw [|->] (\x-0.55*\R,-0.25*\R) -- (\x, -0.25*\R);
+    \draw (\x,-0.125*\R) rectangle (\x+0.5*\R, -0.375*\R);
+    \draw (\x+0.4*\R,-0.125*\R) rectangle (\x+0.5*\R, -0.375*\R);
+    \draw (\x+0.2*\R, 0) node {\texttt{CHILD}};
+  }
+  \draw [|-|] (3*\R-0.55*\R,-0.25*\R) -- (2.75*\R, -0.25*\R);
+
+  \draw [|->] (1.2*\R,-0.25*\R) to [out=-90, in=60] (0.5*\R,-4*\R);
+  \draw [|->] (2.2*\R,-0.25*\R) to [out=-90, in=0] (0.5*\R,-\R);
+\end{tikzpicture}
+\end{document}
