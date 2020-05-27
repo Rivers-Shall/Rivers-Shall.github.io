@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://rivers-shall.github.io').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+<script data-ad-client="ca-pub-6100092033271048" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <meta name="description" content="Ideas of Week3Conceptual ways to build compound typeIn week2, I have seen many ways to build compound types in SML—lists, options and tuples. And in other language I have learned, like C, there are s">
+<meta name="keywords" content="Programming Language">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PL(2) PartA-Week3">
+<meta property="og:url" content="https://rivers-shall.github.io/2018/11/27/PL-2-PartA-Week3/index.html">
+<meta property="og:site_name" content="碧漾的自我">
+<meta property="og:description" content="Ideas of Week3Conceptual ways to build compound typeIn week2, I have seen many ways to build compound types in SML—lists, options and tuples. And in other language I have learned, like C, there are s">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-10T04:15:06.187Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PL(2) PartA-Week3">
+<meta name="twitter:description" content="Ideas of Week3Conceptual ways to build compound typeIn week2, I have seen many ways to build compound types in SML—lists, options and tuples. And in other language I have learned, like C, there are s">
+
+<link rel="canonical" href="https://rivers-shall.github.io/2018/11/27/PL-2-PartA-Week3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>PL(2) PartA-Week3 | 碧漾的自我</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129500136-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-129500136-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">碧漾的自我</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">beyond myself</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2018/11/27/PL-2-PartA-Week3/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/龙卷1.jpeg">
+      <meta itemprop="name" content="碧漾">
+      <meta itemprop="description" content="心中的自我永远也不能实现，所以才要鞭策现实的自我啊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="碧漾的自我">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          PL(2) PartA-Week3
+        </h2>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-11-27 23:43:17" itemprop="dateCreated datePublished" datetime="2018-11-27T23:43:17+08:00">2018-11-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-02-10 12:15:06" itemprop="dateModified" datetime="2019-02-10T12:15:06+08:00">2019-02-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Open-Course/" itemprop="url" rel="index">
+                    <span itemprop="name">Open Course</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Open-Course/Programming-Language-By-Dan-Grossman/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming Language By Dan Grossman</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <!-- toc -->
+<h2 id="Ideas-of-Week3"><a href="#Ideas-of-Week3" class="headerlink" title="Ideas of Week3"></a>Ideas of Week3</h2><h3 id="Conceptual-ways-to-build-compound-type"><a href="#Conceptual-ways-to-build-compound-type" class="headerlink" title="Conceptual ways to build compound type"></a>Conceptual ways to build compound type</h3><p>In week2, I have seen many ways to build compound types in SML—lists, options and tuples. And in other language I have learned, like C, there are structs, unions, etc. But in Week3, Dan extract the core ideas behind building compound types and categorize them into three different groups:</p>
+<ul>
+<li><p>“One of”, the compound type descripts data that contains value which is <em>one of</em> the basic types that consist of this compound type. Typically, we use “or” in the description, like an <code>int option</code> contains an <code>int</code> <strong>or</strong> nothing.</p>
+</li>
+<li><p>“Each of”, the compound type descripts data which contains value of <em>each of</em> the basic types that consist of the compound type. Typically, we use “and” in the description, like, a <code>(int * bool)</code> tuple contains an <code>int</code> value <strong>and</strong> a <code>bool</code> value.</p>
+</li>
+<li><p>“Self-Reference”, the compound type refers to itself in the definition to define a recursive data, like an <code>int list</code> is empty list <strong>or</strong> an int <strong>and</strong> <strong>another</strong> <code>int list</code>(Note that list actually contains all the concepts mentions above—one-of, each-of and self-reference.)</p>
+</li>
+</ul>
+<p>Naturally, we can have any of them and nest them as deep as we want.</p>
+<a id="more"></a>
+<h3 id="Syntactic-Sugar"><a href="#Syntactic-Sugar" class="headerlink" title="Syntactic Sugar"></a>Syntactic Sugar</h3><p>Dan introduced the concept of syntactic sugar by defining tuples entirely in terms of records. And we can say that “tuples are just syntactic sugar of records with field names 1, 2, …, n”.</p>
+<p>So syntactic sugar is just a special kind of language features which can be expressed entirely in terms of equivalent syntax of another language feature.</p>
+<p>A simpler example will be <code>e1 andalso e2</code> is syntactic sugar of <code>if e1 then e2 else false</code>.</p>
+<p>Syntactic sugar is introduced to both improve the readability and efficiency of the programming language. To put it another way, syntactic sugar can simplify both the process of understanding a programming language and the process of implementing one. </p>
+<p>Syntactic sugar improves the readability by making the program more concise and the keyword more self-contained. For example, <code>e1 andalso e2</code> is more concise than <code>if e1 then e2 else false</code>. And the keyword <code>andalso</code> is self-revealed about the meaning of this structure.</p>
+<p>Syntactic sugar improves the efficiency of implementing the programming language by keeping the core of the language small. For example, once we implement <code>if e1 then e2 else e3</code>, we can use it to implement <code>e1 andalso e2</code> without much duplicate code. </p>
+<h3 id="By-Position-vs-By-Name"><a href="#By-Position-vs-By-Name" class="headerlink" title="By Position vs. By Name"></a>By Position vs. By Name</h3><p>Accessing by position or by name is a choice of the programming language designer. SML contains both of them—tuples use accessing by position and records use accessing by name, which Dan used to introduce these two concepts.</p>
+<p>In SML and some other languages, like C/C++ or Java, the function caller uses accessing by position but the function callee uses accessing by name. And also there are languages, though it is not exactly “Programming Language”, like Verilog HDL, provides both accessing by position and accessing by name to <del>function caller</del> module instantiation.</p>
+<p>Generally speaking, with small number of fields, accessing by position is more convenient. But with large number of fields, accessing by name seems more reasonable because we can hardly remember which position is which.</p>
+<h3 id="Tail-Recursion"><a href="#Tail-Recursion" class="headerlink" title="Tail Recursion"></a>Tail Recursion</h3><p>A tail recursion is a recursive call where the caller has no more work to do after making the call. Tail recursions can improve memory efficiency by removing unnecessary stack frame. Sometimes it may even be able to improve the time efficiency by using different sub-routines where you can not use with normal recursion.</p>
+<p>We can, sometimes easily and even mechanically transform a non-tail recursion into a tail recursion by using an “accumulator”. It contains three main steps:</p>
+<ul>
+<li><p>Use the result of the base case of the original function as the initial accumulator</p>
+</li>
+<li><p>Return the accumulator in the base case of the tail-recursion function.</p>
+</li>
+<li><p>Combine the work with the accumulator and pass it in the recursive call of the tail recursion.</p>
+</li>
+</ul>
+<p>For example,</p>
+<figure class="highlight sml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">(* original function *)</span></span><br><span class="line"><span class="keyword">fun</span> sum xs =</span><br><span class="line">	<span class="keyword">case</span> xs <span class="keyword">of</span></span><br><span class="line">		<span class="literal">[]</span> =&gt; <span class="number">0</span></span><br><span class="line">	|   x::xs' =&gt; x + sum xs';</span><br><span class="line">	</span><br><span class="line"><span class="comment">(* tail-recursion version *)</span></span><br><span class="line"><span class="keyword">fun</span> sum xs =</span><br><span class="line">	<span class="keyword">let</span> <span class="keyword">fun</span> aux( xs, acc ) =</span><br><span class="line">		<span class="keyword">case</span> xs <span class="keyword">of</span></span><br><span class="line">			<span class="literal">[]</span> =&gt; acc </span><br><span class="line">		|   x::xs' =&gt; aux( xs', x + acc )</span><br><span class="line">	<span class="keyword">in</span> </span><br><span class="line">		aux( xs, <span class="number">0</span> )</span><br><span class="line">	<span class="keyword">end</span>;</span><br></pre></td></tr></table></figure>
+<p>The precise definition of <strong>tail recursion</strong> involves the recursive definition of <strong>tail position</strong>. And the definition of <strong>tail recursion</strong> is</p>
+<p><em>When a recursive call happens in a tail position, it is a tail recursion.</em></p>
+<h2 id="Language-Features-of-Week3"><a href="#Language-Features-of-Week3" class="headerlink" title="Language Features of Week3"></a>Language Features of Week3</h2><p>Week3 is quite interesting because Dan makes the SML language shrink by introducing the concept of syntactic sugar and pattern-matching.</p>
+<hr>
+<p>Build our own compound types.</p>
+<ul>
+<li><p>Build our own “one-of” type by <code>datatype</code>. Lists and options are <code>datatype</code>s.</p>
+</li>
+<li><p>Build our own “each-of” type by records. Tuples are records.</p>
+</li>
+<li><p>Build type alias by <code>type</code>.</p>
+</li>
+<li><p>Build polymorphic type.</p>
+</li>
+</ul>
+<hr>
+<p>Use pattern-matching</p>
+<ul>
+<li><p>Apply <code>case</code> expression on both “one-of” and “each-of” type to use pattern-matching.</p>
+</li>
+<li><p>Use pattern-matching in <code>val</code> binding.</p>
+</li>
+<li><p>Every function in SML takes and returns only one argument. Multi-argument function is syntactic sugar for pattern-matching.</p>
+</li>
+<li><p>Nested pattern-matching.</p>
+</li>
+</ul>
+<hr>
+<p>Also, Dan covered the exception feature in SML because the time is right—an <code>exception</code> is very similar to a <code>datatype</code> in SML.</p>
+<ul>
+<li><p>Build our own <code>exception</code>s</p>
+</li>
+<li><p><code>raise</code> and <code>handle</code> exceptions</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Programming-Language/" rel="tag"># Programming Language</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/11/25/PL-PartA-Week2/" rel="prev" title="PL(1) PartA-Week2">
+      <i class="fa fa-chevron-left"></i> PL(1) PartA-Week2
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/12/13/PL-3-Part-A-Week4/" rel="next" title="PL(3) Part-A-Week4">
+      PL(3) Part-A-Week4 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Ideas-of-Week3"><span class="nav-number">1.</span> <span class="nav-text">Ideas of Week3</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Conceptual-ways-to-build-compound-type"><span class="nav-number">1.1.</span> <span class="nav-text">Conceptual ways to build compound type</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Syntactic-Sugar"><span class="nav-number">1.2.</span> <span class="nav-text">Syntactic Sugar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#By-Position-vs-By-Name"><span class="nav-number">1.3.</span> <span class="nav-text">By Position vs. By Name</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tail-Recursion"><span class="nav-number">1.4.</span> <span class="nav-text">Tail Recursion</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Language-Features-of-Week3"><span class="nav-number">2.</span> <span class="nav-text">Language Features of Week3</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="碧漾" src="/images/龙卷1.jpeg">
+  <p class="site-author-name" itemprop="name">碧漾</p>
+  <div class="site-description" itemprop="description">心中的自我永远也不能实现，所以才要鞭策现实的自我啊</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:riversshall@qq.com" title="E-Mail → mailto:riversshall@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → /atom.xml"><i class="fa fa-fw fa-rss"></i>RSS</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">碧漾</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'e4755b6b14b374b3c19b',
+      clientSecret: 'e84c0b701bf42f9e8a2d98009f3fe3044b611529',
+      repo: 'blog-comment',
+      owner: 'Rivers-Shall',
+      admin: ['Rivers-Shall'],
+      id: '4054ce8596bf7a0a9b21565fde9e0f82',
+        language: 'zh-CN',
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

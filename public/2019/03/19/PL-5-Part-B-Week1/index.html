@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://rivers-shall.github.io').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+<script data-ad-client="ca-pub-6100092033271048" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <meta name="description" content="This post is notes from week1 of programming language part B on Coursera.  In this week, Dan introduces the basics of Racket, a programming language with parentheses.  Also, Dan discusses some new con">
+<meta name="keywords" content="Programming Language">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PL(5) Part-B-Week1">
+<meta property="og:url" content="https://rivers-shall.github.io/2019/03/19/PL-5-Part-B-Week1/index.html">
+<meta property="og:site_name" content="碧漾的自我">
+<meta property="og:description" content="This post is notes from week1 of programming language part B on Coursera.  In this week, Dan introduces the basics of Racket, a programming language with parentheses.  Also, Dan discusses some new con">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-20T06:55:30.205Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PL(5) Part-B-Week1">
+<meta name="twitter:description" content="This post is notes from week1 of programming language part B on Coursera.  In this week, Dan introduces the basics of Racket, a programming language with parentheses.  Also, Dan discusses some new con">
+
+<link rel="canonical" href="https://rivers-shall.github.io/2019/03/19/PL-5-Part-B-Week1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>PL(5) Part-B-Week1 | 碧漾的自我</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129500136-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-129500136-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">碧漾的自我</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">beyond myself</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2019/03/19/PL-5-Part-B-Week1/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/龙卷1.jpeg">
+      <meta itemprop="name" content="碧漾">
+      <meta itemprop="description" content="心中的自我永远也不能实现，所以才要鞭策现实的自我啊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="碧漾的自我">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          PL(5) Part-B-Week1
+        </h2>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-19 18:36:04" itemprop="dateCreated datePublished" datetime="2019-03-19T18:36:04+08:00">2019-03-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-03-20 14:55:30" itemprop="dateModified" datetime="2019-03-20T14:55:30+08:00">2019-03-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Open-Course/" itemprop="url" rel="index">
+                    <span itemprop="name">Open Course</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Open-Course/Programming-Language-By-Dan-Grossman/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming Language By Dan Grossman</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>This post is notes from week1 of programming language part B on Coursera.  In this week, Dan introduces the basics of Racket, a programming language with parentheses.  Also, Dan discusses some new concepts—delayed evaluation, thunk, stream, macros.</p>
+<a id="more"></a>
+<h2 id="Scheme-vs-Racket"><a href="#Scheme-vs-Racket" class="headerlink" title="Scheme vs. Racket"></a>Scheme vs. Racket</h2><p>Racket evolves from Scheme.  But Racket made some non-backward-compatable changes.</p>
+<h2 id="Getting-Started"><a href="#Getting-Started" class="headerlink" title="Getting Started"></a>Getting Started</h2><p>DrRacket is splitted into “definition window” and “interaction window”, just like editor buffer and REPL buffer for SML in Emacs.</p>
+<h3 id="Comments"><a href="#Comments" class="headerlink" title="Comments"></a>Comments</h3><p>Line comments start with ‘;’.</p>
+<h3 id="lang-racket"><a href="#lang-racket" class="headerlink" title="#lang racket"></a><code>#lang racket</code></h3><p>The first noncommon line of code in the racket file should be <code>#lang racket</code>, which informs DrRacket of the fact that it is racket code.(DrRacket can run other codes, thus this line is necessary)</p>
+<h3 id="provide-all-defined-out"><a href="#provide-all-defined-out" class="headerlink" title="(provide (all-defined-out))"></a><code>(provide (all-defined-out))</code></h3><p>A line used to help test is <code>(provide (all-defined-out))</code>.  Racket has a built-in module system where every file is an independent module.  </p>
+<p>And by default, everything in a module is private.  Since we will put test code in another file(module), we add this line to make everything public.</p>
+<h3 id="Basic-Definition"><a href="#Basic-Definition" class="headerlink" title="Basic Definition"></a>Basic Definition</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(define s &quot;hello&quot;)</span><br></pre></td></tr></table></figure>
+<h2 id="Racket-Definitions-Functions-Conditionals"><a href="#Racket-Definitions-Functions-Conditionals" class="headerlink" title="Racket Definitions, Functions, Conditionals"></a>Racket Definitions, Functions, Conditionals</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">; Definitions</span><br><span class="line">(define x 3) ; val x = 3</span><br><span class="line">(define y (+ x 2)) ; + is a function</span><br><span class="line"></span><br><span class="line">; Functions</span><br><span class="line">(define cube1 </span><br><span class="line">  (lambda (x)</span><br><span class="line">    (* x (* x x))))</span><br><span class="line">   </span><br><span class="line">(define cube2</span><br><span class="line">  (lambda (x)</span><br><span class="line">    (* x x x)))</span><br><span class="line">    </span><br><span class="line">(define (cube3 x) ; syntactic sugar</span><br><span class="line">  (* x x x))</span><br><span class="line"> </span><br><span class="line">; Conditions</span><br><span class="line">(define (pow1 x y) ; x to the yth power, y is nonnegative</span><br><span class="line">  (if (= y 0)</span><br><span class="line">    1</span><br><span class="line">    (* x (pow1 x (- y 1)))))</span><br><span class="line">   </span><br><span class="line">; currying</span><br><span class="line">(define pow2</span><br><span class="line">  (lambda (x)</span><br><span class="line">    (lambda (y)</span><br><span class="line">      (pow1 x y))))</span><br><span class="line">      </span><br><span class="line">; partially application</span><br><span class="line">(define three-to-the</span><br><span class="line">  (pow2 3))</span><br><span class="line">  </span><br><span class="line">; 16</span><br><span class="line">(define sixteen ((pow2 4) 2))</span><br></pre></td></tr></table></figure>
+<h2 id="Racket-Lists"><a href="#Racket-Lists" class="headerlink" title="Racket Lists"></a>Racket Lists</h2><p>Empty list: <code>null</code><br>Cons constructor: <code>cons</code>, <code>(list e1 e2 ...)</code><br>Access head of list: <code>car</code><br>Access tail of list: <code>cdr</code><br>Check for empty: <code>null?</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">; sum all the numbers in a list</span><br><span class="line">(define (sum xs)</span><br><span class="line">  (if (null? xs)</span><br><span class="line">    0</span><br><span class="line">    (+ (car xs) (sum (cdr xs)))))</span><br><span class="line"></span><br><span class="line">; append (note that hyphen is allowed in names)</span><br><span class="line">(define (my-append xs ys)</span><br><span class="line">  (if (null ? xs)</span><br><span class="line">    ys</span><br><span class="line">    (cons (car xs) (my-append (cdr xs) ys))))</span><br><span class="line"></span><br><span class="line">; map</span><br><span class="line">(define (my-map f xs)</span><br><span class="line">  (if (null? xs)</span><br><span class="line">    null</span><br><span class="line">    (cons (f (car xs)) </span><br><span class="line">          (my-map f (cdr xs)))))</span><br></pre></td></tr></table></figure>
+<h2 id="Syntax-and-Parentheses"><a href="#Syntax-and-Parentheses" class="headerlink" title="Syntax and Parentheses"></a>Syntax and Parentheses</h2><p>Racket Syntax<br>A term(anything in the language) is either:</p>
+<ol>
+<li>An atom, e.g., #t, #f, 34, “hi”, null, 4.0, x, …</li>
+<li>A <em>special form</em>, e.g., <code>define</code>, <code>lambda</code>, <code>if</code></li>
+<li>A <em>sequence</em> of terms in parens: (t1 t2 … tn)<ul>
+<li>if t1 a special form, semantics of sequence is special</li>
+<li>else a function call</li>
+</ul>
+</li>
+</ol>
+<p>Example: (+ 3 (car xs))<br>Example: (lambda (x) (if x “hi” #t))</p>
+<p>Minor note:<br>Can use <code>[</code> anywhere you use <code>(</code> but must match with <code>]</code></p>
+<ul>
+<li>will see some places where <code>[]</code> is common</li>
+</ul>
+<h3 id="Why-this-is-good"><a href="#Why-this-is-good" class="headerlink" title="Why this is good?"></a>Why this is good?</h3><p>Converting the program text into a tree representing the program(Parsing) is trival and unambiguous</p>
+<ul>
+<li>Atoms are leaves</li>
+<li>Sequences are nodes with elements as children</li>
+<li>No other rules</li>
+</ul>
+<p>No need to discuss “operator precedence” (e.g. <code>x + y * z</code>)</p>
+<h2 id="Parentheses-Matter"><a href="#Parentheses-Matter" class="headerlink" title="Parentheses Matter!"></a>Parentheses Matter!</h2><p>Parentheses are not optional or meaningless!</p>
+<ul>
+<li><code>(e)</code> means call <code>e</code> with zero argument</li>
+<li><code>((e))</code> means call <code>e</code> with zero argument and call the result with zero argument</li>
+</ul>
+<h2 id="Dynamic-Typing"><a href="#Dynamic-Typing" class="headerlink" title="Dynamic Typing"></a>Dynamic Typing</h2><p>For now:</p>
+<ol>
+<li>Frustrating not to catch “little errors” like <code>(n * x)</code> until you test your function</li>
+<li>But can use very flexible data structures and code without convincing a type checker that it makes sense</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">(define xs (list 4 5 6))</span><br><span class="line">(define ys (list (list 4 5) 6 7 (list 8) 9 2 3 (list 0 1)))</span><br><span class="line"></span><br><span class="line">; sum no matter how deep the list nests</span><br><span class="line">(define (sum1 xs)</span><br><span class="line">  (if (null? xs)</span><br><span class="line">    0</span><br><span class="line">    (if (number? (car xs))</span><br><span class="line">      (+ (car xs) (sum1 (cdr xs)))</span><br><span class="line">      (+ (sum1 (car xs)) (sum1 (cdr xs))))))</span><br><span class="line"></span><br><span class="line">(define (sum2 xs)</span><br><span class="line">  (if (null? xs)</span><br><span class="line">    0</span><br><span class="line">    (if (number? (car xs))</span><br><span class="line">      (+ (car xs) (sum2 (cdr xs)))</span><br><span class="line">      (if (list? (car xs))</span><br><span class="line">        (+ (sum2 (car xs)) (sum2 (cdr xs)))</span><br><span class="line">        0))))</span><br></pre></td></tr></table></figure>
+<h2 id="cond-Expression"><a href="#cond-Expression" class="headerlink" title="cond Expression"></a><code>cond</code> Expression</h2><p>Alternative for nested <code>if</code>-expressions(often a better choice)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(cond [e1a e1b]</span><br><span class="line">      [e2a e2b]</span><br><span class="line">      ...</span><br><span class="line">      [eNa eNb])</span><br></pre></td></tr></table></figure>
+<p>:loudspeaker: Good style: <code>eNa</code> should be <code>#t</code></p>
+<p><code>eia</code> is the condition and <code>eib</code> is the result of this branch.  <code>cond</code> will select the first true branch to execute.  If there is no true branch, it will return some strange, void value, for which the <strong>Good style</strong> exists.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">(define (sum3 xs)</span><br><span class="line">  (cond [(null? xs) 0]</span><br><span class="line">        [(number? (car xs)) (+ (car xs) (sum3 (cdr xs)))]</span><br><span class="line">        [#t (+ (sum3 (car xs)) (sum3 (cdr xs)))]))</span><br><span class="line">        </span><br><span class="line">(define (sum4 xs)</span><br><span class="line">  (cond [(null? xs) 0]</span><br><span class="line">        [(number? (car xs)) (+ (car xs) (sum4 (cdr xs)))]</span><br><span class="line">        [(list? (car xs)) (+ (sum (car xs)) (sum (cdr xs)))]</span><br><span class="line">        [#t 0]))</span><br></pre></td></tr></table></figure>
+<p>For both <code>if</code> and <code>cond</code>, test expression can evaluate to anything:</p>
+<ul>
+<li>Treat anything other than <code>#f</code> as true</li>
+</ul>
+<p>This feature makes no sense in a statically typed language since a test expression must have type <code>bool</code> or <code>boolean</code> or something like that.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt; (if 34 14 15)</span><br><span class="line">14</span><br><span class="line">&gt; (if null 14 15)</span><br><span class="line">14</span><br><span class="line">-----------------</span><br><span class="line"></span><br><span class="line">(define (counts-false xs)</span><br><span class="line">  (cond [(null? xs) 0]</span><br><span class="line">        [(list? (car xs)) (+ (counts-false (car xs)) (counts-false (cdr xs)))]</span><br><span class="line">        [(car xs) (counts-false (cdr xs))]</span><br><span class="line">        [#t (+ 1 (counts-false (cdr xs)))]))</span><br></pre></td></tr></table></figure>
+<h2 id="Local-Binding"><a href="#Local-Binding" class="headerlink" title="Local Binding"></a>Local Binding</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">(define (max-of-list xs)</span><br><span class="line">  (cond [(null? xs) (error &quot;max-of-list given empty list&quot;)]</span><br><span class="line">        [(null? (cdr xs)) (car xs)]</span><br><span class="line">        [#t (let ([tlans (max-of-list (cdr xs))])</span><br><span class="line">              (if (&gt; tlans (car xs))</span><br><span class="line">                tlans</span><br><span class="line">                (car xs)))]))</span><br></pre></td></tr></table></figure>
+<p>racket has four types of syntax for local bindings:</p>
+<ul>
+<li><code>let</code></li>
+<li><code>let*</code></li>
+<li><code>letrec</code></li>
+<li><code>define</code></li>
+</ul>
+<h3 id="let"><a href="#let" class="headerlink" title="let"></a><code>let</code></h3><p>Any number of local variables, all evaluated in the environment <strong>before the <code>let</code> expression</strong></p>
+<ul>
+<li>Not like SML</li>
+<li>Convenient for things like <code>(let ([x y][y x]))</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(define (silly-double x)</span><br><span class="line">  (let ([x (+ x 3)]</span><br><span class="line">        [y (+ x 2)])</span><br><span class="line">     (+ x y -5)))</span><br></pre></td></tr></table></figure>
+<h3 id="let-1"><a href="#let-1" class="headerlink" title="let*"></a><code>let*</code></h3><p>SML-style <code>let</code>, any number of variables, all evaluated in the environment produced from the <strong>previous bindings</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(define (silly-double x)</span><br><span class="line">  (let* ([x (+ x 3)]</span><br><span class="line">        [y (+ x 2)])</span><br><span class="line">     (+ x y -8)))</span><br></pre></td></tr></table></figure>
+<h3 id="letrec"><a href="#letrec" class="headerlink" title="letrec"></a><code>letrec</code></h3><p>Any number of varibles, evaluated in the environment that includes <strong>all the bindings</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(define (silly-triple x)</span><br><span class="line">  (letrec ([y (+ x 3)]</span><br><span class="line">           [f (lambda (z) (+ z w y x))]</span><br><span class="line">           [w (+ x 6)])</span><br><span class="line">    (f -9)))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Needed for mutually recursive functions (and suggestions say that only use them for mutually recursive functions)</li>
+<li>Variables are stilly evaluated in order, so any forward-reference will cause an error</li>
+</ul>
+<h3 id="Local-define"><a href="#Local-define" class="headerlink" title="Local define"></a>Local <code>define</code></h3><p>same as <code>letrec</code>, but prefered over <code>let, let*, letrec</code> by designer</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(define (silly-mod2 x)</span><br><span class="line">  (define (even? x) (if (= x 0) #t (odd? (- x 1))))</span><br><span class="line">  (define (odd? x) (if (= x 0) #f (even? (- x 1))))</span><br><span class="line">  (if (even? x) 0 1))</span><br></pre></td></tr></table></figure>
+<h2 id="Toplevel-Bindings"><a href="#Toplevel-Bindings" class="headerlink" title="Toplevel Bindings"></a>Toplevel Bindings</h2><h3 id="Files"><a href="#Files" class="headerlink" title="Files"></a>Files</h3><p>Toplevel bindings are like <code>letrec</code>.  We can refer to later bindings in a function.  But we need to make sure that the function is called after that binding.  Any other forward-ref will produce error.</p>
+<p>No shadowing is possible.</p>
+<h3 id="REPL"><a href="#REPL" class="headerlink" title="REPL"></a>REPL</h3><p>Unlike <code>let*</code> or <code>letrec</code>, hard to say.  But there are still suggestions:</p>
+<ul>
+<li>Avoid recursive function definitions and forward ref</li>
+<li>Avoid shadowing</li>
+</ul>
+<h3 id="Optional-Module-System"><a href="#Optional-Module-System" class="headerlink" title="Optional(Module System)"></a>Optional(Module System)</h3><ul>
+<li>Each file is implicitly a module</li>
+<li>A module can shadow bindings from other modules it uses<ul>
+<li>including standard library(like <code>+</code>)</li>
+</ul>
+</li>
+</ul>
+<h2 id="Mutation-With-set"><a href="#Mutation-With-set" class="headerlink" title="Mutation With set!"></a>Mutation With <code>set!</code></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(set! x e)</span><br></pre></td></tr></table></figure>
+<p>For the <code>x</code> in the current environment (must be defined before), subsequent look-ups for <code>x</code> get the result of evaluating expression <code>e</code>.</p>
+<p>It is like assignment statement in C, Java, Python, etc.</p>
+<p>Once we have side-effects, sequences are useful.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">; final value is en</span><br><span class="line">(begin e1 e2 e3 ... en)</span><br></pre></td></tr></table></figure></p>
+<h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(define b 3)</span><br><span class="line">(define f (lambda (x) (* 1 (+ x b))))</span><br><span class="line">(define c (+ b 4)) ; 7</span><br><span class="line">(set! b 4)</span><br><span class="line">(define z (f 4)) ; 9</span><br><span class="line">(define w c) ; 7</span><br></pre></td></tr></table></figure>
+<ul>
+<li>The closure created by function definition is not evaluated untile called</li>
+<li>Once an expression is evaluated, it is irrelevent</li>
+</ul>
+<h3 id="Defend-Against-Mutation"><a href="#Defend-Against-Mutation" class="headerlink" title="Defend Against Mutation"></a>Defend Against Mutation</h3><p>A general principle: make a local copy before anything change<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(define b 3)</span><br><span class="line">(define f</span><br><span class="line">  (let ([b b])</span><br><span class="line">    (lambda (x) (* 1 (+ x b)))))</span><br></pre></td></tr></table></figure></p>
+<p>The <code>b</code> in <code>f</code> is the <code>b</code> when it is defined instead the <code>b</code> when <code>f</code> is called.</p>
+<p>We could use another name.</p>
+<h4 id="More-Concerns"><a href="#More-Concerns" class="headerlink" title="More Concerns"></a>More Concerns</h4><p>What if we mutate the <code>+</code> and <code>*</code> functions? Everything will fall out!</p>
+<h5 id="Defense-From-Language-Designer"><a href="#Defense-From-Language-Designer" class="headerlink" title="Defense From Language Designer"></a>Defense From Language Designer</h5><p>In every module, if this module does not mutate the toplevel variable, no other modules can.  And <code>+</code> and <code>*</code> are defined in a module where it is not mutated.  Thus <code>+</code>, <code>*</code> and all these primitives cannot be mutated.</p>
+<h2 id="The-Truth-About-Cons"><a href="#The-Truth-About-Cons" class="headerlink" title="The Truth About Cons"></a>The Truth About Cons</h2><p><code>cons</code> is used to make <em>pairs</em>.  And a list in racket, like in many other dynamic languages, is a deeply nested pair ending with the empty list.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(define pr (cons 1 (cons #t &quot;hi&quot;))) ; (1 #t . &quot;hi&quot;)</span><br><span class="line">(define lst (cons 1 (cons #t (cons &quot;hi&quot; null)))) ; (1 #t &quot;hi&quot;)</span><br><span class="line">(and (list? lst) (pair? pr)) ; true</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>car</code> is <code>#1</code> in SML.  <code>cdr</code> is <code>#2</code> in SML.</li>
+<li>Sometimes we call a list <code>&lt;proper list&gt;</code> and a nested pair not ending with <code>null</code> an <code>&lt;inproper list&gt;</code>.</li>
+<li>Use proper lists for unknown size</li>
+<li><code>list?</code> returns true for all proper lists</li>
+<li><code>pair?</code> returns true for things made by <code>cons</code><ul>
+<li>All improper and proper lists except <code>null</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="Why-Allow-Improper-List"><a href="#Why-Allow-Improper-List" class="headerlink" title="Why Allow Improper List?"></a>Why Allow Improper List?</h3><p>Without static type, no need to distinguish between <code>(e1, e2)</code> and <code>e1::e2</code>.</p>
+<h2 id="mcons-For-Mutable-Pairs"><a href="#mcons-For-Mutable-Pairs" class="headerlink" title="mcons For Mutable Pairs"></a><code>mcons</code> For Mutable Pairs</h2><p>No way to mutate pairs created by <code>cons</code> and this is good:</p>
+<ol>
+<li>List-Aliasing irrelevent</li>
+<li>Implementation can make <code>list?</code> fast since listness is determined when <code>cons</code> cell is created</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt; (define mpr (mcons 1 (mcons 43 &quot;hi&quot;)))</span><br><span class="line">&gt; mpr</span><br><span class="line">(mcons 1 (mcons 43 &quot;hi&quot;))</span><br><span class="line">&gt; (set-mcar! mpr 13)</span><br><span class="line">&gt; mpr</span><br><span class="line">(mcons 13 (mcons 43 &quot;hi&quot;))</span><br><span class="line">&gt; (set-mcar! (mcdr mpr) 12)</span><br><span class="line">&gt; mpr</span><br><span class="line">(mcons 13 (mcons 12 &quot;hi&quot;))</span><br></pre></td></tr></table></figure>
+<p>These are the built-in functions for <code>mcons</code>:</p>
+<ul>
+<li><code>mcons</code></li>
+<li><code>mcar</code></li>
+<li><code>mcdr</code></li>
+<li><code>mpair?</code></li>
+<li><code>set-mcar!</code></li>
+<li><code>set-mcdr!</code></li>
+</ul>
+<p>Runtime-error to use <code>mcar</code> on a cons cell or <code>car</code> on an mcons cell.</p>
+<h2 id="Delayed-Evaluation-and-Thunks"><a href="#Delayed-Evaluation-and-Thunks" class="headerlink" title="Delayed Evaluation and Thunks"></a>Delayed Evaluation and Thunks</h2><h3 id="Delayed-Evaluation"><a href="#Delayed-Evaluation" class="headerlink" title="Delayed Evaluation"></a>Delayed Evaluation</h3><p>For each language construct, the semantics specifies when subexpressions get evaluated.  In SML, Racket, Java, C:</p>
+<ul>
+<li>Fucntion arguments are eager.<ul>
+<li>Evaluated once before calling the function</li>
+</ul>
+</li>
+<li>Conditinal branches are not eager.</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">; eager subexpression evaluation</span><br><span class="line">(define (my-if-bad x y z)</span><br><span class="line">  (if x y z))</span><br><span class="line">  </span><br><span class="line">; never terminate</span><br><span class="line">(define (factorial-bad n)</span><br><span class="line">  (my-if-bad (= n 0)</span><br><span class="line">    1</span><br><span class="line">    (* n (factorial-bad (- n 1)))))</span><br></pre></td></tr></table></figure>
+<h4 id="Thunks-Delay"><a href="#Thunks-Delay" class="headerlink" title="Thunks Delay"></a>Thunks Delay</h4><p>But we can use function to <strong>delay</strong> the evaluation.  A zero-argument function used to delay evaluation is called a <em>thunk</em>.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">(define (my-if-strange-but-works e1 e2 e3)</span><br><span class="line">  (if e1 (e2) (e3)))</span><br><span class="line">  </span><br><span class="line">(define (factorial-okay n)</span><br><span class="line">  (my-if-strange-but-works (= n 0)</span><br><span class="line">    (lambda () 1)</span><br><span class="line">    (lambda () (* n (factorial-okay (- n 1))))))</span><br></pre></td></tr></table></figure></p>
+<h3 id="The-Key-Point"><a href="#The-Key-Point" class="headerlink" title="The Key Point"></a>The Key Point</h3><ul>
+<li>Evaluate an expression <code>e</code> to get a result:<ul>
+<li><code>e</code></li>
+</ul>
+</li>
+<li>A function that <em>when called</em>, evaluates <code>e</code> and returns result<ul>
+<li><code>(lambda () e)</code></li>
+</ul>
+</li>
+<li>Evaluate <code>e</code> to some thunk and then call the thunk<ul>
+<li><code>(e)</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="Avoid-Unnecessary-Computations"><a href="#Avoid-Unnecessary-Computations" class="headerlink" title="Avoid Unnecessary Computations"></a>Avoid Unnecessary Computations</h2><h3 id="Avoiding-Expensive-Computations"><a href="#Avoiding-Expensive-Computations" class="headerlink" title="Avoiding Expensive Computations"></a>Avoiding Expensive Computations</h3><p>Thunks let you skip expensive computations if they are not needed</p>
+<p>Great if you take the true-branch:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(define (f th)</span><br><span class="line">  (if (...) 0 (... (th) ...)))</span><br></pre></td></tr></table></figure></p>
+<p>But worse if you end up using the thunk more than once:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(define (f th)</span><br><span class="line">  (... (if (...) 0 (... (th) ...))</span><br><span class="line">       (if (...) 0 (... (th) ...))</span><br><span class="line">       (if (...) 0 (... (th) ...))</span><br><span class="line">       (if (...) 0 (... (th) ...))))</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(define (my-mult x y-thunk)</span><br><span class="line">  (cond [(= x 0) 0]</span><br><span class="line">        [(= x 1) (y-thunk)]</span><br><span class="line">        [#t (+ (y-thunk) (my-mult (- x 1) y-thunk))]))</span><br></pre></td></tr></table></figure>
+<h3 id="Best-of-Both-Worlds"><a href="#Best-of-Both-Worlds" class="headerlink" title="Best of Both Worlds"></a>Best of Both Worlds</h3><p>Ideal condition:</p>
+<ul>
+<li>Not compute it <em>until needed</em></li>
+<li><em>Remember</em> the answer so future uses complete immediately<br>Called <em>lazy</em> evaluation</li>
+</ul>
+<p>Languages where most constructs, including function arguments, work this way are <em>lazy languages</em>, like Haskell.</p>
+<h2 id="Delay-and-Force"><a href="#Delay-and-Force" class="headerlink" title="Delay and Force"></a>Delay and Force</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">(define (my-delay th)</span><br><span class="line">  (mcons #f th))</span><br><span class="line">  </span><br><span class="line">(define (my-force p)</span><br><span class="line">  (if (mcar p)</span><br><span class="line">      (mcdr p)</span><br><span class="line">      (begin (set-mcar! p #t)</span><br><span class="line">             (set-mcdr! p ((mcdr p)))</span><br><span class="line">             (mcdr p))))</span><br></pre></td></tr></table></figure>
+<p>ADT represented by a mutable pair:</p>
+<ul>
+<li>#f in <code>car</code> means <code>cdr</code> is unevaluated thunk</li>
+<li>#t in <code>car</code> means <code>cdr</code> is the result of calling thunk</li>
+<li>one-of type</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(define (f p)</span><br><span class="line">  (... (if (...) 0 (... (my-force p) ...))</span><br><span class="line">       (if (...) 0 (... (my-force p) ...))</span><br><span class="line">       (if (...) 0 (... (my-force p) ...))</span><br><span class="line">       (if (...) 0 (... (my-force p) ...))))</span><br></pre></td></tr></table></figure>
+<p>Back to the <code>my-mult</code> in the previous section:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(my-mult 100 (let ([p (my-delay (lambda () (slow-add 3 4)))])</span><br><span class="line">                (lambda () (my-force p))))</span><br></pre></td></tr></table></figure></p>
+<h3 id="Lessons-From-Example"><a href="#Lessons-From-Example" class="headerlink" title="Lessons From Example"></a>Lessons From Example</h3><ul>
+<li>With thunking second argument:<ul>
+<li><em>Great</em> if first argument 0</li>
+<li><em>Okay</em> if first argument 1</li>
+<li><em>Worse</em> otherwise</li>
+</ul>
+</li>
+<li>With precomputing second argument:<ul>
+<li><em>Okay</em> in all cases</li>
+</ul>
+</li>
+<li>With thunk that uses a promise for second argument<ul>
+<li><em>Great</em> if first argument 0</li>
+<li><em>Okay</em> otherwise</li>
+</ul>
+</li>
+</ul>
+<h2 id="Using-Stream"><a href="#Using-Stream" class="headerlink" title="Using Stream"></a>Using Stream</h2><p>A stream is an <em>infinite sequence</em> of values</p>
+<ul>
+<li>So cannot make a stream by making all the values</li>
+<li>Key idea: Use a thunk to delay creating most of the sequence</li>
+<li>A programming idiom</li>
+</ul>
+<p>A powerful concept for division of labor:</p>
+<ul>
+<li>Stream producer knows how to create any number of values</li>
+<li>Stream consumer decides how many values to ask for</li>
+</ul>
+<p>Some examples of streams you might (not) be familiar with:</p>
+<ul>
+<li>User actions (mouse clicks, etc.)</li>
+<li>UNIX pipes: <code>cmd1 | cmd2</code></li>
+<li>Output values from a sequential feedback circuit</li>
+</ul>
+<h3 id="Represent-Streams-Using-Pairs-and-Thunks"><a href="#Represent-Streams-Using-Pairs-and-Thunks" class="headerlink" title="Represent Streams Using Pairs and Thunks"></a>Represent Streams Using Pairs and Thunks</h3><p>Let a stream be a thunk <em>when called</em> returns a pair: <code>(next-answer, next-thunk)</code></p>
+<p>So given a stream, the client can get any number of elements</p>
+<ul>
+<li>Frist: <code>(car (s))</code></li>
+<li>Second: <code>(car ((cdr (s))))</code></li>
+<li>Third: <code>(car ((cdr ((cdr (s))))))</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">(define (number-until stream tester)</span><br><span class="line">  (let ([f (lambda (stream ans)</span><br><span class="line">              (define pr (stream))</span><br><span class="line">              (if (tester (car pr))</span><br><span class="line">                ans</span><br><span class="line">                (f (cdr pr) (+ ans 1))))])</span><br><span class="line">     (f stream 1)))</span><br></pre></td></tr></table></figure>
+<h2 id="Defining-Stream"><a href="#Defining-Stream" class="headerlink" title="Defining Stream"></a>Defining Stream</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">; 1 1 1 1 ...</span><br><span class="line">(define ones (lambda ()</span><br><span class="line">                (cons 1 ones)))</span><br><span class="line">; 1 2 3 4 ...</span><br><span class="line">(define (f x) (cons x (lambda () (f (+ x 1)))))</span><br><span class="line">(define nats (lambda () (f 1)))</span><br><span class="line"></span><br><span class="line">; 2 4 8 ...</span><br><span class="line">(define (f x) (cons x (lambda () (f (* x 2)))))</span><br><span class="line">(define nats (lambda () (f 2)))</span><br><span class="line"></span><br><span class="line">;;;;;;;;;;;;;;;Something Wrong;;;;;;;;;;;;;</span><br><span class="line">(define ones-really-bad (cons 1 ones-really-bad))</span><br><span class="line">(define ones-bad (lambda () (cons 1 (ones-bad))))</span><br></pre></td></tr></table></figure>
+<h2 id="Memoization"><a href="#Memoization" class="headerlink" title="Memoization"></a>Memoization</h2><p>If a function has no side effects and does not read mutable memeory, no point in computing it twice for the same arguments</p>
+<ul>
+<li>Can keep a <em>cache</em> of previous results</li>
+<li>Net win if (1) maintaining cache is cheaper than recomputing and (2) cache results are reused</li>
+</ul>
+<p>For recursive functions, this <em>memoization</em> can lead to <em>exponentially</em> faster programs.</p>
+<ul>
+<li>Related to algorithmic technique of <em>dynamic programming</em></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">; exponential time complexity</span><br><span class="line">(define (fibonacci1 x)</span><br><span class="line">  (if (or (= x 1) (= x 2))</span><br><span class="line">      1</span><br><span class="line">      (+ (fibonacci1 (- x 1)) (fibonacci1 (- x 2)))))</span><br><span class="line">      </span><br><span class="line">; linear time complexity</span><br><span class="line">(define fibonacci2</span><br><span class="line">  (letrec ([memo null] ; list of pairs (arg . result)</span><br><span class="line">           [f (lambda (x)</span><br><span class="line">                (let ([ans (assoc x memo)])</span><br><span class="line">                  (if ans</span><br><span class="line">                      (cdr ans)</span><br><span class="line">                      (let ([new-ans (if (or (= x 1) (= x 2))</span><br><span class="line">                                        1</span><br><span class="line">                                        (+ (f (- x 1)) (f (- x 2))))])</span><br><span class="line">                        (begin (set! memo (cons (cons x new-ans) memo))</span><br><span class="line">                               new-ans)))))])</span><br><span class="line">    f))</span><br></pre></td></tr></table></figure>
+<h2 id="Macros-The-Key-Points"><a href="#Macros-The-Key-Points" class="headerlink" title="Macros: The Key Points"></a>Macros: The Key Points</h2><p>High-level idea of macros</p>
+<h3 id="What-is-a-macro"><a href="#What-is-a-macro" class="headerlink" title="What is a macro"></a>What is a macro</h3><p>A <em>macro definition</em> describes how to transform some new syntax into different syntax in the source languange.</p>
+<p>A macro is one way to implement syntactic sugar.</p>
+<p>A <em>macro system</em> is a language (or part of a larger language) for defining macros.</p>
+<p><em>Macro expansion</em> is the process of rewriting the syntax for each <em>macro use</em>. (Before a program is run or compiled)</p>
+<h3 id="Using-Racket-Macros"><a href="#Using-Racket-Macros" class="headerlink" title="Using Racket Macros"></a>Using Racket Macros</h3><p>If you define a macro <code>m</code> in Racket, then <code>m</code> becomes a new special form.  Use <code>(m ...)</code> gets expanded according to definition.</p>
+<p>Example:</p>
+<ul>
+<li>Expand <code>(my-if e1 then e2 else e3)</code> to <code>(if e1 e2 e3)</code></li>
+<li>Expand <code>(comment-out e1 e2)</code> to <code>e2</code></li>
+<li>Expand <code>(my-delay a)</code> to <code>(mcons #f (lambda () e))</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt; (define seven (my-if #t then 7 else 14))</span><br><span class="line">&gt; seven</span><br><span class="line">7</span><br><span class="line">&gt; (define no-problem (comment-out (car null) #f))</span><br><span class="line">&gt; no-problem</span><br><span class="line">#f</span><br><span class="line">&gt; (define p (my-delay (begin (print &quot;hi&quot;) (* 3 4))))</span><br><span class="line">&gt; (my-force p)</span><br><span class="line">hi12</span><br><span class="line">&gt; (my-force p)</span><br><span class="line">12</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Programming-Language/" rel="tag"># Programming Language</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/03/05/NJU-OS-M1-pstree/" rel="prev" title="NJU-OS-M1-pstree">
+      <i class="fa fa-chevron-left"></i> NJU-OS-M1-pstree
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/03/20/PL-Part-B-Extra-Practice/" rel="next" title="PL-Part-B-Extra-Practice-Week1">
+      PL-Part-B-Extra-Practice-Week1 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Scheme-vs-Racket"><span class="nav-number">1.</span> <span class="nav-text">Scheme vs. Racket</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Getting-Started"><span class="nav-number">2.</span> <span class="nav-text">Getting Started</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Comments"><span class="nav-number">2.1.</span> <span class="nav-text">Comments</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lang-racket"><span class="nav-number">2.2.</span> <span class="nav-text">#lang racket</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#provide-all-defined-out"><span class="nav-number">2.3.</span> <span class="nav-text">(provide (all-defined-out))</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Basic-Definition"><span class="nav-number">2.4.</span> <span class="nav-text">Basic Definition</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Racket-Definitions-Functions-Conditionals"><span class="nav-number">3.</span> <span class="nav-text">Racket Definitions, Functions, Conditionals</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Racket-Lists"><span class="nav-number">4.</span> <span class="nav-text">Racket Lists</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Syntax-and-Parentheses"><span class="nav-number">5.</span> <span class="nav-text">Syntax and Parentheses</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Why-this-is-good"><span class="nav-number">5.1.</span> <span class="nav-text">Why this is good?</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Parentheses-Matter"><span class="nav-number">6.</span> <span class="nav-text">Parentheses Matter!</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dynamic-Typing"><span class="nav-number">7.</span> <span class="nav-text">Dynamic Typing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cond-Expression"><span class="nav-number">8.</span> <span class="nav-text">cond Expression</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Local-Binding"><span class="nav-number">9.</span> <span class="nav-text">Local Binding</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#let"><span class="nav-number">9.1.</span> <span class="nav-text">let</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#let-1"><span class="nav-number">9.2.</span> <span class="nav-text">let*</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#letrec"><span class="nav-number">9.3.</span> <span class="nav-text">letrec</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Local-define"><span class="nav-number">9.4.</span> <span class="nav-text">Local define</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Toplevel-Bindings"><span class="nav-number">10.</span> <span class="nav-text">Toplevel Bindings</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Files"><span class="nav-number">10.1.</span> <span class="nav-text">Files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#REPL"><span class="nav-number">10.2.</span> <span class="nav-text">REPL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Optional-Module-System"><span class="nav-number">10.3.</span> <span class="nav-text">Optional(Module System)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mutation-With-set"><span class="nav-number">11.</span> <span class="nav-text">Mutation With set!</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Example"><span class="nav-number">11.1.</span> <span class="nav-text">Example</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Defend-Against-Mutation"><span class="nav-number">11.2.</span> <span class="nav-text">Defend Against Mutation</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#More-Concerns"><span class="nav-number">11.2.1.</span> <span class="nav-text">More Concerns</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Defense-From-Language-Designer"><span class="nav-number">11.2.1.1.</span> <span class="nav-text">Defense From Language Designer</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-Truth-About-Cons"><span class="nav-number">12.</span> <span class="nav-text">The Truth About Cons</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Why-Allow-Improper-List"><span class="nav-number">12.1.</span> <span class="nav-text">Why Allow Improper List?</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mcons-For-Mutable-Pairs"><span class="nav-number">13.</span> <span class="nav-text">mcons For Mutable Pairs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Delayed-Evaluation-and-Thunks"><span class="nav-number">14.</span> <span class="nav-text">Delayed Evaluation and Thunks</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Delayed-Evaluation"><span class="nav-number">14.1.</span> <span class="nav-text">Delayed Evaluation</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Thunks-Delay"><span class="nav-number">14.1.1.</span> <span class="nav-text">Thunks Delay</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-Key-Point"><span class="nav-number">14.2.</span> <span class="nav-text">The Key Point</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Avoid-Unnecessary-Computations"><span class="nav-number">15.</span> <span class="nav-text">Avoid Unnecessary Computations</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Avoiding-Expensive-Computations"><span class="nav-number">15.1.</span> <span class="nav-text">Avoiding Expensive Computations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Best-of-Both-Worlds"><span class="nav-number">15.2.</span> <span class="nav-text">Best of Both Worlds</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Delay-and-Force"><span class="nav-number">16.</span> <span class="nav-text">Delay and Force</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Lessons-From-Example"><span class="nav-number">16.1.</span> <span class="nav-text">Lessons From Example</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Using-Stream"><span class="nav-number">17.</span> <span class="nav-text">Using Stream</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Represent-Streams-Using-Pairs-and-Thunks"><span class="nav-number">17.1.</span> <span class="nav-text">Represent Streams Using Pairs and Thunks</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Defining-Stream"><span class="nav-number">18.</span> <span class="nav-text">Defining Stream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Memoization"><span class="nav-number">19.</span> <span class="nav-text">Memoization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Macros-The-Key-Points"><span class="nav-number">20.</span> <span class="nav-text">Macros: The Key Points</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#What-is-a-macro"><span class="nav-number">20.1.</span> <span class="nav-text">What is a macro</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Using-Racket-Macros"><span class="nav-number">20.2.</span> <span class="nav-text">Using Racket Macros</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="碧漾" src="/images/龙卷1.jpeg">
+  <p class="site-author-name" itemprop="name">碧漾</p>
+  <div class="site-description" itemprop="description">心中的自我永远也不能实现，所以才要鞭策现实的自我啊</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:riversshall@qq.com" title="E-Mail → mailto:riversshall@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → /atom.xml"><i class="fa fa-fw fa-rss"></i>RSS</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">碧漾</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'e4755b6b14b374b3c19b',
+      clientSecret: 'e84c0b701bf42f9e8a2d98009f3fe3044b611529',
+      repo: 'blog-comment',
+      owner: 'Rivers-Shall',
+      admin: ['Rivers-Shall'],
+      id: '39e9fbe4b06e5f326a3c20bae5776571',
+        language: 'zh-CN',
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
