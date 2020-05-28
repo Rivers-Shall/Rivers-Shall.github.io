@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://rivers-shall.github.io').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+<script data-ad-client="ca-pub-6100092033271048" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <meta name="description" content="简介在上一篇博文中，介绍了 Unix/Linux编程实践教程 第一章中的两个标程，这两个标程实现了很简陋(根本没办法用)的more命令，这一篇博文则是Rivers在自己实现一个勉强可以使用的more命令的途中的一些感悟。具体的源码在Github上都有了。可以通过查看不同的commit来看各种功能具体是怎么实现的。也欢迎来找bug。">
+<meta name="keywords" content="Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Chapter01 --- 编写自己的`more`程序(2)">
+<meta property="og:url" content="https://rivers-shall.github.io/2019/03/26/UULP-Chapter01-2/index.html">
+<meta property="og:site_name" content="碧漾的自我">
+<meta property="og:description" content="简介在上一篇博文中，介绍了 Unix/Linux编程实践教程 第一章中的两个标程，这两个标程实现了很简陋(根本没办法用)的more命令，这一篇博文则是Rivers在自己实现一个勉强可以使用的more命令的途中的一些感悟。具体的源码在Github上都有了。可以通过查看不同的commit来看各种功能具体是怎么实现的。也欢迎来找bug。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-05-28T06:56:19.809Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter01 --- 编写自己的`more`程序(2)">
+<meta name="twitter:description" content="简介在上一篇博文中，介绍了 Unix/Linux编程实践教程 第一章中的两个标程，这两个标程实现了很简陋(根本没办法用)的more命令，这一篇博文则是Rivers在自己实现一个勉强可以使用的more命令的途中的一些感悟。具体的源码在Github上都有了。可以通过查看不同的commit来看各种功能具体是怎么实现的。也欢迎来找bug。">
+
+<link rel="canonical" href="https://rivers-shall.github.io/2019/03/26/UULP-Chapter01-2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Chapter01 --- 编写自己的`more`程序(2) | 碧漾的自我</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129500136-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-129500136-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">碧漾的自我</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">beyond myself</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2019/03/26/UULP-Chapter01-2/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/龙卷1.jpeg">
+      <meta itemprop="name" content="碧漾">
+      <meta itemprop="description" content="心中的自我永远也不能实现，所以才要鞭策现实的自我啊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="碧漾的自我">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          Chapter01 --- 编写自己的`more`程序(2)
+        </h2>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-26 10:17:02" itemprop="dateCreated datePublished" datetime="2019-03-26T10:17:02+08:00">2019-03-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-05-28 14:56:19" itemprop="dateModified" datetime="2020-05-28T14:56:19+08:00">2020-05-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Books/" itemprop="url" rel="index">
+                    <span itemprop="name">Books</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Books/Understanding-Unix-Linux-Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Understanding-Unix/Linux-Programming</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>在上一篇博文中，介绍了 <em>Unix/Linux编程实践教程</em> 第一章中的两个标程，这两个标程实现了很简陋(<del>根本没办法用</del>)的<code>more</code>命令，这一篇博文则是Rivers在自己实现一个勉强可以使用的<code>more</code>命令的途中的一些感悟。具体的源码在<a href="https://github.com/Rivers-Shall/UULP-Code/blob/master/Chap01/src/more.c" target="_blank" rel="noopener">Github</a>上都有了。可以通过查看不同的<code>commit</code>来看各种功能具体是怎么实现的。也欢迎来找bug。</p>
+<a id="more"></a>
+<h2 id="输入字符，立刻交互"><a href="#输入字符，立刻交互" class="headerlink" title="输入字符，立刻交互"></a>输入字符，立刻交互</h2><p>在之前实现的的<code>more</code>命令中，如果想要输入命令，必须要回车，比如说想要退出，就要先键入<code>q</code>，再键入回车，真实的<code>more</code>命令却不是这样的，键入了<code>q</code>之后会立刻退出，而且可以发现，当键入了<code>q</code>或空格之后，终端的屏幕上也出现了<code>q</code>或空格字符，真实的<code>more</code>命令则不会回显我们的字符。</p>
+<p>事实上，这是因为终端默认是处在<code>canonical</code>和<code>echoing</code>的模式，只能一行行地读入，并且会自动回显输入，那么，怎么修改这一属性呢?这需要两个函数<code>tcgetattr</code>和<code>tcsetattr</code>，从函数名上就可以看出，这两个函数一个用来获取终端属性，另一个用来设置终端属性，接下来要做的就是查看手册，找到合适的设置项了。</p>
+<p>经过一番挣扎，有了如下的结果</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CMD_FILE <span class="meta-string">"/dev/tty"</span></span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">termios</span> <span class="title">old</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span></span><br><span class="line">exit_more() &#123;</span><br><span class="line">  tcsetattr(CMD_FILENO, TCSANOW, &amp;old);</span><br><span class="line">  ......</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span></span><br><span class="line">init_more() &#123;</span><br><span class="line">  <span class="comment">// call exit_more at exit</span></span><br><span class="line">  atexit(exit_more);</span><br><span class="line">  </span><br><span class="line">  ......</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// open /dev/tty</span></span><br><span class="line">  <span class="keyword">if</span> ((cmd = fopen(CMD_FILE, <span class="string">"r"</span>)) == <span class="literal">NULL</span>) &#123;</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  CMD_FILENO = fileno(cmd);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// set the terminal mode</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">termios</span> <span class="title">tm</span>;</span></span><br><span class="line">  tcgetattr(CMD_FILENO, &amp;old);</span><br><span class="line">  tm = old;</span><br><span class="line">  tm.c_lflag &amp;= ~(ICANON | ECHO);</span><br><span class="line">  tm.c_cc[VMIN] = <span class="number">1</span>;</span><br><span class="line">  tm.c_cc[VTIME] = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">if</span> (tcsetattr(CMD_FILENO, TCSADRAIN, &amp;tm) == <span class="number">-1</span>) &#123;</span><br><span class="line">    perror(<span class="string">"tcsetattr"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中<code>old</code>用于保存原始的终端状态，以便在程序结束时恢复，<code>&amp;= ~(ICANON | ECHO)</code>是同时关掉 <em>canonical</em>模式和回显模式，下面设置的<code>c_cc[VMIN|VTIME]</code>分别是读入字符的个数和时延，时延当然是设置为0，因为需要及时反馈，字符个数设置为1或0都可以，如果大于1，就会导致要输入固定数量个字符才会读入，不是Rivers想要的。</p>
+<p>可能还有人会注意到Rivers第一次设置属性的时候使用的是<code>TCSADRAIN</code>行为模式，恢复的时候却是<code>TCSANOW</code>模式，其实这两个在这里并没有区别，只不过测试的时候，最终没有统一，虽然Rivers不敢说搞懂了这两个之间的区别，但是Rivers觉得，<code>TCSANOW</code>就是立刻设置，<code>TCSADRAIN</code>就是等待之前所有被缓冲的输出成功后再生效，如果有人确切知道，欢迎与Rivers交流。</p>
+<h3 id="之前错误的实现"><a href="#之前错误的实现" class="headerlink" title="之前错误的实现"></a>之前错误的实现</h3><p>在上面的正确实现之前，Rivers一直被一个bug困扰着，甚至于前往了<a href="https://stackoverflow.com/questions/55300831/noncanonical-and-non-echo-mode-not-working-with-pipe" target="_blank" rel="noopener">stackoverflow</a>上提问。</p>
+<p>这个<code>bug</code>的表现是，当我使用命令行参数传入文件名的时候(如<code>more test_file</code>)，一切都没有问题，但是当我使用管道时(如<code>ls /bin | more</code>)，就再也做不到键盘输入，立刻交互和没有回显。</p>
+<p>啊呀，这个bug怎么有点熟悉呢?似乎在上一篇博文中，第一个参考实现就是参数文件名可以键盘读入，而管道连接不可以键盘读入，解决的方法是不从<code>stdin</code>读入，而从<code>/dev/tty</code>读入，事实上也确实如此，傻傻的Rivers在这里犯了同样的错误，导致bug的代码如下:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">tcgetattr(STDIN_FILENO, &amp;old);</span><br><span class="line">tm = old;</span><br><span class="line">tm.c_lflag &amp;= ~(ICANON | ECHO);</span><br><span class="line">tm.c_cc[VMIN] = <span class="number">1</span>;</span><br><span class="line">tm.c_cc[VTIME] = <span class="number">0</span>;</span><br><span class="line">tcsetattr(STDIN_FILENO, TCSADRAIN, &amp;tm);</span><br></pre></td></tr></table></figure></p>
+<p>只设置<code>stdin</code>的属性，当参数传递文件名时，<code>/dev/tty</code>就是<code>stdin</code>，所以没有问题，但是使用管道之后，<code>/dev/tty</code>和<code>stdin</code>不同，就出现了设置失效的问题。(果然Rivers就是不能举一反三，太气了呜呜呜)</p>
+<h2 id="获得终端的高度"><a href="#获得终端的高度" class="headerlink" title="获得终端的高度"></a>获得终端的高度</h2><p>由于<code>more</code>命令需要一次显示<strong>一页</strong>内容，所以这<strong>一页</strong>内容有多少，就是一个必要的信息，也就是终端的高度，终端的高度有多种方式获得</p>
+<p>首先是可以使用环境变量<code>LINES</code>获得，在终端中直接使用<code>echo $LINES</code>就可以查看终端高度，在C中，结合库函数<code>getenv</code>和<code>atoi</code>就可以获得。</p>
+<p>但是当Rivers使用这一方法时，却失败了，查阅了网上资料之后，发现<code>LINES</code>环境变量是默认不传入程序的(当然有时也会传入程序，终端命令<code>env</code>会显示所有传入程序的环境变量)，终端中使用<code>export LINES</code>就可以传入了，但是这显然不行，因为平时使用<code>more</code>的时候根本不需要传入<code>LINES</code>。</p>
+<p>于是，又可以使用笨拙一点的办法<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// get number of lines</span></span><br><span class="line"><span class="keyword">char</span> * lines_str = getenv(<span class="string">"LINES"</span>);</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">winsize</span> <span class="title">ws</span>;</span></span><br><span class="line"><span class="keyword">if</span> (lines_str != <span class="literal">NULL</span>) &#123;</span><br><span class="line">  num_of_lines = atoi(lines_str) - <span class="number">1</span>;</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (ioctl(STDOUT_FILENO, TIOCGWINSZ, &amp;ws) == <span class="number">0</span>)&#123;</span><br><span class="line">  num_of_lines = ws.ws_row - <span class="number">1</span>;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  num_of_lines = <span class="number">24</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>使用<code>ioctl</code>来获取终端的大小信息。其中<code>-1</code>是因为最后一行输出反白的<code>More</code>而不是文件内容。</p>
+<h2 id="藏起来的光标和不在上滚的反白More"><a href="#藏起来的光标和不在上滚的反白More" class="headerlink" title="藏起来的光标和不在上滚的反白More?"></a>藏起来的光标和不在上滚的反白<code>More?</code></h2><p>在真实使用的<code>more</code>命令中，终端上是没有光标的，按回车，<code>More?</code>提示也不会上滚，Rivers实现这两个功能时，使用了Escape Code。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span></span><br><span class="line">init_more() &#123;</span><br><span class="line">  ......</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// hide the cursor</span></span><br><span class="line">  <span class="built_in">fputs</span>(<span class="string">"\033[?25l"</span>, <span class="built_in">stdout</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span></span><br><span class="line">exit_more() &#123;</span><br><span class="line">    ......</span><br><span class="line">    <span class="comment">// show the cursor</span></span><br><span class="line">    <span class="built_in">fputs</span>(<span class="string">"\033[?25h"</span>, <span class="built_in">stdout</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span></span><br><span class="line">see_more(<span class="keyword">long</span> cur_sz, <span class="keyword">long</span> file_sz, <span class="keyword">const</span> <span class="keyword">char</span> *<span class="keyword">const</span> file_nm) &#123;</span><br><span class="line">  ......</span><br><span class="line">  <span class="comment">// put cursor back to the beginning of the line</span></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"\033[%dD"</span>, num_of_lines);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> ((c = fgetc(cmd)) != EOF) &#123;</span><br><span class="line">    <span class="keyword">switch</span> (c) &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">' '</span>:</span><br><span class="line">        <span class="comment">// erase the line</span></span><br><span class="line">        <span class="built_in">fputs</span>(<span class="string">"\033[0K"</span>, <span class="built_in">stdout</span>);</span><br><span class="line">        <span class="keyword">return</span> num_of_lines;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">'\n'</span>:</span><br><span class="line">        <span class="comment">// erase the line</span></span><br><span class="line">        <span class="built_in">fputs</span>(<span class="string">"\033[0K"</span>, <span class="built_in">stdout</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">'q'</span>:</span><br><span class="line">        <span class="comment">// erase the line</span></span><br><span class="line">        <span class="built_in">fputs</span>(<span class="string">"\033[0K"</span>, <span class="built_in">stdout</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中实现掩藏光标是直接通过<code>\033[?25l</code>和<code>\033[?25h</code>两个Escape Code 实现的，而<code>More?</code>不在上滚则是通过在<code>see_more()</code>返回前将<code>More?</code>一行清空实现的，这并不会有问题，因为只有在等待读入的时候才有必要显示<code>More?</code>提示符。</p>
+<h2 id="文件百分比与多文件支持"><a href="#文件百分比与多文件支持" class="headerlink" title="文件百分比与多文件支持"></a>文件百分比与多文件支持</h2><p>文件百分比和多文件支持都要在<code>More?</code>提示符后加入一条额外的消息，或是百分比，或是<code>Next File FILE_NAME</code>，那么只需要给<code>see_more</code>多设置几个参数，来指示下一次输出哪一种消息以及消息的具体内容。</p>
+<p>多文件还要在每个文件之前输出其文件名，比如<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">::::::::::::</span><br><span class="line">./src/more.c</span><br><span class="line">::::::::::::</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line">......</span><br></pre></td></tr></table></figure></p>
+<p>这也可以通过给<code>do_more</code>加参数实现，具体可参考Rivers的<a href="https://github.com/Rivers-Shall/UULP-Code/blob/master/Chap01/src/more.c" target="_blank" rel="noopener">Github源码</a>。</p>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>在实现<code>more</code>的时候，Rivers也去翻了翻<code>more</code>的官方源码，有2000+行，其中考虑了各种各样的情况，包括如果<code>/dev/tty</code>打不开应该如何等等，有兴趣的朋友可以下载来看，<code>more</code>在<code>util-linux</code>包里。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/03/25/UULP-Chapter01/" rel="prev" title="Chapter01 --- 编写自己的 `more` 程序(1)">
+      <i class="fa fa-chevron-left"></i> Chapter01 --- 编写自己的 `more` 程序(1)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/04/03/UULP-Chapter02-1/" rel="next" title="UULP-Chapter02-1-编写自己的`who`程序">
+      UULP-Chapter02-1-编写自己的`who`程序 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输入字符，立刻交互"><span class="nav-number">2.</span> <span class="nav-text">输入字符，立刻交互</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#之前错误的实现"><span class="nav-number">2.1.</span> <span class="nav-text">之前错误的实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获得终端的高度"><span class="nav-number">3.</span> <span class="nav-text">获得终端的高度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#藏起来的光标和不在上滚的反白More"><span class="nav-number">4.</span> <span class="nav-text">藏起来的光标和不在上滚的反白More?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件百分比与多文件支持"><span class="nav-number">5.</span> <span class="nav-text">文件百分比与多文件支持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后记"><span class="nav-number">6.</span> <span class="nav-text">后记</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="碧漾" src="/images/龙卷1.jpeg">
+  <p class="site-author-name" itemprop="name">碧漾</p>
+  <div class="site-description" itemprop="description">心中的自我永远也不能实现，所以才要鞭策现实的自我啊</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:riversshall@qq.com" title="E-Mail → mailto:riversshall@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → /atom.xml"><i class="fa fa-fw fa-rss"></i>RSS</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">碧漾</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'e4755b6b14b374b3c19b',
+      clientSecret: 'e84c0b701bf42f9e8a2d98009f3fe3044b611529',
+      repo: 'blog-comment',
+      owner: 'Rivers-Shall',
+      admin: ['Rivers-Shall'],
+      id: '3fd527d532368867488d218ad3d0c992',
+        language: 'zh-CN',
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

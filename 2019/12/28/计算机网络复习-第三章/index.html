@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://rivers-shall.github.io').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+<script data-ad-client="ca-pub-6100092033271048" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <meta name="description" content="《Computer Networking - A Top-Down Approach》第三章(除3.4)复习知识点总结">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机网络复习--第三章">
+<meta property="og:url" content="https://rivers-shall.github.io/2019/12/28/计算机网络复习-第三章/index.html">
+<meta property="og:site_name" content="碧漾的自我">
+<meta property="og:description" content="《Computer Networking - A Top-Down Approach》第三章(除3.4)复习知识点总结">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://rivers-shall.github.io/2019/12/28/计算机网络复习-第三章/Congestion-mode-switch.png">
+<meta property="og:updated_time" content="2020-05-28T06:56:19.811Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="计算机网络复习--第三章">
+<meta name="twitter:description" content="《Computer Networking - A Top-Down Approach》第三章(除3.4)复习知识点总结">
+<meta name="twitter:image" content="https://rivers-shall.github.io/2019/12/28/计算机网络复习-第三章/Congestion-mode-switch.png">
+
+<link rel="canonical" href="https://rivers-shall.github.io/2019/12/28/计算机网络复习-第三章/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>计算机网络复习--第三章 | 碧漾的自我</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129500136-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-129500136-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">碧漾的自我</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">beyond myself</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2019/12/28/计算机网络复习-第三章/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/龙卷1.jpeg">
+      <meta itemprop="name" content="碧漾">
+      <meta itemprop="description" content="心中的自我永远也不能实现，所以才要鞭策现实的自我啊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="碧漾的自我">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          计算机网络复习--第三章
+        </h2>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-28 15:01:09" itemprop="dateCreated datePublished" datetime="2019-12-28T15:01:09+08:00">2019-12-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-05-28 14:56:19" itemprop="dateModified" datetime="2020-05-28T14:56:19+08:00">2020-05-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/NJU-Class/" itemprop="url" rel="index">
+                    <span itemprop="name">NJU-Class</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/NJU-Class/计算机网络/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机网络</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>《Computer Networking - A Top-Down Approach》第三章(除3.4)复习知识点总结<br><a id="more"></a></p>
+<h2 id="3-1-传输层服务介绍"><a href="#3-1-传输层服务介绍" class="headerlink" title="3.1 传输层服务介绍"></a>3.1 传输层服务介绍</h2><p>术语：</p>
+<ul>
+<li>传输层 Transport Layer</li>
+<li>传输层包 segment</li>
+</ul>
+<p>传输层的意义：实现两个不同主机上的进程之间的逻辑通信(在这里，逻辑通信的意义是，即便两个主机之间需要多个路由器转发，从传输层的角度来看，就好像是点对点的直接传输一样)</p>
+<h3 id="3-1-1-传输层与网络层的关系"><a href="#3-1-1-传输层与网络层的关系" class="headerlink" title="3.1.1 传输层与网络层的关系"></a>3.1.1 传输层与网络层的关系</h3><ul>
+<li>传输层服务构建于网络层服务之上</li>
+<li>网络层服务遍布全网，传输层服务只存在于终端主机</li>
+<li>一个网络层上，可以有多个传输层服务</li>
+<li>传输层服务部分受限于网络层服务<ul>
+<li>例如，如果网络层不对带宽，传输时间做任何保证，传输层也无法提供保证</li>
+<li>但是，虽然网络层(IP协议)不提供可靠传输，传输层(TCP协议)仍然可以提供可靠传输服务</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-1-2-传输层协议概览"><a href="#3-1-2-传输层协议概览" class="headerlink" title="3.1.2 传输层协议概览"></a>3.1.2 传输层协议概览</h3><p>因特网提供了两种传输层协议</p>
+<p>UDP (User Datagram Protocal)</p>
+<ul>
+<li>单纯的IP协议套壳</li>
+<li>提供不同主机的进程到进程的通信服务</li>
+<li>提供错误校验</li>
+</ul>
+<p>TCP(Transmission Control Protocal)</p>
+<ul>
+<li>复杂协议</li>
+<li>提供不同主机的进程到进程的通信服务</li>
+<li>提供错误校验</li>
+<li>提供可靠传输服务</li>
+<li>提供拥塞控制</li>
+</ul>
+<h2 id="3-2-多路复用和多路分解"><a href="#3-2-多路复用和多路分解" class="headerlink" title="3.2 多路复用和多路分解"></a>3.2 多路复用和多路分解</h2><p>多路复用：指的是源主机上的多个套接字发送的传输层包被整合到一起（不同的包还是不同的包，但是是由统一的传输层协议进行处理的），加传输层头部，而后交给网络层传输</p>
+<p>多路分解：指的是目的主机上收到传输层包，将传输层的包发给对应的套接字</p>
+<p>套接字的标识符：</p>
+<p>套接字的标识符用于在多路分解中确定传输层包应该发送到哪一个套接字上</p>
+<p>UDP套接字标识符：目的IP地址，目的端口号</p>
+<p>TCP套接字标识符：源IP地址，源端口号，目的IP地址，目的端口号</p>
+<p>也就是说，如果两个UDP包的源IP地址，源端口号不同，但是目的IP地址，目的端口号相同，它们就会被分配到同一个UDP套接字上，但是如果是TCP包，就会被分配到不同的套接字上。</p>
+<p>这是因为UDP是无连接的，也就是说，在UDP的眼里，只有包包包，不在乎是谁发来的，但是TCP是面向连接的，和不同的源建立了不同的连接，所以这些包也就要放到不同的套接字上处理。</p>
+<h2 id="3-3-无连接的传输层协议UDP"><a href="#3-3-无连接的传输层协议UDP" class="headerlink" title="3.3 无连接的传输层协议UDP"></a>3.3 无连接的传输层协议UDP</h2><p>UDP只完成了最基本的传输层协议工作，也就是多路复用和多路分解，错误校验。</p>
+<p>仍然有应用使用UDP的原因：</p>
+<ol>
+<li>可以更好地控制包发出的时间，以及发包内容。由于没有拥塞控制，UDP接到应用层数据后立刻会发包，而无需通过重传进行可靠通信使得UDP不会传输除了应用数据以外的其他数据</li>
+<li>没有连接建立的时延</li>
+<li>无需维护连接状态，所以可以有更多的客户连接到同一个UDP服务器上</li>
+<li>UDP包的额外域更少，开销低</li>
+</ol>
+<p>虽然很多时候说多媒体不在意少量的数据丢失，可以使用UDP，但是由于UDP缺少拥塞控制，多媒体文件体积庞大，所以使用UDP传输多媒体并不是一个好主意。</p>
+<h3 id="3-3-1-UDP包格式"><a href="#3-3-1-UDP包格式" class="headerlink" title="3.3.1 UDP包格式"></a>3.3.1 UDP包格式</h3><p>包含了（顺序未必正确）：源端口，目的端口，包长度（包头+数据），校验和，应用数据</p>
+<h3 id="3-3-2-UDP包校验和"><a href="#3-3-2-UDP包校验和" class="headerlink" title="3.3.2 UDP包校验和"></a>3.3.2 UDP包校验和</h3><p>将所有16-bit的小段当作数加起来，当有溢出进位时，就抛弃溢出进位，额外加1，所得结果取反。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0110011001100000</span></span><br><span class="line"></span><br><span class="line"><span class="number">0101010101010101</span></span><br><span class="line"></span><br><span class="line"><span class="number">1000111100001100</span></span><br><span class="line"></span><br><span class="line"><span class="number">0110011001100000</span>+</span><br><span class="line"><span class="number">0101010101010101</span>=</span><br><span class="line"><span class="number">1011101110110101</span></span><br><span class="line"></span><br><span class="line"><span class="number">1011101110110101</span>+</span><br><span class="line"><span class="number">1000111100001100</span>=</span><br><span class="line"><span class="number">0100101011000010</span></span><br></pre></td></tr></table></figure>
+<p>最后一次加法有溢出，额外加了1</p>
+<h2 id="3-5-面向链接的传输：TCP"><a href="#3-5-面向链接的传输：TCP" class="headerlink" title="3.5 面向链接的传输：TCP"></a>3.5 面向链接的传输：TCP</h2><h3 id="3-5-1-TCP-连接"><a href="#3-5-1-TCP-连接" class="headerlink" title="3.5.1 TCP 连接"></a>3.5.1 TCP 连接</h3><p>TCP连接的特点：</p>
+<ul>
+<li>逻辑连接。TCP连接是一个逻辑概念，不是一个类似于电路交换网络中的连接一样，有预先分配的资源的真实存在的连接。</li>
+<li>终端的连接。TCP连接只在终端主机上有概念，网络之中的路由器，交换机等对TCP连接毫无感知，只知道收发包。</li>
+<li>点对点的连接。只有单播，没有组播。</li>
+<li>双工连接。TCP连接的双方可以同时读写。</li>
+</ul>
+<p>TCP连接建立简介（主动发起连接的是客户进程，被动监听接受的是服务器进程）：</p>
+<ol>
+<li>客户进程向服务器发送一个特殊的TCP包</li>
+<li>服务器进程向客户进程回复一个特殊的TCP包</li>
+<li>客户进程向服务器进程再回复一个特殊的TCP包</li>
+<li>1和2中的TCP包没有负载，3中的可能有</li>
+</ol>
+<p>TCP连接上传输数据的方式（两端都有发送缓冲区和接收缓冲区）：</p>
+<ol>
+<li>应用进程拥有想要发送的数据，将数据传给套接字</li>
+<li>套接字将数据传给TCP传输层</li>
+<li>TCP将数据存放在发送缓冲区中，在适当的时候发送（标准没有规定什么时候是适当的时候）</li>
+<li>另一端TCP接收到数据，将数据存放在接收缓冲区中</li>
+<li>TCP将接受缓冲剧的数据传给对应的套接字，套接字传给应用</li>
+</ol>
+<h3 id="3-5-2-TCP包结构"><a href="#3-5-2-TCP包结构" class="headerlink" title="3.5.2 TCP包结构"></a>3.5.2 TCP包结构</h3><p>TCP包包含了如下域：</p>
+<ul>
+<li>源端口号，目的端口号</li>
+<li>32-bit序列号和32-bit确认号</li>
+<li>16-bit接受窗口</li>
+<li>4-bit头部长度</li>
+<li>可选域</li>
+<li>标志域</li>
+<li>数据</li>
+<li>校验和</li>
+</ul>
+<p>其中：</p>
+<ul>
+<li>32-bit序列号是当前TCP包中的数据的第一个<strong>字节</strong>的标号（注意不是包的标号，如果没有数据，序列号也需要再前一个包的最后一个字节标号基础上+1）</li>
+<li>32-bit确认号是期盼得到的下一个字节的标号</li>
+</ul>
+<h3 id="3-5-3-往返时间估计和超时计算"><a href="#3-5-3-往返时间估计和超时计算" class="headerlink" title="3.5.3 往返时间估计和超时计算"></a>3.5.3 往返时间估计和超时计算</h3><p>想要估计往返时间，首先要估计一个发出的包的往返时间，但是，因为TCP会存在发出了多个包，但是都没有确认的情况，这时，TCP不会对所有没有确认的包都记录往返时间，只会选择一个包记录。</p>
+<p>同时，如果一个包被重传了，TCP也不会记录它的往返时间（因为可能该包并没有丢失，只是ACK到的晚了，那么再收到的ACK就不清楚是原来的包的ACK，还是重传的包的ACK了）</p>
+<p>通过一个包取样的往返时间$SampleRTT$和之前估计的$EstimatedRTT_{n-1}$得到新的$EstimatedRTT_{n}$的公式是</p>
+<p>$EstimatedRTT_{n}=(1-\alpha)EstimatedRTT_{n-1} + \alpha SampleRTT$</p>
+<p>官方建议$\alpha$取$1/8$</p>
+<p>同时，我们可以用如下公式来反映网络连接的抖动程度：</p>
+<p>$DevRTT=(1-\beta)DevRTT+\beta(|SampleRTT-EstimatedRTT|)$</p>
+<p>官方建议$\beta$取$1/4$</p>
+<p>一般来说超时区间$TimeoutInterval$取：</p>
+<p>$TimeoutInterval=EstimatedRTT+4DevRTT$</p>
+<p>同时，一旦出现了超时重传，那么$TimeoutInterval$会立刻乘2（这是因为阻塞控制，如果超时，很可能是因为线路阻塞，如果一直以同一个时间段重传，可能会使得阻塞更严重，乘2可以传的越来越慢）</p>
+<p>一旦下一个ACK到来，就会立刻以原来的公式更新$TimeoutInterval$</p>
+<h3 id="3-5-4-可靠传输"><a href="#3-5-4-可靠传输" class="headerlink" title="3.5.4 可靠传输"></a>3.5.4 可靠传输</h3><h4 id="关于计时器"><a href="#关于计时器" class="headerlink" title="关于计时器"></a>关于计时器</h4><p>概念上来讲，如果认为每个包都有一个计时器，更加容易思考，但是由于这样做的开销太大，实际的TCP协议只会维护一个超时重传计时器。</p>
+<h4 id="两步保障可靠传输"><a href="#两步保障可靠传输" class="headerlink" title="两步保障可靠传输"></a>两步保障可靠传输</h4><p>可以从两步来描述TCP提供的可靠传输机制</p>
+<ol>
+<li>超时重传</li>
+<li>重复确认的迅速重传</li>
+</ol>
+<h5 id="超时重传"><a href="#超时重传" class="headerlink" title="超时重传"></a>超时重传</h5><p>假设TCP的流控制和阻塞控制都不起作用，应用层数据大小不超过TCP负载的大小，数据传输是单向的情况下，给出一个简易的超时重传发送方：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">下一序列号初始化</span><br><span class="line">发送基础序号初始化</span><br><span class="line"></span><br><span class="line">死循环 &#123;</span><br><span class="line">    事件：</span><br><span class="line">        应用层传来数据：</span><br><span class="line">            用下一序列号生成TCP包</span><br><span class="line">            如果计时器不在工作：</span><br><span class="line">                开启计时器</span><br><span class="line">            TCP包传给IP层</span><br><span class="line">            下一序列号增加TCP包长度</span><br><span class="line">        计时器超时：</span><br><span class="line">            重传未确认的最小序号包</span><br><span class="line">            重开计时器</span><br><span class="line">        收到确认包，确认号Y:</span><br><span class="line">            如果Y&gt;发送基础序号 &#123;</span><br><span class="line">                发送基础序号 = Y</span><br><span class="line">                如果仍有未确认的包 &#123;</span><br><span class="line">                    开启计时器</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意：TCP协议使用<em>累积确认</em>的方法，也就是说，如果确认号是Y，就意味着所有序列号<strong>小于</strong>Y的包都收到了。</p>
+<h6 id="超时乘2"><a href="#超时乘2" class="headerlink" title="超时乘2"></a>超时乘2</h6><p>一旦出现了超时重传，那么$TimeoutInterval$会立刻乘2（这是因为阻塞控制，如果超时，很可能是因为线路阻塞，如果一直以同一个时间段重传，可能会使得阻塞更严重，乘2可以传的越来越慢）</p>
+<p>一旦下一个ACK到来，就会立刻以原来的公式更新$TimeoutInterval$</p>
+<h5 id="快速重传"><a href="#快速重传" class="headerlink" title="快速重传"></a>快速重传</h5><p>接收者的ACK生成机制</p>
+<table>
+<thead>
+<tr>
+<th>事件</th>
+<th>TCP接收者行为</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>按序到达的包</td>
+<td>等待500ms，希望出现下一个序列号的包</td>
+</tr>
+<tr>
+<td>按序到达的包，已经有一个包等待发出ACK</td>
+<td>立刻发出累计ACK包</td>
+</tr>
+<tr>
+<td>非按序到达的包，序列号高于期待序列号，孔雀产生</td>
+<td>发出重复ACK包</td>
+</tr>
+<tr>
+<td>非按序到达的包，部分或全部填补空缺</td>
+<td>发出最低连续已收到包的序列号的ACK包</td>
+</tr>
+</tbody>
+</table>
+<p>所以我们可以修正一下之前的简易发送方：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">收到确认包，确认号Y:</span><br><span class="line">    如果Y&gt;发送基础序号 &#123;</span><br><span class="line">        发送基础序号 = Y</span><br><span class="line">        如果仍有未确认的包 &#123;</span><br><span class="line">            开启计时器</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; 否则 &#123;</span><br><span class="line">        增加Y的重复ACK包计数</span><br><span class="line">        如果计数到达<span class="number">3</span></span><br><span class="line">            立刻重传序列号为Y的包</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h5 id="Go-Back-N-or-Selective-Repeat"><a href="#Go-Back-N-or-Selective-Repeat" class="headerlink" title="Go-Back-N or Selective-Repeat"></a>Go-Back-N or Selective-Repeat</h5><p>都是，组合起来的，保有N个未确认的包像是GBN，但是接收方累计确认并缓存失序到达的大序列号的包，最终导致重传包的数量较少像是SR</p>
+<h3 id="3-5-5-流控制"><a href="#3-5-5-流控制" class="headerlink" title="3.5.5 流控制"></a>3.5.5 流控制</h3><p>TCP的流控制是通过<em>滑动窗口</em>来实现的。</p>
+<p>TCP接收方维护如下几个变量：</p>
+<ul>
+<li>接收缓冲区大小RcvBuffer</li>
+<li>最后一个被应用程序读取的字节的序列号LastByteRead</li>
+<li>最后一个接收到的字节的序列号LastByteRcvd</li>
+</ul>
+<p>而接收方希望 $LastByteRcvd-LastByteRead\le RcvBuffer$，所以窗口的大小就是 $rwnd=RcvBuffer - [LastBYteRcvd-LastByteRead]$。接收方通过在TCP包头的window域告知发送方rwnd的数值。</p>
+<p>TCP发送方维护如下几个变量：</p>
+<ul>
+<li>最后一个发送的字节序列号LastByteSent</li>
+<li>最后一个被确认的字节序列号LastByteAcked</li>
+<li>接收方窗口大小rwnd</li>
+</ul>
+<p>发送方需要保证$LastByteSent−LastByteAcked\le rwnd$.</p>
+<h4 id="小问题"><a href="#小问题" class="headerlink" title="小问题"></a>小问题</h4><p>如果接收方窗口大小暂时变为0，那么发送方会收到rwnd为0的消息，而后就不再通信，两边就有可能永久阻塞。</p>
+<p>所以TCP规定即便接受窗口为0，发送方也要向接收方发送负载为一个字节的包。以便后续接受窗口大小变更时可以及时收到消息。</p>
+<h3 id="TCP-连接管理"><a href="#TCP-连接管理" class="headerlink" title="TCP 连接管理"></a>TCP 连接管理</h3><p>TCP建立连接：</p>
+<ol>
+<li>SYN(w) a $\rightarrow$ b</li>
+<li>SYN(u),ACK(w+1) b $\rightarrow$ a</li>
+<li>ACK(u+1)，这个ACK包已经可以带应用层数据了 a $\rightarrow$ b</li>
+</ol>
+<p>TCP关闭连接：</p>
+<ol>
+<li>FIN a $\rightarrow$ b</li>
+<li>ACK b $\rightarrow$ a</li>
+<li>FIN b $\rightarrow$ a</li>
+<li>ACK a $\rightarrow$ b</li>
+</ol>
+<p>当客户机向一个IP地址正确但是端口号不正确的地址发送SYN时，服务器会回复RST包。</p>
+<h2 id="3-6-拥塞控制原理"><a href="#3-6-拥塞控制原理" class="headerlink" title="3.6 拥塞控制原理"></a>3.6 拥塞控制原理</h2><h3 id="3-6-1-拥塞的原因和代价"><a href="#3-6-1-拥塞的原因和代价" class="headerlink" title="3.6.1 拥塞的原因和代价"></a>3.6.1 拥塞的原因和代价</h3><h4 id="情境一"><a href="#情境一" class="headerlink" title="情境一"></a>情境一</h4><p>情境：两个终端主机，一个发一个收，一个无限缓存的路由器</p>
+<p>如果发送方发送的速度超过了链路上能够传输的最大速率，那么在路由器上就会出现大量的缓存，缓存中的包越来越多，其排队等待的时间就越长。</p>
+<p>代价：当发送速率接近链路传输速率时，排队延迟迅速变大。</p>
+<h4 id="情境二"><a href="#情境二" class="headerlink" title="情境二"></a>情境二</h4><p>情境：两个终端主机，一个有限缓存的路由器</p>
+<p>如果发送方的发送速度过快，路由器的缓存就会被充满，那么路由器就必须丢包，一旦丢包，发送方就必须重传。同时，如果有包延时过长，使得发送方以为该包丢失了，重传的工作就是完全的浪费。</p>
+<p>代价：</p>
+<ol>
+<li>当发送速率变高，发送方必须重传来弥补线路上丢包的事实</li>
+<li>同时还会因为延时过长的“伪丢包”情境而做无谓的重传</li>
+</ol>
+<h4 id="情境三"><a href="#情境三" class="headerlink" title="情境三"></a>情境三</h4><p>情境：四个终端主机，有限缓存的路由器，多跳线路</p>
+<p>如果发送过快导致网络中出现拥塞，那么在一个多跳线路上，一旦某个包在第N跳被丢弃，那么前N-1跳上的路由器，交换机等做的工作就相当于全部白费了。</p>
+<p>代价：上游的路由器为了将包传输到当前位置提供的传输能力由于包被丢弃而全部浪费</p>
+<h3 id="3-6-2-拥塞控制的解决方案"><a href="#3-6-2-拥塞控制的解决方案" class="headerlink" title="3.6.2 拥塞控制的解决方案"></a>3.6.2 拥塞控制的解决方案</h3><ol>
+<li>端到端的拥塞控制。端到端的拥塞控制不依赖中间层的线路，通过在终端上自己检测推断线路网络的拥塞状况，进行对应的控制。</li>
+<li>网络辅助的拥塞控制。网络辅助的拥塞控制中，底层的网络线路会显式地通知终端线路网络的拥塞状况。</li>
+</ol>
+<h2 id="3-7-TCP-拥塞控制"><a href="#3-7-TCP-拥塞控制" class="headerlink" title="3.7 TCP 拥塞控制"></a>3.7 TCP 拥塞控制</h2><p>类似于流控制中的receive window，为了拥塞控制中控制发送方的发送速率，TCP维护一个congestion window(cwnd)。所以我们现在有如下的关系。</p>
+<p>$LastByteSent−LastByteAcked\le \min{cwnd, rwnd}$</p>
+<p>但是就讨论中，方便起见，我们先不考虑rwnd。</p>
+<p>那么TCP现在需要回答如下几个问题：</p>
+<ol>
+<li>如何检测出拥塞或者不拥塞的情况？</li>
+<li>在检测出情况后，如何调整congestion window的大小来控制传输速度？</li>
+</ol>
+<h3 id="TCP检测拥塞状况的方式"><a href="#TCP检测拥塞状况的方式" class="headerlink" title="TCP检测拥塞状况的方式"></a>TCP检测拥塞状况的方式</h3><p>由于线路拥塞的最重要结果就是丢包，而丢包又和可靠传输有着紧密的联系，所以TCP使用了实现可靠传输中的机制来检测拥塞状况。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">行为</th>
+<th style="text-align:center">推断</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">超时</td>
+<td style="text-align:center">拥塞严重</td>
+</tr>
+<tr>
+<td style="text-align:center">重复ACK</td>
+<td style="text-align:center">拥塞，不是很严重</td>
+</tr>
+<tr>
+<td style="text-align:center">正常ACK</td>
+<td style="text-align:center">无拥塞</td>
+</tr>
+</tbody>
+</table>
+<h3 id="TCP在检测到拥塞-正常后的行为"><a href="#TCP在检测到拥塞-正常后的行为" class="headerlink" title="TCP在检测到拥塞/正常后的行为"></a>TCP在检测到拥塞/正常后的行为</h3><p>TCP在检测到拥塞或者不拥塞后的行为遵守如下的指导原则：</p>
+<ol>
+<li>一旦检测到拥塞(丢包)，就有必要减少传输速率</li>
+<li>一旦检测到无拥塞，就可以增加传输速率</li>
+<li>带宽侦测，TCP需要找一种高效而比较安全的方法来侦测当前线路可以接受的传输速率是多少，既要快，否则线路利用率不高，也要适当慢一点，否则一下子就导致了拥塞</li>
+</ol>
+<p>针对这些，TCP有如下的模式：</p>
+<ul>
+<li>Slow Start</li>
+<li>Congestion Avoidance</li>
+<li>Fast Recovery</li>
+</ul>
+<p>他们之间的转换关系如下：</p>
+<p><img src="Congestion-mode-switch.png" alt="mode-switch"></p>
+<p>下面介绍一下这几个模式的设立目的和比较重要的转换条件</p>
+<h4 id="Slow-Start-慢开始"><a href="#Slow-Start-慢开始" class="headerlink" title="Slow Start(慢开始)"></a>Slow Start(慢开始)</h4><p>在TCP连接建立的时候，cwnd被初始化为1MSS，随后一旦接受到一个ACK，就将cwnd增加1MSS，这就导致一个RTT内，cwnd会翻一倍。</p>
+<p>这样的一个指数级增长的cwnd被用在建立TCP连接之后，迅速检测到当前线路能够接受的传输速率。</p>
+<h4 id="Congestion-Avoidance-拥塞避免"><a href="#Congestion-Avoidance-拥塞避免" class="headerlink" title="Congestion Avoidance (拥塞避免)"></a>Congestion Avoidance (拥塞避免)</h4><p>进入Congestion Avoidance的时候，一般cwnd的大小是上一次检测到拥塞时的cwnd的一半。</p>
+<p>这时在一个RTT内，如果收到了全部发出包的ACK，那么一个RTT，cwnd增加1MSS。</p>
+<p>这种方式用在这个时候很合适，虽然线路仍然正常无拥塞，但是任何的cwnd的增长都有可能使得线路变为拥塞状态，所以采用一种较为缓慢谨慎的方式来侦测线路的带宽。</p>
+<h4 id="Fast-Recovery-快速恢复"><a href="#Fast-Recovery-快速恢复" class="headerlink" title="Fast Recovery (快速恢复)"></a>Fast Recovery (快速恢复)</h4><p>Fast Recovery是在检测到3个重复的ACK包时进入的模式，该模式下，每收到一个重复的ACK包，cwnd的大小就增加1MSS，这点和Slow Start没有区别，因为收到重复的ACK包也表示有正常的包被正常接受到了。一旦接收到新的ACK包，就转换到Congestion Avoidance模式。</p>
+<h3 id="两种不同的TCP"><a href="#两种不同的TCP" class="headerlink" title="两种不同的TCP"></a>两种不同的TCP</h3><p>早期的TCP，TCP Tahoe，没有Fast Recovery模式，无论受到什么样的拥塞信息，超时或者重复ACK，都直接将cwnd置为1且进入Slow Start模式。</p>
+<p>后来TCP Reno加入了Fast Recovery的支持。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/12/19/2019年总结/" rel="prev" title="2019年总结">
+      <i class="fa fa-chevron-left"></i> 2019年总结
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/12/31/计算机网络复习-第四章/" rel="next" title="计算机网络复习-第四章">
+      计算机网络复习-第四章 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-传输层服务介绍"><span class="nav-number">1.</span> <span class="nav-text">3.1 传输层服务介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-1-传输层与网络层的关系"><span class="nav-number">1.1.</span> <span class="nav-text">3.1.1 传输层与网络层的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-2-传输层协议概览"><span class="nav-number">1.2.</span> <span class="nav-text">3.1.2 传输层协议概览</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-多路复用和多路分解"><span class="nav-number">2.</span> <span class="nav-text">3.2 多路复用和多路分解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-无连接的传输层协议UDP"><span class="nav-number">3.</span> <span class="nav-text">3.3 无连接的传输层协议UDP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-1-UDP包格式"><span class="nav-number">3.1.</span> <span class="nav-text">3.3.1 UDP包格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-2-UDP包校验和"><span class="nav-number">3.2.</span> <span class="nav-text">3.3.2 UDP包校验和</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-5-面向链接的传输：TCP"><span class="nav-number">4.</span> <span class="nav-text">3.5 面向链接的传输：TCP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-1-TCP-连接"><span class="nav-number">4.1.</span> <span class="nav-text">3.5.1 TCP 连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-2-TCP包结构"><span class="nav-number">4.2.</span> <span class="nav-text">3.5.2 TCP包结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-3-往返时间估计和超时计算"><span class="nav-number">4.3.</span> <span class="nav-text">3.5.3 往返时间估计和超时计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-4-可靠传输"><span class="nav-number">4.4.</span> <span class="nav-text">3.5.4 可靠传输</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#关于计时器"><span class="nav-number">4.4.1.</span> <span class="nav-text">关于计时器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#两步保障可靠传输"><span class="nav-number">4.4.2.</span> <span class="nav-text">两步保障可靠传输</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#超时重传"><span class="nav-number">4.4.2.1.</span> <span class="nav-text">超时重传</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#超时乘2"><span class="nav-number">4.4.2.1.1.</span> <span class="nav-text">超时乘2</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#快速重传"><span class="nav-number">4.4.2.2.</span> <span class="nav-text">快速重传</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Go-Back-N-or-Selective-Repeat"><span class="nav-number">4.4.2.3.</span> <span class="nav-text">Go-Back-N or Selective-Repeat</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-5-流控制"><span class="nav-number">4.5.</span> <span class="nav-text">3.5.5 流控制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#小问题"><span class="nav-number">4.5.1.</span> <span class="nav-text">小问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP-连接管理"><span class="nav-number">4.6.</span> <span class="nav-text">TCP 连接管理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-6-拥塞控制原理"><span class="nav-number">5.</span> <span class="nav-text">3.6 拥塞控制原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-6-1-拥塞的原因和代价"><span class="nav-number">5.1.</span> <span class="nav-text">3.6.1 拥塞的原因和代价</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#情境一"><span class="nav-number">5.1.1.</span> <span class="nav-text">情境一</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#情境二"><span class="nav-number">5.1.2.</span> <span class="nav-text">情境二</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#情境三"><span class="nav-number">5.1.3.</span> <span class="nav-text">情境三</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-6-2-拥塞控制的解决方案"><span class="nav-number">5.2.</span> <span class="nav-text">3.6.2 拥塞控制的解决方案</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-7-TCP-拥塞控制"><span class="nav-number">6.</span> <span class="nav-text">3.7 TCP 拥塞控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP检测拥塞状况的方式"><span class="nav-number">6.1.</span> <span class="nav-text">TCP检测拥塞状况的方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP在检测到拥塞-正常后的行为"><span class="nav-number">6.2.</span> <span class="nav-text">TCP在检测到拥塞/正常后的行为</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Slow-Start-慢开始"><span class="nav-number">6.2.1.</span> <span class="nav-text">Slow Start(慢开始)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Congestion-Avoidance-拥塞避免"><span class="nav-number">6.2.2.</span> <span class="nav-text">Congestion Avoidance (拥塞避免)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Fast-Recovery-快速恢复"><span class="nav-number">6.2.3.</span> <span class="nav-text">Fast Recovery (快速恢复)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两种不同的TCP"><span class="nav-number">6.3.</span> <span class="nav-text">两种不同的TCP</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="碧漾" src="/images/龙卷1.jpeg">
+  <p class="site-author-name" itemprop="name">碧漾</p>
+  <div class="site-description" itemprop="description">心中的自我永远也不能实现，所以才要鞭策现实的自我啊</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:riversshall@qq.com" title="E-Mail → mailto:riversshall@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → /atom.xml"><i class="fa fa-fw fa-rss"></i>RSS</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">碧漾</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'e4755b6b14b374b3c19b',
+      clientSecret: 'e84c0b701bf42f9e8a2d98009f3fe3044b611529',
+      repo: 'blog-comment',
+      owner: 'Rivers-Shall',
+      admin: ['Rivers-Shall'],
+      id: 'bf10183d04e69d2b0a9bc8605c9eb6f4',
+        language: 'zh-CN',
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

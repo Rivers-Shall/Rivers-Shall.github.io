@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://rivers-shall.github.io').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+<script data-ad-client="ca-pub-6100092033271048" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <meta name="description" content="这篇文章介绍了作者在参与一个golang日志系统的开发的时候，解决需要打印出执行日志打印操作时的业务函数名，业务文件名与所在行数的需求过程中，遇到的问题和解决方案">
+<meta name="keywords" content="golang">
+<meta property="og:type" content="article">
+<meta property="og:title" content="golang获取执行函数名，执行文件名与所在行数">
+<meta property="og:url" content="https://rivers-shall.github.io/2020/05/27/golang获取执行函数名，执行文件名与所在行数/index.html">
+<meta property="og:site_name" content="碧漾的自我">
+<meta property="og:description" content="这篇文章介绍了作者在参与一个golang日志系统的开发的时候，解决需要打印出执行日志打印操作时的业务函数名，业务文件名与所在行数的需求过程中，遇到的问题和解决方案">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-05-28T06:56:19.816Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="golang获取执行函数名，执行文件名与所在行数">
+<meta name="twitter:description" content="这篇文章介绍了作者在参与一个golang日志系统的开发的时候，解决需要打印出执行日志打印操作时的业务函数名，业务文件名与所在行数的需求过程中，遇到的问题和解决方案">
+
+<link rel="canonical" href="https://rivers-shall.github.io/2020/05/27/golang获取执行函数名，执行文件名与所在行数/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>golang获取执行函数名，执行文件名与所在行数 | 碧漾的自我</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129500136-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-129500136-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">碧漾的自我</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">beyond myself</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2020/05/27/golang获取执行函数名，执行文件名与所在行数/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/龙卷1.jpeg">
+      <meta itemprop="name" content="碧漾">
+      <meta itemprop="description" content="心中的自我永远也不能实现，所以才要鞭策现实的自我啊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="碧漾的自我">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          golang获取执行函数名，执行文件名与所在行数
+        </h2>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-27 09:19:50" itemprop="dateCreated datePublished" datetime="2020-05-27T09:19:50+08:00">2020-05-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-05-28 14:56:19" itemprop="dateModified" datetime="2020-05-28T14:56:19+08:00">2020-05-28</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这篇文章介绍了作者在参与一个golang日志系统的开发的时候，解决需要打印出执行<strong>日志打印操作</strong>时的<strong>业务函数名，业务文件名与所在行数</strong>的需求过程中，遇到的问题和解决方案</p>
+<a id="more"></a>
+<h2 id="需求场景"><a href="#需求场景" class="headerlink" title="需求场景"></a>需求场景</h2><p>在平日里使用日志的时候，一个好的日志系统，往往会打印出类似如下的信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;log_level&gt;:&lt;log_message&gt;:&lt;package_path&gt;/&lt;filename&gt;:&lt;line_no&gt;:&lt;function_name&gt;</span><br><span class="line">比如</span><br><span class="line">INFO:connect to sql:/users/admin/home/go/src/io/rivers/demoProject/main.go:45:io.rivers.demoProject.testFunction</span><br></pre></td></tr></table></figure>
+<p>这样子在打印出日志等级，日志消息的同时，输出业务逻辑所在的文件，行数，函数，对后期的bug排查，性能分析都有很大的帮助</p>
+<p>那么，如何在golang中实现这一功能呢？</p>
+<h2 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h2><p>golang的runtime包提供了与之相应的函数接口，主要是<code>runtime.Caller</code>和<code>runtime.FuncForPC</code></p>
+<p>先看一下二者的函数签名</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Caller</span><span class="params">(skip <span class="keyword">int</span>)</span> <span class="params">(pc <span class="keyword">uintptr</span>, file <span class="keyword">string</span>, line <span class="keyword">int</span>, ok <span class="keyword">bool</span>)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">func</span> <span class="title">FuncForPC</span><span class="params">(pc <span class="keyword">uintptr</span>)</span> *<span class="title">Func</span></span></span><br></pre></td></tr></table></figure>
+<p>单看函数签名就比较容易了解到:</p>
+<ul>
+<li><code>runtime.Caller</code>能够返回在函数栈中的PC(指令寄存器，可以认为存储了当前执行到了哪里)，所在的文件，所在文件的具体哪一行</li>
+<li><code>runtime.FuncForPC</code>能够根据给定的指令寄存器给出其所在的行数</li>
+</ul>
+<p>其中<code>runtime.FuncForPC</code>的参数比较容易理解，就是指指令寄存器，但是<code>runtime.Caller</code>的参数需要解释一下</p>
+<p>这里的<code>skip</code>指的是跳过多少个函数栈：</p>
+<ul>
+<li><code>skip == 0</code>，不跳过函数栈，返回当前函数PC，文件名，所在行</li>
+<li><code>skip == 1</code>，跳过当前函数栈，返回上层调用者<strong>调用当前函数时的PC</strong>，文件名，所在行</li>
+<li><code>skip == 2</code>，以此类推</li>
+</ul>
+<p>一般情况下这两个函数都是连在一起使用，如</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取上层调用者PC，文件名，所在行</span></span><br><span class="line">pc, codePath, codeLine, ok := runtime.Caller(<span class="number">1</span>)</span><br><span class="line"><span class="keyword">if</span> !ok&#123;</span><br><span class="line">    <span class="comment">// 不ok，函数栈用尽了</span></span><br><span class="line">    code = <span class="string">"-"</span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> = "-"</span></span><br><span class="line"><span class="function">&#125; <span class="title">else</span></span> &#123;</span><br><span class="line">    <span class="comment">// 拼接文件名与所在行</span></span><br><span class="line">    code = fmt.Sprintf(<span class="string">"%s:%d"</span>, codePath, codeLine)</span><br><span class="line">    <span class="comment">// 根据PC获取函数名</span></span><br><span class="line">    <span class="function"><span class="keyword">func</span> = <span class="title">runtime</span>.<span class="title">FuncForPC</span><span class="params">(pc)</span>.<span class="title">Name</span><span class="params">()</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
+<h2 id="实现重点与自动获取的优化"><a href="#实现重点与自动获取的优化" class="headerlink" title="实现重点与自动获取的优化"></a>实现重点与自动获取的优化</h2><p>可以看到，在我们使用<code>runtime.Caller</code>和<code>runtime.FuncForPC</code>这一组合击的时候，实际上的输入参数只有一个，那就是<code>runtime.Caller</code>的<code>skip</code>。</p>
+<p>如何确定<code>skip</code>呢？在实践中，我一般使用两种方式：</p>
+<ol>
+<li>写死</li>
+<li>尝试自动获取</li>
+</ol>
+<p>听起来第二种方法要比第一种方法好，但是事实上并不是这样的，在看完实现之后，大家就会明白了</p>
+<h3 id="将skip写死"><a href="#将skip写死" class="headerlink" title="将skip写死"></a>将<code>skip</code>写死</h3><p>这种方式是比较常见的，通常适用于设计时确定了调用层数的情况，以日志系统为例，我们现在要提供一个接口<code>log</code>，那么我知道外界肯定是要直接调用<code>log</code>的，我最终要打印的就是调用<code>log</code>的函数的文件名，所在行，函数名</p>
+<p>那么如果我是在<code>log</code>里使用<code>runtime.Caller</code>，那么我的<code>skip</code>就应该是<code>1</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">log</span><span class="params">(logLevel <span class="keyword">int</span>, logMessage <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">    <span class="comment">//....</span></span><br><span class="line">    pc, file, line, ok := runtime.Caller(<span class="number">1</span>)</span><br><span class="line">    <span class="comment">//....</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果我还做了封装，那么就要根据编写代码时的封装层数调整<code>skip</code>，比如</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">log</span><span class="params">(logLevel <span class="keyword">int</span>, logMessage <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">    <span class="comment">//....</span></span><br><span class="line">    logHelper(logLevel, logMessage)</span><br><span class="line">    <span class="comment">//....</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">logHelper</span><span class="params">(logLevel <span class="keyword">int</span>, logMessage <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">    <span class="comment">//....</span></span><br><span class="line">    logReal(logLevel, logMessage)</span><br><span class="line">    <span class="comment">//....</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">logReal</span><span class="params">(logLevel <span class="keyword">int</span>, logMessage <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    pc, file, line, ok := runtime.Caller(<span class="number">3</span>)</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述示例中，由于多了两层封装，所以要把<code>skip</code>更改为3</p>
+<h3 id="尝试自动获取"><a href="#尝试自动获取" class="headerlink" title="尝试自动获取"></a>尝试自动获取</h3><p>这次的尝试自动获取是我在编写日志系统时遇到的一个比较特殊的情况</p>
+<p>在上面说的<a href="#将skip写死">#将skip写死</a>中，其实我们有一个重要的前提，那就是</p>
+<blockquote>
+<p>业务函数<strong>全部</strong>直接调用日志接口<code>log</code></p>
+</blockquote>
+<p>但是这次在开发日志系统时，遇到了这样的场景:</p>
+<blockquote>
+<p>日志拥有接口<code>log1</code>和<code>log2</code>，<code>log2</code>调用<code>log1</code>，业务代码既可能调用<code>log2</code>，也可能直接调用<code>log1</code><br><code>log1</code>下层调用<code>runtime.Caller</code>和<code>runtime.FuncForPC</code>组合</p>
+</blockquote>
+<p>这种情况下，<code>skip</code>是不可能写死在源代码里的，于是采取的解决方案如下</p>
+<blockquote>
+<p>由于日志系统在一个独立的包里，所以在<code>FuncForPC</code>将函数名取出来以后，判断是否是日志包中的函数，如果是，就增加<code>skip</code>的值</p>
+</blockquote>
+<p>实现:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> skip := <span class="number">1</span>; <span class="literal">true</span>; skip++ &#123;</span><br><span class="line">    pc, codePath, codeLine, ok := runtime.Caller(skip)</span><br><span class="line">    <span class="keyword">if</span> !ok&#123;</span><br><span class="line">        <span class="comment">// 不ok，函数栈用尽了</span></span><br><span class="line">        auto.Code = prevCode</span><br><span class="line">        auto.Func = prevFunc</span><br><span class="line">        <span class="keyword">return</span> auto</span><br><span class="line">    &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">        prevCode = fmt.Sprintf(<span class="string">"%s:%d"</span>, codePath, codeLine)</span><br><span class="line">        prevFunc = runtime.FuncForPC(pc).Name()</span><br><span class="line">        auto.Code = prevCode</span><br><span class="line">        auto.Func = prevFunc</span><br><span class="line">        <span class="keyword">if</span> !strings.Contains(prevFunc, <span class="string">"&lt;package_name&gt;"</span>) &#123;</span><br><span class="line">            <span class="comment">// 找到包外的函数了</span></span><br><span class="line">            <span class="keyword">return</span> auto</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就算是一个能够解决问题的方案了</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/golang/" rel="tag"># golang</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/25/Vue-Axios自动更新/" rel="prev" title="Vue+Axios自动更新">
+      <i class="fa fa-chevron-left"></i> Vue+Axios自动更新
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/27/Vue中为对象添加字段/" rel="next" title="Vue中为对象添加字段">
+      Vue中为对象添加字段 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#需求场景"><span class="nav-number">1.</span> <span class="nav-text">需求场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现方式"><span class="nav-number">2.</span> <span class="nav-text">实现方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现重点与自动获取的优化"><span class="nav-number">3.</span> <span class="nav-text">实现重点与自动获取的优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#将skip写死"><span class="nav-number">3.1.</span> <span class="nav-text">将skip写死</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#尝试自动获取"><span class="nav-number">3.2.</span> <span class="nav-text">尝试自动获取</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="碧漾" src="/images/龙卷1.jpeg">
+  <p class="site-author-name" itemprop="name">碧漾</p>
+  <div class="site-description" itemprop="description">心中的自我永远也不能实现，所以才要鞭策现实的自我啊</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:riversshall@qq.com" title="E-Mail → mailto:riversshall@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → /atom.xml"><i class="fa fa-fw fa-rss"></i>RSS</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">碧漾</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'e4755b6b14b374b3c19b',
+      clientSecret: 'e84c0b701bf42f9e8a2d98009f3fe3044b611529',
+      repo: 'blog-comment',
+      owner: 'Rivers-Shall',
+      admin: ['Rivers-Shall'],
+      id: '51689753bd60bfcd2bf7627e93ef9e03',
+        language: 'zh-CN',
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

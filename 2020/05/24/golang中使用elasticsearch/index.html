@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://rivers-shall.github.io').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+<script data-ad-client="ca-pub-6100092033271048" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <meta name="description" content="这是一篇介绍如何利用golang第三方库https://github.com/olivere/elastic进行elasticsearch的操作的文章。文章中并不会介绍非常详细的API，更侧重于作者在工作中的使用经验和查文档经验。文章中主要包括以下内容：  作者认为比较重要的API设计理念以及文档查阅方式 作者在工作中使用到的elasticsearch的实例，包括从接到需求，查阅文档，并实现的过程">
+<meta name="keywords" content="golang,elasticsearch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="golang中使用elasticsearch">
+<meta property="og:url" content="https://rivers-shall.github.io/2020/05/24/golang中使用elasticsearch/index.html">
+<meta property="og:site_name" content="碧漾的自我">
+<meta property="og:description" content="这是一篇介绍如何利用golang第三方库https://github.com/olivere/elastic进行elasticsearch的操作的文章。文章中并不会介绍非常详细的API，更侧重于作者在工作中的使用经验和查文档经验。文章中主要包括以下内容：  作者认为比较重要的API设计理念以及文档查阅方式 作者在工作中使用到的elasticsearch的实例，包括从接到需求，查阅文档，并实现的过程">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-05-28T06:56:19.816Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="golang中使用elasticsearch">
+<meta name="twitter:description" content="这是一篇介绍如何利用golang第三方库https://github.com/olivere/elastic进行elasticsearch的操作的文章。文章中并不会介绍非常详细的API，更侧重于作者在工作中的使用经验和查文档经验。文章中主要包括以下内容：  作者认为比较重要的API设计理念以及文档查阅方式 作者在工作中使用到的elasticsearch的实例，包括从接到需求，查阅文档，并实现的过程">
+
+<link rel="canonical" href="https://rivers-shall.github.io/2020/05/24/golang中使用elasticsearch/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>golang中使用elasticsearch | 碧漾的自我</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129500136-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-129500136-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">碧漾的自我</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">beyond myself</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2020/05/24/golang中使用elasticsearch/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/龙卷1.jpeg">
+      <meta itemprop="name" content="碧漾">
+      <meta itemprop="description" content="心中的自我永远也不能实现，所以才要鞭策现实的自我啊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="碧漾的自我">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          golang中使用elasticsearch
+        </h2>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-24 21:47:20" itemprop="dateCreated datePublished" datetime="2020-05-24T21:47:20+08:00">2020-05-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-05-28 14:56:19" itemprop="dateModified" datetime="2020-05-28T14:56:19+08:00">2020-05-28</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这是一篇介绍如何利用golang第三方库<a href="https://github.com/olivere/elastic" target="_blank" rel="noopener">https://github.com/olivere/elastic</a>进行elasticsearch的操作的文章。<br>文章中并不会介绍非常详细的API，更侧重于作者在工作中的使用经验和查文档经验。文章中主要包括以下内容：</p>
+<ol>
+<li>作者认为比较重要的API设计理念以及文档查阅方式</li>
+<li>作者在工作中使用到的elasticsearch的实例，包括从接到需求，查阅文档，并实现的过程</li>
+</ol>
+<a id="more"></a>
+<h2 id="API设计理念思考"><a href="#API设计理念思考" class="headerlink" title="API设计理念思考"></a>API设计理念思考</h2><h3 id="API的分类"><a href="#API的分类" class="headerlink" title="API的分类"></a>API的分类</h3><p>在使用elasticsearch的golang Client过程中，我觉得可以将olivere/elastic的常用API分作三类：</p>
+<ol>
+<li>面向elasticsearch的metadata的Service</li>
+<li>面向elasticsearch的data的Service</li>
+<li>面向Query</li>
+</ol>
+<p>而这三类分别对应了对elasticsearch的不同类别的操作：</p>
+<ol>
+<li>面向elasticsearch的metadata的Service，主要是对elasticsearch的metadata进行查询和操作，比如<ul>
+<li>配置elasticsearch</li>
+<li>查询elasticsearch的状态，比如集群状态，节点数目等</li>
+</ul>
+</li>
+<li>面向elasticsearch的data的Service，住哟是对elasticsearch内的数据和数据格式进行操作<ol>
+<li>elasticsearch中的index的metadata进行操作，比如<ol>
+<li>查询是否存在某个index</li>
+<li>创建并配置index</li>
+</ol>
+</li>
+<li>elasticsearch中的index下的document的增删改操作</li>
+</ol>
+</li>
+<li>面向Query，主要是对index下的document的查询操作</li>
+</ol>
+<h3 id="分类在代码中的体现"><a href="#分类在代码中的体现" class="headerlink" title="分类在代码中的体现"></a>分类在代码中的体现</h3><p>首先需要说明，在olivere/elastic的所有操作都是依靠生成一个<code>XXXService</code>对象然后<code>XXXService.Do(ctx)</code>来实现的，这里将他们分成面向Service和面向Query只是表示后者我们的主要精力都会集中在构造Query上</p>
+<h4 id="面向elasticsearch的metadata的Service"><a href="#面向elasticsearch的metadata的Service" class="headerlink" title="面向elasticsearch的metadata的Service"></a>面向elasticsearch的metadata的Service</h4><p>面向elasticsearch的metadata的Service，一般是通过建立连接的ESClient，新建出查询或者操作所需的Service，而后进行操作的模式</p>
+<p>比如如下，查询集群内es节点数</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 建立连接的Client</span></span><br><span class="line">esClient, _ := elastic.NewClient()</span><br><span class="line"><span class="comment">// 新建出用于操作的Service</span></span><br><span class="line">clusterHealthClient := elastic.NewClusterHealthService(esClient)</span><br><span class="line"><span class="comment">// 查询，拿到结果</span></span><br><span class="line">result, _:= clusterHealthClient.Do(context.Background())</span><br><span class="line">fmt.Println(result.NumberOfNodes)</span><br></pre></td></tr></table></figure>
+<h4 id="面向elasticsearch的data的Service"><a href="#面向elasticsearch的data的Service" class="headerlink" title="面向elasticsearch的data的Service"></a>面向elasticsearch的data的Service</h4><p>面向elasticsearch的data的Service，一般是通过建立连接的ESClient的成员函数直接取得Service，而后进行操作</p>
+<p>比如如下，新建索引</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Create a new index.</span></span><br><span class="line">mapping := <span class="string">`&#123;</span></span><br><span class="line"><span class="string">    "settings":&#123;</span></span><br><span class="line"><span class="string">        "number_of_shards":1,</span></span><br><span class="line"><span class="string">        "number_of_replicas":0</span></span><br><span class="line"><span class="string">    &#125;,</span></span><br><span class="line"><span class="string">    "mappings":&#123;</span></span><br><span class="line"><span class="string">        "properties":&#123;</span></span><br><span class="line"><span class="string">            "tags":&#123;</span></span><br><span class="line"><span class="string">                "type":"keyword"</span></span><br><span class="line"><span class="string">            &#125;,</span></span><br><span class="line"><span class="string">            "location":&#123;</span></span><br><span class="line"><span class="string">                "type":"geo_point"</span></span><br><span class="line"><span class="string">            &#125;,</span></span><br><span class="line"><span class="string">            "suggest_field":&#123;</span></span><br><span class="line"><span class="string">                "type":"completion"</span></span><br><span class="line"><span class="string">            &#125;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;`</span></span><br><span class="line">ctx := context.Background()</span><br><span class="line">createIndex, _ := esClient.CreateIndex(<span class="string">"twitter"</span>).BodyString(mapping).Do(ctx)</span><br><span class="line">fmt.Println(createIndex.Index)</span><br></pre></td></tr></table></figure>
+<h4 id="面向Query"><a href="#面向Query" class="headerlink" title="面向Query"></a>面向Query</h4><p>面向Query，一般是先新建出Query，而后通过<code>client.Search().Index(index).Query(query).Do(ctx)</code>的方式执行查询操作</p>
+<p>比如如下，查询上一个构造的索引中，<code>tags</code>字段含有<code>test</code>的document</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">query := elastic.NewBoolQuery()</span><br><span class="line">query = query.Must(elastic.NewTermQuery(<span class="string">"tags"</span>, <span class="string">"test"</span>))</span><br><span class="line">result, _ := esClient.Search().Index(<span class="string">"twitter"</span>).Query(query).Do(context.Background())</span><br></pre></td></tr></table></figure>
+<h2 id="API文档的查询方法"><a href="#API文档的查询方法" class="headerlink" title="API文档的查询方法"></a>API文档的查询方法</h2><p>查询olivere/elastic的文档，主要有三个来源：</p>
+<ol>
+<li>项目Wiki <a href="https://github.com/olivere/elastic/wiki" target="_blank" rel="noopener">https://github.com/olivere/elastic/wiki</a></li>
+<li>源代码 <a href="https://github.com/olivere/elastic" target="_blank" rel="noopener">https://github.com/olivere/elastic</a></li>
+<li>elasticsearch官方文档 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html" target="_blank" rel="noopener">https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html</a></li>
+</ol>
+<p>这三者各有特点：</p>
+<ol>
+<li>项目Wiki<ul>
+<li>优点：简单直接，并且会给出相应的操作的示例代码，上手很快</li>
+<li>缺点：示例较简单，且不全面，面对复杂逻辑/特定逻辑很可能缺乏指导性，或者找不到相关文档</li>
+</ul>
+</li>
+<li>源代码<ul>
+<li>优点：全面而且本质的东西，掌握了源代码就掌握了一切</li>
+<li>缺点：复杂，费力，考虑投入产出比，几乎绝无必要源码级掌握(除非想成为库的开发者)</li>
+</ul>
+</li>
+<li>elasticsearch官方文档<ul>
+<li>优点：比较齐全的同时仍然是可读性较高的文档，难度在项目Wiki和源代码之间</li>
+<li>缺点：没有直接对应到olivere/elastic的API上，找到elasticsearch的API之后，要回头再找olivere/elastic的API</li>
+</ul>
+</li>
+</ol>
+<p>一般的查询方式如下：</p>
+<ol>
+<li>首先明确需求，即到底需要获得elasticsearch的什么信息或者对其进行什么操作</li>
+<li>明确需求后先查阅Wiki，如果有相应的条目，可用的就可以直接用了</li>
+<li>Wiki中找不到，那就按照<a href="#api设计理念思考">api设计理念思考</a>中描述的进行分类</li>
+<li>分类后有两条路径<ol>
+<li>源代码中寻找对应的Service或者Query接口，找到后去elasticsearch文档验证</li>
+<li>elasticsearch文档中寻找对应的查询接口，找到后去olivere/elastic中找对应的接口</li>
+</ol>
+</li>
+</ol>
+<p>当然，合理利用其他资源作为文档入口也是有必要的(或许这才是很多人的首选)：</p>
+<ol>
+<li>Stack Overflow，启动！</li>
+<li>输入关键字查询，能找到合适的问答，就直接采用，不能就返回上述的一般查询方式</li>
+</ol>
+<h2 id="使用实例与解决过程"><a href="#使用实例与解决过程" class="headerlink" title="使用实例与解决过程"></a>使用实例与解决过程</h2><h3 id="查询集群的健康状态"><a href="#查询集群的健康状态" class="headerlink" title="查询集群的健康状态"></a>查询集群的健康状态</h3><p>过程：</p>
+<ol>
+<li>查阅Wiki，没有</li>
+<li>查阅源代码，cluster为关键字查找，找到cluster_health.go，前往注释中指定的elasticsearch文档<a href="http://www.elastic.co/guide/en/elasticsearch/reference/7.0/cluster-health.html" target="_blank" rel="noopener">http://www.elastic.co/guide/en/elasticsearch/reference/7.0/cluster-health.html</a>验证想法</li>
+<li>想法验证成功，编程</li>
+</ol>
+<h3 id="实现text类型的字段的模糊查找"><a href="#实现text类型的字段的模糊查找" class="headerlink" title="实现text类型的字段的模糊查找"></a>实现text类型的字段的模糊查找</h3><p>过程：</p>
+<ol>
+<li>查找Wiki，没有</li>
+<li>源代码，elasticsearch文档没有“模糊查找”相关的部分</li>
+<li>stack overflow 搜索 match part of text，找到使用正则表达式查询RegexQuery的方法</li>
+<li>返回elasticsearch文档验证，验证成功</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/golang/" rel="tag"># golang</a>
+              <a href="/tags/elasticsearch/" rel="tag"># elasticsearch</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/10/看不清的答案/" rel="prev" title="看不清的答案">
+      <i class="fa fa-chevron-left"></i> 看不清的答案
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/25/Vue-Axios自动更新/" rel="next" title="Vue+Axios自动更新">
+      Vue+Axios自动更新 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#API设计理念思考"><span class="nav-number">1.</span> <span class="nav-text">API设计理念思考</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#API的分类"><span class="nav-number">1.1.</span> <span class="nav-text">API的分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分类在代码中的体现"><span class="nav-number">1.2.</span> <span class="nav-text">分类在代码中的体现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#面向elasticsearch的metadata的Service"><span class="nav-number">1.2.1.</span> <span class="nav-text">面向elasticsearch的metadata的Service</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#面向elasticsearch的data的Service"><span class="nav-number">1.2.2.</span> <span class="nav-text">面向elasticsearch的data的Service</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#面向Query"><span class="nav-number">1.2.3.</span> <span class="nav-text">面向Query</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#API文档的查询方法"><span class="nav-number">2.</span> <span class="nav-text">API文档的查询方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用实例与解决过程"><span class="nav-number">3.</span> <span class="nav-text">使用实例与解决过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#查询集群的健康状态"><span class="nav-number">3.1.</span> <span class="nav-text">查询集群的健康状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现text类型的字段的模糊查找"><span class="nav-number">3.2.</span> <span class="nav-text">实现text类型的字段的模糊查找</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="碧漾" src="/images/龙卷1.jpeg">
+  <p class="site-author-name" itemprop="name">碧漾</p>
+  <div class="site-description" itemprop="description">心中的自我永远也不能实现，所以才要鞭策现实的自我啊</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:riversshall@qq.com" title="E-Mail → mailto:riversshall@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → /atom.xml"><i class="fa fa-fw fa-rss"></i>RSS</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">碧漾</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'e4755b6b14b374b3c19b',
+      clientSecret: 'e84c0b701bf42f9e8a2d98009f3fe3044b611529',
+      repo: 'blog-comment',
+      owner: 'Rivers-Shall',
+      admin: ['Rivers-Shall'],
+      id: '4f78251d3bc9b2196a698c661c15041d',
+        language: 'zh-CN',
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

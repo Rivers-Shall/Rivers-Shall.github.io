@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://rivers-shall.github.io').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+<script data-ad-client="ca-pub-6100092033271048" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <meta name="description" content="Intropstree is a program in the package psmisc and can be downloaded on the site of Ubuntu packages.  And now it is used as a Minilab(M1) of OS Course in NJU. According to the handout of M1, I only ne">
+<meta name="keywords" content="OS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJU-OS-M1-pstree">
+<meta property="og:url" content="https://rivers-shall.github.io/2019/03/05/NJU-OS-M1-pstree/index.html">
+<meta property="og:site_name" content="碧漾的自我">
+<meta property="og:description" content="Intropstree is a program in the package psmisc and can be downloaded on the site of Ubuntu packages.  And now it is used as a Minilab(M1) of OS Course in NJU. According to the handout of M1, I only ne">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://rivers-shall.github.io/2019/03/05/NJU-OS-M1-pstree/data-structure/data-structure.jpg">
+<meta property="og:image" content="https://rivers-shall.github.io/2019/03/05/NJU-OS-M1-pstree/wrong-print/wrong-print.jpg">
+<meta property="og:image" content="https://rivers-shall.github.io/2019/03/05/NJU-OS-M1-pstree/right-print/right-print.jpg">
+<meta property="og:updated_time" content="2020-05-28T06:56:19.804Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NJU-OS-M1-pstree">
+<meta name="twitter:description" content="Intropstree is a program in the package psmisc and can be downloaded on the site of Ubuntu packages.  And now it is used as a Minilab(M1) of OS Course in NJU. According to the handout of M1, I only ne">
+<meta name="twitter:image" content="https://rivers-shall.github.io/2019/03/05/NJU-OS-M1-pstree/data-structure/data-structure.jpg">
+
+<link rel="canonical" href="https://rivers-shall.github.io/2019/03/05/NJU-OS-M1-pstree/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>NJU-OS-M1-pstree | 碧漾的自我</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129500136-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-129500136-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">碧漾的自我</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">beyond myself</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2019/03/05/NJU-OS-M1-pstree/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/龙卷1.jpeg">
+      <meta itemprop="name" content="碧漾">
+      <meta itemprop="description" content="心中的自我永远也不能实现，所以才要鞭策现实的自我啊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="碧漾的自我">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          NJU-OS-M1-pstree
+        </h2>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-05 22:14:41" itemprop="dateCreated datePublished" datetime="2019-03-05T22:14:41+08:00">2019-03-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-05-28 14:56:19" itemprop="dateModified" datetime="2020-05-28T14:56:19+08:00">2020-05-28</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Intro"><a href="#Intro" class="headerlink" title="Intro"></a>Intro</h2><p><code>pstree</code> is a program in the package <code>psmisc</code> and can be downloaded on <a href="https://packages.ubuntu.com/bionic/psmisc" target="_blank" rel="noopener">the site of Ubuntu packages</a>.  And now it is used as a Minilab(M1) of OS Course in NJU.</p>
+<p>According to the handout of M1, I only need to implement a simplified version of <code>pstree</code>, including option <code>Vpn</code> and the corresponding long options.  To accomplish the target, the whole program can be divided into three parts:</p>
+<ol>
+<li>Read and process the options</li>
+<li>Read the info of processes(pid, ppid(pid of the parent process), name)</li>
+<li>Save the info of processes and build the data structure of them</li>
+<li>Print the processes as a tree</li>
+</ol>
+<p>Actually, the 2nd and 3rd parts are done simultaneously.</p>
+<a id="more"></a>
+<h2 id="How-to-read-and-process-the-options"><a href="#How-to-read-and-process-the-options" class="headerlink" title="How to read and process the options"></a>How to read and process the options</h2><p>Certainly, I can use fancy pointer operations to deal with options.  But that is very error-prone and time-consuming.  And it is unworthy since Linux already has a library function <code>getopt_long</code> to deal with both the short and long options.</p>
+<p><code>man getopt_long</code> or reading the standard source code to know more.</p>
+<h2 id="How-to-read-the-info-of-processes"><a href="#How-to-read-the-info-of-processes" class="headerlink" title="How to read the info of processes"></a>How to read the info of processes</h2><p>There are many ways to read the info.  After reading the standard code, I used a similar way to do it—Use <em>directory stream</em>* to get pid and process the status file <code>stat</code> of every process to get name and ppid.</p>
+<p>*directory stream: a stream of <code>struct dirent *</code> objects, each one points to an object in the directory on which the directory stream is created.</p>
+<h3 id="Use-directory-stream-to-get-pid"><a href="#Use-directory-stream-to-get-pid" class="headerlink" title="Use directory stream to get pid"></a>Use directory stream to get pid</h3><p>Why can we do that?  Well, in Linux, <em>Everything is file</em>.  So the info of all processes are stored under “/proc/“ as files.  </p>
+<p>Since every process has a unique pid, Linux uses the pid as the name of the directory under “/proc/“ to store unique info of every process.  For example, the info of the process with pid 1711 is stored in “/proc/1711/“.  </p>
+<p>And there is no other file or directory whose name is number under “/proc/“.  So we are free to use directory stream to process every object under “/proc/“ and once we get an object whose name is a number, we know the number is pid.</p>
+<h4 id="A-few-details"><a href="#A-few-details" class="headerlink" title="A few details"></a>A few details</h4><ul>
+<li><p><code>DIR *opendir(const char *name);</code> returns a <code>DIR *</code> as a directory stream on <code>name</code>.</p>
+</li>
+<li><p><code>struct dirent *readdir(DIR *dirstream);</code> returns a <code>struct dirent *</code>, if there is more and returns <code>NULL</code> if the directory stream is empty.</p>
+</li>
+<li><p>the <code>d_name</code> componemt of <code>struct dirent</code> stores the name of the <code>struct dirent</code>, which in our case is the pid.</p>
+</li>
+<li><p><code>d_name</code> is a string, but we can use <code>strtol</code> to transform it into number.  And if <code>strtol</code> failed, we know it is not the pid-named directory and can be ignored for good.</p>
+</li>
+</ul>
+<p><code>man opendir readdir strtol</code> to know more, especially the error-detection mechanisms for these library functions.</p>
+<h4 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h4><p>The code below also includes some error-detection mechanisms.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PROC_DIR <span class="meta-string">"/proc"</span></span></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* open a directory stream on PROC_DIR */</span></span><br><span class="line">  DIR *procDir = opendir(PROC_DIR);</span><br><span class="line">  <span class="keyword">if</span> (procDir == <span class="literal">NULL</span>) &#123;</span><br><span class="line">    perror(PROC_DIR);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">dirent</span> *<span class="title">pidDir</span>;</span></span><br><span class="line">  errno = <span class="number">0</span>; <span class="comment">// preset to detect error in readdir</span></span><br><span class="line">  <span class="keyword">while</span> ((pidDir = readdir(procDir)) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">    <span class="keyword">char</span> *endptr;</span><br><span class="line">    <span class="keyword">pid_t</span> pid = strtol(pidDir-&gt;d_name, &amp;endptr, <span class="number">10</span>);</span><br><span class="line">    <span class="keyword">if</span> (pidDir-&gt;d_name[<span class="number">0</span>] != <span class="string">'\0'</span> &amp;&amp; *endptr == <span class="string">'\0'</span>) &#123; <span class="comment">// condition for valid number, from `man strtol`</span></span><br><span class="line">      ...</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (errno != <span class="number">0</span>) &#123;</span><br><span class="line">    perror(<span class="string">"readdir"</span>);</span><br><span class="line">	<span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Use-stat-file-to-get-name-and-ppid"><a href="#Use-stat-file-to-get-name-and-ppid" class="headerlink" title="Use stat file to get name and ppid"></a>Use <code>stat</code> file to get name and ppid</h3><p>As we said before, all the info of a process is stored under “/proc/[pid]”.  In particular, the status info is stored in “/proc/[pid]/stat” as a regular text file.  The first four words in the text file are pid, <strong>process name in parentheses</strong>, status and ppid.</p>
+<p>Since the name is surrounded in parentheses, we only need to locate the leftmost ‘(‘ and the rightmost ‘)’. (Search for the leftmost ‘(‘ or rightmost ‘)’ is wrong because the name itself may have parentheses in it.)</p>
+<p>Once we find the rightmost ‘)’, we can start from it to read the ppid.  The ‘status’ is a single capital character and can be ignored.</p>
+<h4 id="A-few-details-1"><a href="#A-few-details-1" class="headerlink" title="A few details"></a>A few details</h4><ul>
+<li><p>Use <code>strchr</code> to find leftmost ‘(‘ and <code>strrchr</code> to locate the rightmost ‘)’</p>
+</li>
+<li><p>By using <a href="https://stackoverflow.com/questions/11109750/what-is-the-difference-between-cc-and-c-as-a-format-specifier-to-scanf" target="_blank" rel="noopener">assignment-surppressing character</a> in <code>sscanf</code>, we can ignore ‘status’ info character.</p>
+</li>
+</ul>
+<h4 id="Code-1"><a href="#Code-1" class="headerlink" title="Code"></a>Code</h4><p><code>add_proc</code> is for building the data structure.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sprintf</span>(path, <span class="string">"%s/%d/stat"</span>, PROC_DIR, pid);</span><br><span class="line">FILE *fp = fopen(path, <span class="string">"r"</span>);</span><br><span class="line"><span class="keyword">if</span> (fp != <span class="literal">NULL</span>) &#123;</span><br><span class="line">  <span class="keyword">char</span> readBuf[BUFSIZ + <span class="number">1</span>];</span><br><span class="line">  <span class="keyword">size_t</span> size = fread(readBuf, <span class="number">1</span>, BUFSIZ, fp);</span><br><span class="line">  readBuf[size] = <span class="string">'\0'</span>; <span class="comment">// terminator</span></span><br><span class="line">  <span class="keyword">if</span> (ferror(fp) == <span class="number">0</span>) &#123;</span><br><span class="line">  <span class="keyword">char</span> *comm;</span><br><span class="line">  <span class="keyword">char</span> *rest;</span><br><span class="line">  <span class="keyword">pid_t</span> ppid;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* construct comm str and</span></span><br><span class="line"><span class="comment">  handle threads */</span></span><br><span class="line">  <span class="keyword">if</span> ((comm = <span class="built_in">strchr</span>(readBuf, <span class="string">'('</span>)) &amp;&amp;</span><br><span class="line">    (rest = <span class="built_in">strrchr</span>(readBuf, <span class="string">')'</span>))) &#123;</span><br><span class="line">    ++comm;</span><br><span class="line">    *rest = <span class="string">'\0'</span>;</span><br><span class="line"></span><br><span class="line">    rest += <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span> ((<span class="built_in">sscanf</span>(rest, <span class="string">"%*c %d"</span>, &amp;ppid)) == <span class="number">1</span>) &#123;</span><br><span class="line">      add_proc(comm, pid, ppid, <span class="number">0</span>);</span><br><span class="line">	  </span><br><span class="line">	  <span class="comment">/* handle threads */</span></span><br><span class="line">	  ....</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The code to handle threads is very similar to the code to handle processes.  Threads info is stored in “/proc/[pid]/task/[tid]”.  And its status info is stored in “/proc/[pid]/task/[tid]/stat”.</p>
+<h2 id="How-to-save-the-info-and-build-the-data-structure"><a href="#How-to-save-the-info-and-build-the-data-structure" class="headerlink" title="How to save the info and build the data structure"></a>How to save the info and build the data structure</h2><p>The first thing we need to do is design the data structure to represent a process.  After that, we may use a convenient way to save it while reading it from part 2.</p>
+<h3 id="The-PROC-struct"><a href="#The-PROC-struct" class="headerlink" title="The PROC struct"></a>The <code>PROC</code> struct</h3><p>Since we need to print the <code>name</code>, <code>pid</code> of a process, these two components must be in <code>PROC</code> struct.  But the rest is hard to say.  The final result is a tree, so we may build a real tree in the computer, with every node being a <code>PROC</code> struct.  </p>
+<p>But after reading the standard source code, I found a better way to represent the processes and the relation between them.  That is, use a linked list of <code>PROC</code> to store all the processes and the order does not matter.  However, in every <code>PROC</code> struct, we have a linked list of <code>PROC *</code>, of which each cell points to a child process.</p>
+<p>It is like this:<br><img src="data-structure/data-structure.jpg" alt=""></p>
+<p>So the <code>PROC</code> and <code>CHILD</code> definition should be:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">proc</span> &#123;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">proc</span> *<span class="title">next</span>;</span> <span class="comment">// next proc in the list</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">proc</span> *<span class="title">parent</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">child</span> *<span class="title">children</span>;</span></span><br><span class="line">  <span class="keyword">pid_t</span> pid;</span><br><span class="line">  <span class="keyword">char</span> comm[COMM_LEN + <span class="number">2</span> + <span class="number">1</span> + PID_LEN]; <span class="comment">// 1 for '\0', 2 for threads brackets, 10 for the pid</span></span><br><span class="line">  <span class="keyword">char</span> isThread;</span><br><span class="line">&#125; PROC;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">child</span> &#123;</span></span><br><span class="line">  <span class="keyword">const</span> PROC *proc;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">child</span> *<span class="title">next</span>;</span> <span class="comment">// next pointer to proc in the list of child</span></span><br><span class="line">&#125; CHILD;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Build-the-whole-data-structure"><a href="#Build-the-whole-data-structure" class="headerlink" title="Build the whole data structure"></a>Build the whole data structure</h3><p>Now that we have the definition of structs, we may proceed to figure out how to build the data structure.  One way to do it is:</p>
+<ol>
+<li>read the info of all the processes, build the <code>PROC</code> linked list</li>
+<li>traverse the <code>PROC</code> list again and build parent-child relation(<code>CHILD</code> list of every proc) according to the ppid of every <code>PROC</code>.</li>
+</ol>
+<p>Note that when we first add a <code>PROC</code>, we may not be able to find its parent because it may have not been added to the <code>PROC</code> list.  But after reading the standard source code, there is another way:</p>
+<ol>
+<li>When we add a <code>PROC</code> whose parent is not in the <code>PROC</code> list, we add the parent <code>PROC</code> into the list.  Even though we don’t know the name of the parent <code>PROC</code>, we know its pid(i.e., ppid of current process) and that is enough because we search <code>PROC</code> by pid, which is unique for every process.</li>
+<li>When we try to add a <code>PROC</code>, we first check whether it is added by its children.  If it is, we rename it.  Otherwise we add it.</li>
+</ol>
+<p>Both of the ways are effective.  And they are equally (in)efficient for having $O(n^2)$ time complexity.(it is OK because we normally have &lt;1000 processes in out system.)  The choice is up to you.  I believe the second one involves some kind of cyclic processing, which is neat.  Of course, someone may claim it is error-prone and confusing.  But as I said, it is up to you.</p>
+<h4 id="Code-2"><a href="#Code-2" class="headerlink" title="Code"></a>Code</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">PROC *<span class="title">add_proc</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *comm, <span class="keyword">pid_t</span> pid, <span class="keyword">pid_t</span> ppid, <span class="keyword">char</span> isThread)</span> </span>&#123;</span><br><span class="line">  <span class="comment">/* add &#123;&#125; to comm if it is a thread */</span></span><br><span class="line">  <span class="keyword">char</span> *real_comm = (<span class="keyword">char</span> *) <span class="built_in">malloc</span>(<span class="built_in">strlen</span>(comm) + <span class="number">2</span> + <span class="number">1</span>); <span class="comment">// 2 for '&#123;&#125;', 1 for '\0'</span></span><br><span class="line">  <span class="keyword">if</span> (isThread) &#123;</span><br><span class="line">    <span class="built_in">sprintf</span>(real_comm, <span class="string">"&#123;%s&#125;"</span>, comm);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">strcpy</span>(real_comm, comm);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  PROC *<span class="keyword">this</span>;</span><br><span class="line">  <span class="keyword">if</span> ((<span class="keyword">this</span> = find_proc(pid)) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">    <span class="comment">/* already in the list, probably </span></span><br><span class="line"><span class="comment">       because of the adding-parent process */</span></span><br><span class="line">    rename_proc(<span class="keyword">this</span>, real_comm);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">/* not in the list */</span></span><br><span class="line">    <span class="keyword">this</span> = new_proc(real_comm, pid);</span><br><span class="line">    <span class="keyword">this</span>-&gt;next = <span class="built_in">list</span>;</span><br><span class="line">    <span class="built_in">list</span> = <span class="keyword">this</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* add the parent */</span></span><br><span class="line">  PROC *parent;</span><br><span class="line">  <span class="keyword">if</span> ((parent = find_proc(ppid)) == <span class="literal">NULL</span>) &#123;</span><br><span class="line">    parent = new_proc(<span class="string">"?"</span>, ppid);</span><br><span class="line">    parent-&gt;next = <span class="built_in">list</span>;</span><br><span class="line">    <span class="built_in">list</span> = parent;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">this</span>-&gt;parent = parent;</span><br><span class="line">  add_child(parent, <span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">free</span>(real_comm);</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="How-to-print-the-processes-as-a-tree"><a href="#How-to-print-the-processes-as-a-tree" class="headerlink" title="How to print the processes as a tree"></a>How to print the processes as a tree</h2><p>The simple answer is <em>recursion</em>.  Normally when it comes to problems about tree, we came up with some recursion algorithm.  And this is a simple one.  To print the tree, we need to:</p>
+<ol>
+<li>print the root process</li>
+<li>print the tree rooted at children processes</li>
+</ol>
+<p>But someone thinks that the 2nd step is like this:<br><img src="wrong-print/wrong-print.jpg" alt="wrong-print"></p>
+<p>It is wrong.  Actually, it is like this:<br><img src="right-print/right-print.jpg" alt="right-print"></p>
+<p>That is why I need to add an argument <code>indent</code> to <code>print_proc</code>.</p>
+<p>Code:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">formatter</span> &#123;</span></span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">char</span> *single;</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">char</span> *first;</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">char</span> *branch;</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">char</span> *vertical;</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">char</span> *last;</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">char</span> *blank;</span><br><span class="line">&#125; FORMAT;</span><br><span class="line"></span><br><span class="line">FORMAT formatter = &#123;</span><br><span class="line">		    <span class="string">"---"</span>, <span class="string">"-+-"</span>, <span class="string">" |-"</span>, <span class="string">" | "</span>, <span class="string">" `-"</span>, <span class="string">"   "</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print_tree</span><span class="params">(<span class="keyword">const</span> PROC *root, <span class="keyword">const</span> <span class="keyword">char</span> *indent)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">char</span> *comm = (<span class="keyword">char</span> *) <span class="built_in">malloc</span>(<span class="built_in">strlen</span>(root-&gt;comm) + <span class="number">10</span>);</span><br><span class="line">  <span class="keyword">if</span> (showPid) &#123;</span><br><span class="line">    <span class="built_in">sprintf</span>(comm, <span class="string">"%s(%d)"</span>, root-&gt;comm, root-&gt;pid);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">strcpy</span>(comm, root-&gt;comm);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"%s"</span>, comm);</span><br><span class="line">  <span class="keyword">char</span> *new_indent = (<span class="keyword">char</span> *) <span class="built_in">malloc</span>(<span class="built_in">strlen</span>(indent) + <span class="built_in">strlen</span>(comm) + <span class="number">3</span> + <span class="number">1</span> + <span class="number">10</span>); <span class="comment">// 3 for formatter, 1 for terminator</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (root-&gt;children == <span class="literal">NULL</span>) &#123; <span class="comment">// no children</span></span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">""</span>);</span><br><span class="line">    <span class="built_in">free</span>(new_indent);</span><br><span class="line">    <span class="built_in">free</span>(comm);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (root-&gt;children-&gt;next == <span class="literal">NULL</span>) &#123; <span class="comment">// one child</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%s"</span>, formatter.single);</span><br><span class="line">    <span class="built_in">sprintf</span>(new_indent, <span class="string">"%s%s%*s"</span>, indent, formatter.blank, (<span class="keyword">int</span>) <span class="built_in">strlen</span>(comm), <span class="string">""</span>);</span><br><span class="line">    print_tree(root-&gt;children-&gt;proc, new_indent);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123; <span class="comment">// multiple children</span></span><br><span class="line">    CHILD *child_p = root-&gt;children;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%s"</span>, formatter.first);</span><br><span class="line">    <span class="built_in">sprintf</span>(new_indent, <span class="string">"%s%*s%s"</span>, indent, (<span class="keyword">int</span>) <span class="built_in">strlen</span>(comm), <span class="string">""</span>, formatter.vertical);</span><br><span class="line">    print_tree(child_p-&gt;proc, new_indent);</span><br><span class="line">    child_p = child_p-&gt;next;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (; child_p-&gt;next; child_p = child_p-&gt;next) &#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">"%s%*s%s"</span>, indent, (<span class="keyword">int</span>) <span class="built_in">strlen</span>(comm), <span class="string">""</span>, formatter.branch);</span><br><span class="line">      <span class="built_in">sprintf</span>(new_indent, <span class="string">"%s%*s%s"</span>, indent, (<span class="keyword">int</span>) <span class="built_in">strlen</span>(comm), <span class="string">""</span>, formatter.vertical);</span><br><span class="line">      print_tree(child_p-&gt;proc, new_indent);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%s%*s%s"</span>, indent, (<span class="keyword">int</span>) <span class="built_in">strlen</span>(comm), <span class="string">""</span>,  formatter.last);</span><br><span class="line">    <span class="built_in">sprintf</span>(new_indent, <span class="string">"%s%s%*s"</span>, indent, formatter.blank, (<span class="keyword">int</span>) <span class="built_in">strlen</span>(comm), <span class="string">""</span>);</span><br><span class="line">    print_tree(child_p-&gt;proc, new_indent);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">free</span>(new_indent);</span><br><span class="line">  <span class="built_in">free</span>(comm);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Other"><a href="#Other" class="headerlink" title="Other"></a>Other</h2><ul>
+<li><code>_()</code> is a function for internationalization and localization and originates from <code>gettext</code>. Some resources about <code>_()</code>:<ul>
+<li><a href="https://en.wikipedia.org/wiki/Gettext" target="_blank" rel="noopener">wiki</a></li>
+<li><a href="https://www.gnu.org/software/gettext/gettext.html" target="_blank" rel="noopener">official gnu gettext site</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/OS/" rel="tag"># OS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/02/27/Introduction-to-Probability-MIT-01/" rel="prev" title="Introduction-to-Probability-MIT(01)">
+      <i class="fa fa-chevron-left"></i> Introduction-to-Probability-MIT(01)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/03/19/PL-5-Part-B-Week1/" rel="next" title="PL(5) Part-B-Week1">
+      PL(5) Part-B-Week1 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Intro"><span class="nav-number">1.</span> <span class="nav-text">Intro</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-to-read-and-process-the-options"><span class="nav-number">2.</span> <span class="nav-text">How to read and process the options</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-to-read-the-info-of-processes"><span class="nav-number">3.</span> <span class="nav-text">How to read the info of processes</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Use-directory-stream-to-get-pid"><span class="nav-number">3.1.</span> <span class="nav-text">Use directory stream to get pid</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#A-few-details"><span class="nav-number">3.1.1.</span> <span class="nav-text">A few details</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Code"><span class="nav-number">3.1.2.</span> <span class="nav-text">Code</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Use-stat-file-to-get-name-and-ppid"><span class="nav-number">3.2.</span> <span class="nav-text">Use stat file to get name and ppid</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#A-few-details-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">A few details</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Code-1"><span class="nav-number">3.2.2.</span> <span class="nav-text">Code</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-to-save-the-info-and-build-the-data-structure"><span class="nav-number">4.</span> <span class="nav-text">How to save the info and build the data structure</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#The-PROC-struct"><span class="nav-number">4.1.</span> <span class="nav-text">The PROC struct</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Build-the-whole-data-structure"><span class="nav-number">4.2.</span> <span class="nav-text">Build the whole data structure</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Code-2"><span class="nav-number">4.2.1.</span> <span class="nav-text">Code</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-to-print-the-processes-as-a-tree"><span class="nav-number">5.</span> <span class="nav-text">How to print the processes as a tree</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Other"><span class="nav-number">6.</span> <span class="nav-text">Other</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="碧漾" src="/images/龙卷1.jpeg">
+  <p class="site-author-name" itemprop="name">碧漾</p>
+  <div class="site-description" itemprop="description">心中的自我永远也不能实现，所以才要鞭策现实的自我啊</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:riversshall@qq.com" title="E-Mail → mailto:riversshall@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → /atom.xml"><i class="fa fa-fw fa-rss"></i>RSS</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">碧漾</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'e4755b6b14b374b3c19b',
+      clientSecret: 'e84c0b701bf42f9e8a2d98009f3fe3044b611529',
+      repo: 'blog-comment',
+      owner: 'Rivers-Shall',
+      admin: ['Rivers-Shall'],
+      id: 'f30b26c4e30463f46296d042ebadda7a',
+        language: 'zh-CN',
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
