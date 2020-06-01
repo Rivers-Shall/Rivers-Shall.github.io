@@ -46,20 +46,20 @@
   };
 </script>
 <script data-ad-client="ca-pub-6100092033271048" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-  <meta name="description" content="Let $G$ be a connected weighted graph and $T$ a minimum spanning tree of $G$. Show that $T$ is a unique minimum spanning tree if and only if the weight of each edge $e$ of $G$ that is not in $T$ excee">
-<meta name="keywords" content="MST,Problem Solving Class">
+  <meta name="description" content="本文记录了作者使用grep和sed命令来实现，打印grep匹配行中的未匹配内容的功能的方法，简单来说：  先使用grep &amp;lt;pattern&amp;gt;提取出匹配行 再使用sed -e &amp;#39;s/&amp;lt;pattern&amp;gt;//g&amp;#39;将匹配内容消除，即可得到未匹配内容">
+<meta name="keywords" content="Linux,grep,sed">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Necessary-And-Sufficient-Condition-for-Unique-MST">
-<meta property="og:url" content="https://rivers-shall.github.io/2018/11/19/Necessary-And-Sufficient-Condition-for-Unique-MST/index.html">
+<meta property="og:title" content="grep打印匹配行的未匹配内容">
+<meta property="og:url" content="https://rivers-shall.github.io/2020/06/01/grep打印匹配行的未匹配内容/index.html">
 <meta property="og:site_name" content="碧漾的自我">
-<meta property="og:description" content="Let $G$ be a connected weighted graph and $T$ a minimum spanning tree of $G$. Show that $T$ is a unique minimum spanning tree if and only if the weight of each edge $e$ of $G$ that is not in $T$ excee">
+<meta property="og:description" content="本文记录了作者使用grep和sed命令来实现，打印grep匹配行中的未匹配内容的功能的方法，简单来说：  先使用grep &amp;lt;pattern&amp;gt;提取出匹配行 再使用sed -e &amp;#39;s/&amp;lt;pattern&amp;gt;//g&amp;#39;将匹配内容消除，即可得到未匹配内容">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-05-28T06:56:19.761Z">
+<meta property="og:updated_time" content="2020-06-01T12:06:53.634Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Necessary-And-Sufficient-Condition-for-Unique-MST">
-<meta name="twitter:description" content="Let $G$ be a connected weighted graph and $T$ a minimum spanning tree of $G$. Show that $T$ is a unique minimum spanning tree if and only if the weight of each edge $e$ of $G$ that is not in $T$ excee">
+<meta name="twitter:title" content="grep打印匹配行的未匹配内容">
+<meta name="twitter:description" content="本文记录了作者使用grep和sed命令来实现，打印grep匹配行中的未匹配内容的功能的方法，简单来说：  先使用grep &amp;lt;pattern&amp;gt;提取出匹配行 再使用sed -e &amp;#39;s/&amp;lt;pattern&amp;gt;//g&amp;#39;将匹配内容消除，即可得到未匹配内容">
 
-<link rel="canonical" href="https://rivers-shall.github.io/2018/11/19/Necessary-And-Sufficient-Condition-for-Unique-MST/">
+<link rel="canonical" href="https://rivers-shall.github.io/2020/06/01/grep打印匹配行的未匹配内容/">
 
 
 <script id="page-configurations">
@@ -71,7 +71,7 @@
   };
 </script>
 
-  <title>Necessary-And-Sufficient-Condition-for-Unique-MST | 碧漾的自我</title>
+  <title>grep打印匹配行的未匹配内容 | 碧漾的自我</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129500136-1"></script>
     <script>
@@ -201,7 +201,7 @@
   
   
   <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2018/11/19/Necessary-And-Sufficient-Condition-for-Unique-MST/">
+    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2020/06/01/grep打印匹配行的未匹配内容/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/龙卷1.jpeg">
@@ -214,7 +214,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          Necessary-And-Sufficient-Condition-for-Unique-MST
+          grep打印匹配行的未匹配内容
         </h2>
 
         <div class="post-meta">
@@ -224,24 +224,18 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2018-11-19 10:43:50" itemprop="dateCreated datePublished" datetime="2018-11-19T10:43:50+08:00">2018-11-19</time>
+              <time title="创建时间：2020-06-01 18:47:40 / 修改时间：20:06:53" itemprop="dateCreated datePublished" datetime="2020-06-01T18:47:40+08:00">2020-06-01</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-05-28 14:56:19" itemprop="dateModified" datetime="2020-05-28T14:56:19+08:00">2020-05-28</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Graph-Theory/" itemprop="url" rel="index">
-                    <span itemprop="name">Graph Theory</span>
+                  <a href="/categories/code-snippet/" itemprop="url" rel="index">
+                    <span itemprop="name">code snippet</span>
                   </a>
                 </span>
             </span>
@@ -257,15 +251,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Let $G$ be a connected weighted graph and $T$ a minimum spanning tree of $G$. Show that $T$ is a unique minimum spanning tree if and only if the weight of each edge $e$ of $G$ that is not in $T$ exceeds the weight of every other edge on the cycle in $T+e$.<br><a id="more"></a></p>
-<h3 id="Proof"><a href="#Proof" class="headerlink" title="Proof"></a>Proof</h3><h2 id="“-Rightarrow-”"><a href="#“-Rightarrow-”" class="headerlink" title="“$\Rightarrow$”:"></a>“$\Rightarrow$”:</h2><p>Suppose that $T$ is a unique minimum spanning tree. Now we need to prove that the weight of each edge $e$ of $G$ that is not in $T$  exceeds the weight of every other edge on the cycle in $T+e$. We prove the contrapositive of this statement.</p>
-<p>Suppose that there is an edge $e$ of $G$ that is not in $T$ and the weight of it is less than or equal that of some other edge $e_0$ on the cycle in $T+e$. Now we take the spanning tree $T+e-e_0$. Now </p>
-<p>$w(T+e-e_0)=w(T)+w(e) -w(e_0)\le w(T)+w(e_0)-w(e_0)=w(T)$. </p>
-<p>Since $T$ is a minimal spanning tree, we know $w(T)\le w(T+e-e_0)$. So we know $w(T)=w(T+e-e_0)$, indicating that $T+e-e_0$ is a minimal spanning tree different from $T$. So the contrapositive of “$\Rightarrow$” has been proved. So is “$\Rightarrow$”.</p>
-<h2 id="“-Leftarrow-”"><a href="#“-Leftarrow-”" class="headerlink" title="“$\Leftarrow$”:"></a>“$\Leftarrow$”:</h2><p>To prove this statement, we first give a lemma.</p>
-<p><strong>Lemma </strong> Suppose that $T$ and $T’$ are both the spanning tree of $G$ and that there exists an edge $e$ such that $e\in T$ and $e\notin T’$(i.e., $T$ and $T’$ are different). Then there exists an edge $e’$ such that $e’\in T’$ and  $e’\notin T$ and that $T-e+e’$ and $T’-e’+e$ are both spanning trees of $G$.</p>
-<h5 id="Proof-of-Lemma"><a href="#Proof-of-Lemma" class="headerlink" title="Proof of Lemma"></a>Proof of Lemma</h5><p>Suppose that $e={u,v}$. Then $T-e$ has two connected components, namely $T_1$ and $T_2$. Since $T’$ is also a spanning tree, it must also contain an edge connecting $T_1$ and $T_2$. Now we select this edge as $e’$. It is straightforward that $T-e+e’$ and $T’-e’+e$ are spanning trees because the $-$ disconnects $T_1$ and $T_2$ and $+$ fixes it.</p>
-<p>Now we prove the original statement by contradiction. Suppose that $T$ is not unique, i.e., there is another minimal spanning tree $T’$ different from $T$. By the<br>lemma, we know there are two edges, $e$ and $e’$ such that $e\in T, e\notin T’$, $e’\in T’, e’\notin T$ and that  $T-e+e’$ and $T’-e’+e$ are both spanning trees. But we know that $T+e’$ have a cycle and that $e$ lies on that cycle because $T+e’-e$ is acyclic.  According to the condition of the problem, $w(e’)&gt;w(e)$. So we know $w(T’-e’+e)=w(T’)-w(e’)+w(e)&lt;w(T’)=w(T)$, which contradicts the fact that $T$ and $T’$ are both minimal spanning trees.</p>
+        <p>本文记录了作者使用<code>grep</code>和<code>sed</code>命令来实现，打印<code>grep</code>匹配行中的未匹配内容的功能的方法，简单来说：</p>
+<ol>
+<li>先使用<code>grep &lt;pattern&gt;</code>提取出匹配行</li>
+<li>再使用<code>sed -e &#39;s/&lt;pattern&gt;//g&#39;</code>将匹配内容消除，即可得到未匹配内容</li>
+</ol>
+<a id="more"></a>
+<h2 id="场景与方案"><a href="#场景与方案" class="headerlink" title="场景与方案"></a>场景与方案</h2><p>使用<code>grep</code>时，我们可以用<code>grep &lt;pattern&gt;</code>来打印出匹配行，可以使用<code>grep -o &lt;pattern&gt;</code>来打印出匹配行中的匹配内容，但是如果希望能够实现“反选”，也就是打印出匹配行中的费匹配内容，应该怎么做呢？</p>
+<p>单纯的<code>grep</code>命令没有提供这种机制的支持，但是同时使用<code>grep</code>和<code>sed</code>命令就可以实现</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">echo</span> <span class="string">"matched not\nmat"</span> | grep <span class="string">"matched"</span> | sed <span class="string">"s/matched//g"</span></span><br><span class="line"> not</span><br></pre></td></tr></table></figure>
+<p>首先，我们使用<code>grep &lt;pattern&gt;</code>打印出匹配行，而后，使用<code>sed &quot;s/&lt;pattern&gt;//g&quot;</code>将匹配行中的匹配内容替换为空字符串，就消除了匹配内容，留下了非匹配内容</p>
 
     </div>
 
@@ -275,8 +270,9 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/MST/" rel="tag"># MST</a>
-              <a href="/tags/Problem-Solving-Class/" rel="tag"># Problem Solving Class</a>
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/grep/" rel="tag"># grep</a>
+              <a href="/tags/sed/" rel="tag"># sed</a>
           </div>
 
         
@@ -284,11 +280,11 @@
 
         
     <div class="post-nav">
-      <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/2018/11/19/Real-Hello-World/" rel="next" title="Real Hello World">
-      Real Hello World <i class="fa fa-chevron-right"></i>
+    <a href="/2020/06/01/bash实现trim字符串/" rel="prev" title="bash实现trim字符串">
+      <i class="fa fa-chevron-left"></i> bash实现trim字符串
     </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -349,7 +345,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Proof"><span class="nav-number">1.</span> <span class="nav-text">Proof</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#“-Rightarrow-”"><span class="nav-number"></span> <span class="nav-text">“$\Rightarrow$”:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#“-Leftarrow-”"><span class="nav-number"></span> <span class="nav-text">“$\Leftarrow$”:</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Proof-of-Lemma"><span class="nav-number">0.0.1.</span> <span class="nav-text">Proof of Lemma</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#场景与方案"><span class="nav-number">1.</span> <span class="nav-text">场景与方案</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -526,7 +522,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo: 'blog-comment',
       owner: 'Rivers-Shall',
       admin: ['Rivers-Shall'],
-      id: '61ad5c0f0e349dd18f287ba9a5aae8be',
+      id: '7bc8424f9e1fd113878458f436f4560f',
         language: 'zh-CN',
       distractionFreeMode: 'true'
     });

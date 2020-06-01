@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://rivers-shall.github.io/"/>
-  <updated>2020-06-01T10:43:55.574Z</updated>
+  <updated>2020-06-01T12:06:53.634Z</updated>
   <id>https://rivers-shall.github.io/</id>
   
   <author>
@@ -15,6 +15,36 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>grep打印匹配行的未匹配内容</title>
+    <link href="https://rivers-shall.github.io/2020/06/01/grep%E6%89%93%E5%8D%B0%E5%8C%B9%E9%85%8D%E8%A1%8C%E7%9A%84%E6%9C%AA%E5%8C%B9%E9%85%8D%E5%86%85%E5%AE%B9/"/>
+    <id>https://rivers-shall.github.io/2020/06/01/grep打印匹配行的未匹配内容/</id>
+    <published>2020-06-01T10:47:40.000Z</published>
+    <updated>2020-06-01T12:06:53.634Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文记录了作者使用<code>grep</code>和<code>sed</code>命令来实现，打印<code>grep</code>匹配行中的未匹配内容的功能的方法，简单来说：</p><ol><li>先使用<code>grep &lt;pattern&gt;</code>提取出匹配行</li><li>再使用<code>sed -e &#39;s/&lt;pattern&gt;//g&#39;</code>将匹配内容消除，即可得到未匹配内容</li></ol><a id="more"></a><h2 id="场景与方案"><a href="#场景与方案" class="headerlink" title="场景与方案"></a>场景与方案</h2><p>使用<code>grep</code>时，我们可以用<code>grep &lt;pattern&gt;</code>来打印出匹配行，可以使用<code>grep -o &lt;pattern&gt;</code>来打印出匹配行中的匹配内容，但是如果希望能够实现“反选”，也就是打印出匹配行中的费匹配内容，应该怎么做呢？</p><p>单纯的<code>grep</code>命令没有提供这种机制的支持，但是同时使用<code>grep</code>和<code>sed</code>命令就可以实现</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">echo</span> <span class="string">"matched not\nmat"</span> | grep <span class="string">"matched"</span> | sed <span class="string">"s/matched//g"</span></span><br><span class="line"> not</span><br></pre></td></tr></table></figure><p>首先，我们使用<code>grep &lt;pattern&gt;</code>打印出匹配行，而后，使用<code>sed &quot;s/&lt;pattern&gt;//g&quot;</code>将匹配行中的匹配内容替换为空字符串，就消除了匹配内容，留下了非匹配内容</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文记录了作者使用&lt;code&gt;grep&lt;/code&gt;和&lt;code&gt;sed&lt;/code&gt;命令来实现，打印&lt;code&gt;grep&lt;/code&gt;匹配行中的未匹配内容的功能的方法，简单来说：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;先使用&lt;code&gt;grep &amp;lt;pattern&amp;gt;&lt;/code&gt;提取出匹配行&lt;/li&gt;
+&lt;li&gt;再使用&lt;code&gt;sed -e &amp;#39;s/&amp;lt;pattern&amp;gt;//g&amp;#39;&lt;/code&gt;将匹配内容消除，即可得到未匹配内容&lt;/li&gt;
+&lt;/ol&gt;
+    
+    </summary>
+    
+      <category term="code snippet" scheme="https://rivers-shall.github.io/categories/code-snippet/"/>
+    
+    
+      <category term="Linux" scheme="https://rivers-shall.github.io/tags/Linux/"/>
+    
+      <category term="grep" scheme="https://rivers-shall.github.io/tags/grep/"/>
+    
+      <category term="sed" scheme="https://rivers-shall.github.io/tags/sed/"/>
+    
+  </entry>
   
   <entry>
     <title>bash实现trim字符串</title>
@@ -498,26 +528,6 @@
     
     
       <category term="binary search" scheme="https://rivers-shall.github.io/tags/binary-search/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>UULP-Chapter02-2</title>
-    <link href="https://rivers-shall.github.io/2019/05/25/UULP-Chapter02-2/"/>
-    <id>https://rivers-shall.github.io/2019/05/25/UULP-Chapter02-2/</id>
-    <published>2019-05-25T08:51:55.000Z</published>
-    <updated>2020-05-28T06:56:19.809Z</updated>
-    
-    <summary type="html">
-    
-    </summary>
-    
-      <category term="Books" scheme="https://rivers-shall.github.io/categories/Books/"/>
-    
-      <category term="Understanding-Unix/Linux-Programming" scheme="https://rivers-shall.github.io/categories/Books/Understanding-Unix-Linux-Programming/"/>
-    
-    
-      <category term="Linux" scheme="https://rivers-shall.github.io/tags/Linux/"/>
     
   </entry>
   
