@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://rivers-shall.github.io/"/>
-  <updated>2020-06-01T06:36:13.397Z</updated>
+  <updated>2020-06-01T10:34:05.754Z</updated>
   <id>https://rivers-shall.github.io/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>bash实现trim字符串</title>
+    <link href="https://rivers-shall.github.io/2020/06/01/bash%E5%AE%9E%E7%8E%B0trim%E5%AD%97%E7%AC%A6%E4%B8%B2/"/>
+    <id>https://rivers-shall.github.io/2020/06/01/bash实现trim字符串/</id>
+    <published>2020-06-01T10:27:53.000Z</published>
+    <updated>2020-06-01T10:34:05.754Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文记录了作者使用<code>sed</code>命令对bash中的字符串进行去头尾空格的操作的方法，简单来说</p><ol><li>使用<code>echo &#39;  string  &#39; | sed -e &#39;s/^[[:space:]]*//&#39;</code>去除开头的空格</li><li>使用<code>echo &#39;  string  &#39; | sed -e &#39;s/[[:space:]]*$//&#39;</code>去除结尾的空格</li><li>将二者用管道结合，去除头尾空格<code>echo &#39;  string  &#39; | sed -e &#39;s/[[:space:]]*$//&#39; | sed -e &#39;s/^[[:space:]]*//&#39;</code></li></ol><a id="more"></a><h2 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h2><p>去除头尾空格的字符串处理操作是非常常用的操作，在许多语言的标准库里都会以<code>trim</code>函数的方式提供出来</p><p>要在bash中实现这一功能，可以使用<code>sed</code>命令的替换子命令</p><p><code>sed -e &#39;s/^[[:space:]]*//&#39;</code>是指匹配所有行开头的空格并将其替换为空字符串</p><p><code>sed -e &#39;s/[[:space:]]*$//&#39;</code>是指匹配所有行结尾的空格并将其替换为空字符串</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文记录了作者使用&lt;code&gt;sed&lt;/code&gt;命令对bash中的字符串进行去头尾空格的操作的方法，简单来说&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;使用&lt;code&gt;echo &amp;#39;  string  &amp;#39; | sed -e &amp;#39;s/^[[:space:]]*//&amp;#39;&lt;/code&gt;去除开头的空格&lt;/li&gt;
+&lt;li&gt;使用&lt;code&gt;echo &amp;#39;  string  &amp;#39; | sed -e &amp;#39;s/[[:space:]]*$//&amp;#39;&lt;/code&gt;去除结尾的空格&lt;/li&gt;
+&lt;li&gt;将二者用管道结合，去除头尾空格&lt;code&gt;echo &amp;#39;  string  &amp;#39; | sed -e &amp;#39;s/[[:space:]]*$//&amp;#39; | sed -e &amp;#39;s/^[[:space:]]*//&amp;#39;&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+    
+    </summary>
+    
+    
+      <category term="Linux" scheme="https://rivers-shall.github.io/tags/Linux/"/>
+    
+      <category term="sed" scheme="https://rivers-shall.github.io/tags/sed/"/>
+    
+  </entry>
   
   <entry>
     <title>转义sed替换模式字符串</title>
@@ -467,31 +494,6 @@
     
     
       <category term="Linux" scheme="https://rivers-shall.github.io/tags/Linux/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Extended Euclid Bug</title>
-    <link href="https://rivers-shall.github.io/2019/04/10/Extended-Euclid-Bug/"/>
-    <id>https://rivers-shall.github.io/2019/04/10/Extended-Euclid-Bug/</id>
-    <published>2019-04-10T09:51:18.000Z</published>
-    <updated>2020-05-28T06:56:19.809Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>辗转相除法是经典的求最大公约数的算法，也是已知的最古老的算法，最近学到了扩展的辗转相除法，也就是对于$a$和$b$不仅返回$\gcd(a,b)$,而且返回$x$和$y$使得$xa + yb=\gcd(a,b)$.</p><p>在实现的过程中遇到了我觉得还算有意思的一点bug，就记录了下来. 用的Python.</p><a id="more"></a><h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><p>先来看一下算法，我们<code>gcd(a, b)</code>函数需要返回三个值<code>g, x, y</code>，<code>g</code>是<code>a</code>和<code>b</code>的最大公约数，而<code>x</code>和<code>y</code>满足<code>xa+yb=g</code>，依旧使用经典的递归实现。</p><p><img src="gcd.jpg" alt="递归公式"></p><h2 id="Bug"><a href="#Bug" class="headerlink" title="Bug"></a>Bug</h2><p>先看两个有Bug的代码<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gcd_pos</span><span class="params">(a, b)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> b == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> a, <span class="number">1</span>, <span class="number">0</span></span><br><span class="line">    g, x, y = gcd(b, a % b)</span><br><span class="line">    <span class="keyword">return</span> g, y, x + y * (- a // b)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gcd</span><span class="params">(a, b)</span>:</span></span><br><span class="line">    g, x, y = gcd_pos(abs(a), abs(b))</span><br><span class="line">    <span class="keyword">return</span> g, x * np.sign(a), y * np.sign(b)</span><br></pre></td></tr></table></figure></p><p>当时发现这个程序有Bug的时候，我一时没有回过神来，不过这其实是一个Python语法相关的Bug，因为<code>gcd_pos</code>保证了参数是正数，那么<code>(- a // b)</code>就是一个负数对一个正数求整数除法商，而Python中的整数除法是通过<strong>去掉小数部分</strong>完成的，并不是<strong>向下取整</strong>完成的。</p><p>所以这个看起来和递归公式无比契合的代码其实是错的.它表达的意思是$x + \lceil -a/b\rceil$.</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gcd_pos</span><span class="params">(a, b)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> b == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> a, <span class="number">1</span>, <span class="number">0</span></span><br><span class="line">    g, x, y = gcd(b, a % b)</span><br><span class="line">    <span class="keyword">return</span> g, y, x - y * a // b</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gcd</span><span class="params">(a, b)</span>:</span></span><br><span class="line">    g, x, y = gcd_pos(abs(a), abs(b))</span><br><span class="line">    <span class="keyword">return</span> g, x * np.sign(a), y * np.sign(b)</span><br></pre></td></tr></table></figure><p>这个Bug则更加难于发现，Python的表达式乘除计算是从左到右的，所以<code>y * a // b</code>实际上是<code>(y * a) // b</code>。</p><p>那么这个代码表达的是$x-\lfloor (ya)/b\rfloor$.根据数论知识，我明白了这是与递归公式不同的。</p><h2 id="正确实现"><a href="#正确实现" class="headerlink" title="正确实现"></a>正确实现</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gcd_pos</span><span class="params">(a, b)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> b == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> a, <span class="number">1</span>, <span class="number">0</span></span><br><span class="line">    g, x, y = gcd(b, a % b)</span><br><span class="line">    <span class="keyword">return</span> g, y, x - y * (a // b)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gcd</span><span class="params">(a, b)</span>:</span></span><br><span class="line">    g, x, y = gcd_pos(abs(a), abs(b))</span><br><span class="line">    <span class="keyword">return</span> g, x * np.sign(a), y * np.sign(b)</span><br></pre></td></tr></table></figure><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>代码与数学公式之间的对应关系是很微妙的，以后编程时要注意这一点。</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h1&gt;&lt;p&gt;辗转相除法是经典的求最大公约数的算法，也是已知的最古老的算法，最近学到了扩展的辗转相除法，也就是对于$a$和$b$不仅返回$\gcd(a,b)$,而且返回$x$和$y$使得$xa + yb=\gcd(a,b)$.&lt;/p&gt;
-&lt;p&gt;在实现的过程中遇到了我觉得还算有意思的一点bug，就记录了下来. 用的Python.&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Bug" scheme="https://rivers-shall.github.io/categories/Bug/"/>
-    
-      <category term="Algo Implem" scheme="https://rivers-shall.github.io/categories/Bug/Algo-Implem/"/>
-    
-    
-      <category term="Algorithm" scheme="https://rivers-shall.github.io/tags/Algorithm/"/>
     
   </entry>
   
