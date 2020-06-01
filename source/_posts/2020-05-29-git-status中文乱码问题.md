@@ -4,6 +4,8 @@ date: 2020-05-29 18:21:28
 tags:
 - git
 - 中文乱码
+categories:
+- code snippet
 ---
 
 本文记录了作者解决`git status`命令中出现中文名乱码问题的方法，简单来说

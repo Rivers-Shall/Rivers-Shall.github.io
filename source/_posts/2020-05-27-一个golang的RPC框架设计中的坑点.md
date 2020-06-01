@@ -4,6 +4,8 @@ date: 2020-05-27 21:13:42
 tags:
 - golang
 - RPC
+categories:
+- good practice
 ---
 
 本文记录了作者在使用公司的RPC框架时，由于RPC框架本身的设计以及程序员的投机取巧而遇到的一个坑点。

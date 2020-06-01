@@ -4,6 +4,8 @@ date: 2020-05-24 21:47:20
 tags:
 - golang
 - elasticsearch
+categories:
+- code snippet
 ---
 
 这是一篇介绍如何利用golang第三方库[https://github.com/olivere/elastic](https://github.com/olivere/elastic)进行elasticsearch的操作的文章。
