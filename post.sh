@@ -14,8 +14,10 @@ echo -e ${BOLD_BLUE}postName: ${postName}${RESET}
 
 postName=${postName%".md"}
 
+postName=$(echo ${postName} | sed -e "s/^[[:space:]]*//g")
+
 echo -e ${BOLD_BLUE}postName: ${postName}${RESET}
 
-echo "hexo g && hexo d && hexo clean && git add -A && git commit -m "post: ${postName}" && git push origin master:hexo-src"
+echo "hexo g && hexo d && hexo clean && git add -A && git commit -m \"post: ${postName}\" && git push origin master:hexo-src"
 
 hexo g && hexo d && hexo clean && git add -A && git commit -m "post: ${postName}" && git push origin master:hexo-src
