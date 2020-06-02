@@ -46,20 +46,20 @@
   };
 </script>
 <script data-ad-client="ca-pub-6100092033271048" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-  <meta name="description" content="心中的自我永远也不能实现，所以才要鞭策现实的自我啊">
-<meta name="keywords" content="Linux">
+  <meta name="description" content="本文记录了作者使用bash过程中，为了解决去除前缀后缀的问题而了解到的bash的字符串操作，简单来说  string:position或者string:position:length进行子串提取 string#pattern进行最短匹配前缀去除，string##pattern进行最长匹配前缀去除 string%pattern进行最短匹配后缀去除，string%%pattern进行最长匹配后缀去除">
+<meta name="keywords" content="Linux,bash">
 <meta property="og:type" content="article">
-<meta property="og:title" content="UULP-Chapter02-2">
-<meta property="og:url" content="https://rivers-shall.github.io/2019/05/25/UULP-Chapter02-2/index.html">
+<meta property="og:title" content="bash中的字符串处理操作">
+<meta property="og:url" content="https://rivers-shall.github.io/2020/06/02/bash中的字符串处理操作/index.html">
 <meta property="og:site_name" content="碧漾的自我">
-<meta property="og:description" content="心中的自我永远也不能实现，所以才要鞭策现实的自我啊">
+<meta property="og:description" content="本文记录了作者使用bash过程中，为了解决去除前缀后缀的问题而了解到的bash的字符串操作，简单来说  string:position或者string:position:length进行子串提取 string#pattern进行最短匹配前缀去除，string##pattern进行最长匹配前缀去除 string%pattern进行最短匹配后缀去除，string%%pattern进行最长匹配后缀去除">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-05-28T06:56:19.809Z">
+<meta property="og:updated_time" content="2020-06-02T06:54:41.375Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="UULP-Chapter02-2">
-<meta name="twitter:description" content="心中的自我永远也不能实现，所以才要鞭策现实的自我啊">
+<meta name="twitter:title" content="bash中的字符串处理操作">
+<meta name="twitter:description" content="本文记录了作者使用bash过程中，为了解决去除前缀后缀的问题而了解到的bash的字符串操作，简单来说  string:position或者string:position:length进行子串提取 string#pattern进行最短匹配前缀去除，string##pattern进行最长匹配前缀去除 string%pattern进行最短匹配后缀去除，string%%pattern进行最长匹配后缀去除">
 
-<link rel="canonical" href="https://rivers-shall.github.io/2019/05/25/UULP-Chapter02-2/">
+<link rel="canonical" href="https://rivers-shall.github.io/2020/06/02/bash中的字符串处理操作/">
 
 
 <script id="page-configurations">
@@ -71,7 +71,7 @@
   };
 </script>
 
-  <title>UULP-Chapter02-2 | 碧漾的自我</title>
+  <title>bash中的字符串处理操作 | 碧漾的自我</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129500136-1"></script>
     <script>
@@ -201,7 +201,7 @@
   
   
   <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2019/05/25/UULP-Chapter02-2/">
+    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2020/06/02/bash中的字符串处理操作/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/龙卷1.jpeg">
@@ -214,7 +214,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          UULP-Chapter02-2
+          bash中的字符串处理操作
         </h2>
 
         <div class="post-meta">
@@ -224,30 +224,18 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2019-05-25 16:51:55" itemprop="dateCreated datePublished" datetime="2019-05-25T16:51:55+08:00">2019-05-25</time>
+              <time title="创建时间：2020-06-02 14:35:42 / 修改时间：14:54:41" itemprop="dateCreated datePublished" datetime="2020-06-02T14:35:42+08:00">2020-06-02</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-05-28 14:56:19" itemprop="dateModified" datetime="2020-05-28T14:56:19+08:00">2020-05-28</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Books/" itemprop="url" rel="index">
-                    <span itemprop="name">Books</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Books/Understanding-Unix-Linux-Programming/" itemprop="url" rel="index">
-                    <span itemprop="name">Understanding-Unix/Linux-Programming</span>
+                  <a href="/categories/code-snippet/" itemprop="url" rel="index">
+                    <span itemprop="name">code snippet</span>
                   </a>
                 </span>
             </span>
@@ -263,7 +251,35 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        
+        <p>本文记录了作者使用bash过程中，为了解决去除前缀后缀的问题而了解到的bash的字符串操作，简单来说</p>
+<ol>
+<li><code>string:position</code>或者<code>string:position:length</code>进行子串提取</li>
+<li><code>string#pattern</code>进行最短匹配前缀去除，<code>string##pattern</code>进行最长匹配前缀去除</li>
+<li><code>string%pattern</code>进行最短匹配后缀去除，<code>string%%pattern</code>进行最长匹配后缀去除</li>
+<li><code>string/pattern/string</code>进行首个<code>pattern</code>替换，<code>string//pattern/string</code>进行全部<code>pattern</code>替换</li>
+<li>以上的<code>pattern</code>指的都是<em>wildcard</em>而不是<em>regular expression</em></li>
+</ol>
+<a id="more"></a>
+<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>有时在使用bash脚本的时候，希望对字符串做一些基本的操作，比如说去除前缀后缀（去除文件扩展名，统一前缀编号等），事实上，bash原生支持了许多字符串操作</p>
+<h2 id="bash-中的字符串操作"><a href="#bash-中的字符串操作" class="headerlink" title="bash 中的字符串操作"></a>bash 中的字符串操作</h2><p><strong>下面所有的<code>pattern</code>指的都是bash wildcard而不是regular expression</strong></p>
+<h3 id="子串提取"><a href="#子串提取" class="headerlink" title="子串提取"></a>子串提取</h3><p>使用<code>string:position</code>提取从<code>position</code>开始的子串</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; string=<span class="string">"text, dummy, text, dummy"</span></span><br><span class="line">&gt; <span class="built_in">echo</span> <span class="variable">$&#123;string:3&#125;</span></span><br><span class="line">t, dummy, text, dummy</span><br></pre></td></tr></table></figure>
+<p>使用<code>string:position:length</code>提取从<code>position</code>开始，长度为<code>length</code>的子串</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; string=<span class="string">"text, dummy, text, dummy"</span></span><br><span class="line">&gt; <span class="built_in">echo</span> <span class="variable">$&#123;string:3:4&#125;</span></span><br><span class="line">t, d</span><br></pre></td></tr></table></figure>
+<h3 id="前缀去除"><a href="#前缀去除" class="headerlink" title="前缀去除"></a>前缀去除</h3><p>使用<code>string#pattern</code>进行最短匹配前缀去除</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; string=<span class="string">"text, dummy, text, dummy"</span></span><br><span class="line">&gt; <span class="built_in">echo</span> <span class="variable">$&#123;string#*text&#125;</span></span><br><span class="line">, dummy, text, dummy</span><br></pre></td></tr></table></figure>
+<p>使用<code>string##pattern</code>进行最长匹配前缀去除</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; string=<span class="string">"text, dummy, text, dummy"</span></span><br><span class="line">&gt; <span class="built_in">echo</span> <span class="variable">$&#123;string##*text&#125;</span></span><br><span class="line">, dummy</span><br></pre></td></tr></table></figure>
+<h3 id="后缀去除"><a href="#后缀去除" class="headerlink" title="后缀去除"></a>后缀去除</h3><p>使用<code>string%pattern</code>进行最短匹配后缀去除</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; string=<span class="string">"text, dummy, text, dummy"</span></span><br><span class="line">&gt; <span class="built_in">echo</span> <span class="variable">$&#123;string%dummy*&#125;</span></span><br><span class="line">text, dummy, text, y</span><br></pre></td></tr></table></figure>
+<p>使用<code>string%%pattern</code>进行最长匹配后缀去除</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; string=<span class="string">"text, dummy, text, dummy"</span></span><br><span class="line">&gt; <span class="built_in">echo</span> <span class="variable">$&#123;string%%dummy*&#125;</span></span><br><span class="line">text,</span><br></pre></td></tr></table></figure>
+<h3 id="字符串替换"><a href="#字符串替换" class="headerlink" title="字符串替换"></a>字符串替换</h3><p>使用<code>string/pattern/string</code>进行首个<code>pattern</code>的替换</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; string=<span class="string">"text, dummy, text, dummy"</span></span><br><span class="line">&gt; <span class="built_in">echo</span> <span class="variable">$&#123;string/text/TEXT&#125;</span></span><br><span class="line">TEXT, dummy, text, dummy</span><br></pre></td></tr></table></figure>
+<p>使用<code>string//pattern/string</code>进行全部<code>pattern</code>的替换</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; string=<span class="string">"text, dummy, text, dummy"</span></span><br><span class="line">&gt; <span class="built_in">echo</span> <span class="variable">$&#123;string//text/TEXT&#125;</span></span><br><span class="line">TEXT, dummy, TEXT, dummy</span><br></pre></td></tr></table></figure>
+<p>想要得到对正则表达式匹配替换的支持的话，可以使用<a href="https://man.linuxde.net/sed" target="_blank" rel="noopener">sed</a>命令</p>
+
     </div>
 
     
@@ -273,6 +289,7 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/bash/" rel="tag"># bash</a>
           </div>
 
         
@@ -281,13 +298,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/04/10/Extended-Euclid-Bug/" rel="prev" title="Extended Euclid Bug">
-      <i class="fa fa-chevron-left"></i> Extended Euclid Bug
+    <a href="/2020/06/01/JavaScript中箭头函数与普通函数/" rel="prev" title="JavaScript中箭头函数与普通函数">
+      <i class="fa fa-chevron-left"></i> JavaScript中箭头函数与普通函数
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2019/09/17/LeetCode-0034-一般二分搜索的重点/" rel="next" title="LeetCode 0034 一般二分搜索的重点">
-      LeetCode 0034 一般二分搜索的重点 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -348,6 +362,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#场景"><span class="nav-number">1.</span> <span class="nav-text">场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bash-中的字符串操作"><span class="nav-number">2.</span> <span class="nav-text">bash 中的字符串操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#子串提取"><span class="nav-number">2.1.</span> <span class="nav-text">子串提取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#前缀去除"><span class="nav-number">2.2.</span> <span class="nav-text">前缀去除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后缀去除"><span class="nav-number">2.3.</span> <span class="nav-text">后缀去除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串替换"><span class="nav-number">2.4.</span> <span class="nav-text">字符串替换</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -524,7 +539,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo: 'blog-comment',
       owner: 'Rivers-Shall',
       admin: ['Rivers-Shall'],
-      id: 'f75f1d054c50d04527694015483bcb16',
+      id: '651ebd96e9639b72dc9e52bba2ac8fca',
         language: 'zh-CN',
       distractionFreeMode: 'true'
     });

@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://rivers-shall.github.io/"/>
-  <updated>2020-06-01T12:46:06.898Z</updated>
+  <updated>2020-06-02T06:54:41.375Z</updated>
   <id>https://rivers-shall.github.io/</id>
   
   <author>
@@ -17,11 +17,42 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>bash中的字符串处理操作</title>
+    <link href="https://rivers-shall.github.io/2020/06/02/bash%E4%B8%AD%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%A4%84%E7%90%86%E6%93%8D%E4%BD%9C/"/>
+    <id>https://rivers-shall.github.io/2020/06/02/bash中的字符串处理操作/</id>
+    <published>2020-06-02T06:35:42.000Z</published>
+    <updated>2020-06-02T06:54:41.375Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文记录了作者使用bash过程中，为了解决去除前缀后缀的问题而了解到的bash的字符串操作，简单来说</p><ol><li><code>string:position</code>或者<code>string:position:length</code>进行子串提取</li><li><code>string#pattern</code>进行最短匹配前缀去除，<code>string##pattern</code>进行最长匹配前缀去除</li><li><code>string%pattern</code>进行最短匹配后缀去除，<code>string%%pattern</code>进行最长匹配后缀去除</li><li><code>string/pattern/string</code>进行首个<code>pattern</code>替换，<code>string//pattern/string</code>进行全部<code>pattern</code>替换</li><li>以上的<code>pattern</code>指的都是<em>wildcard</em>而不是<em>regular expression</em></li></ol><a id="more"></a><h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>有时在使用bash脚本的时候，希望对字符串做一些基本的操作，比如说去除前缀后缀（去除文件扩展名，统一前缀编号等），事实上，bash原生支持了许多字符串操作</p><h2 id="bash-中的字符串操作"><a href="#bash-中的字符串操作" class="headerlink" title="bash 中的字符串操作"></a>bash 中的字符串操作</h2><p><strong>下面所有的<code>pattern</code>指的都是bash wildcard而不是regular expression</strong></p><h3 id="子串提取"><a href="#子串提取" class="headerlink" title="子串提取"></a>子串提取</h3><p>使用<code>string:position</code>提取从<code>position</code>开始的子串</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; string=<span class="string">"text, dummy, text, dummy"</span></span><br><span class="line">&gt; <span class="built_in">echo</span> <span class="variable">$&#123;string:3&#125;</span></span><br><span class="line">t, dummy, text, dummy</span><br></pre></td></tr></table></figure><p>使用<code>string:position:length</code>提取从<code>position</code>开始，长度为<code>length</code>的子串</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; string=<span class="string">"text, dummy, text, dummy"</span></span><br><span class="line">&gt; <span class="built_in">echo</span> <span class="variable">$&#123;string:3:4&#125;</span></span><br><span class="line">t, d</span><br></pre></td></tr></table></figure><h3 id="前缀去除"><a href="#前缀去除" class="headerlink" title="前缀去除"></a>前缀去除</h3><p>使用<code>string#pattern</code>进行最短匹配前缀去除</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; string=<span class="string">"text, dummy, text, dummy"</span></span><br><span class="line">&gt; <span class="built_in">echo</span> <span class="variable">$&#123;string#*text&#125;</span></span><br><span class="line">, dummy, text, dummy</span><br></pre></td></tr></table></figure><p>使用<code>string##pattern</code>进行最长匹配前缀去除</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; string=<span class="string">"text, dummy, text, dummy"</span></span><br><span class="line">&gt; <span class="built_in">echo</span> <span class="variable">$&#123;string##*text&#125;</span></span><br><span class="line">, dummy</span><br></pre></td></tr></table></figure><h3 id="后缀去除"><a href="#后缀去除" class="headerlink" title="后缀去除"></a>后缀去除</h3><p>使用<code>string%pattern</code>进行最短匹配后缀去除</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; string=<span class="string">"text, dummy, text, dummy"</span></span><br><span class="line">&gt; <span class="built_in">echo</span> <span class="variable">$&#123;string%dummy*&#125;</span></span><br><span class="line">text, dummy, text, y</span><br></pre></td></tr></table></figure><p>使用<code>string%%pattern</code>进行最长匹配后缀去除</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; string=<span class="string">"text, dummy, text, dummy"</span></span><br><span class="line">&gt; <span class="built_in">echo</span> <span class="variable">$&#123;string%%dummy*&#125;</span></span><br><span class="line">text,</span><br></pre></td></tr></table></figure><h3 id="字符串替换"><a href="#字符串替换" class="headerlink" title="字符串替换"></a>字符串替换</h3><p>使用<code>string/pattern/string</code>进行首个<code>pattern</code>的替换</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; string=<span class="string">"text, dummy, text, dummy"</span></span><br><span class="line">&gt; <span class="built_in">echo</span> <span class="variable">$&#123;string/text/TEXT&#125;</span></span><br><span class="line">TEXT, dummy, text, dummy</span><br></pre></td></tr></table></figure><p>使用<code>string//pattern/string</code>进行全部<code>pattern</code>的替换</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; string=<span class="string">"text, dummy, text, dummy"</span></span><br><span class="line">&gt; <span class="built_in">echo</span> <span class="variable">$&#123;string//text/TEXT&#125;</span></span><br><span class="line">TEXT, dummy, TEXT, dummy</span><br></pre></td></tr></table></figure><p>想要得到对正则表达式匹配替换的支持的话，可以使用<a href="https://man.linuxde.net/sed" target="_blank" rel="noopener">sed</a>命令</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文记录了作者使用bash过程中，为了解决去除前缀后缀的问题而了解到的bash的字符串操作，简单来说&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;string:position&lt;/code&gt;或者&lt;code&gt;string:position:length&lt;/code&gt;进行子串提取&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;string#pattern&lt;/code&gt;进行最短匹配前缀去除，&lt;code&gt;string##pattern&lt;/code&gt;进行最长匹配前缀去除&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;string%pattern&lt;/code&gt;进行最短匹配后缀去除，&lt;code&gt;string%%pattern&lt;/code&gt;进行最长匹配后缀去除&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;string/pattern/string&lt;/code&gt;进行首个&lt;code&gt;pattern&lt;/code&gt;替换，&lt;code&gt;string//pattern/string&lt;/code&gt;进行全部&lt;code&gt;pattern&lt;/code&gt;替换&lt;/li&gt;
+&lt;li&gt;以上的&lt;code&gt;pattern&lt;/code&gt;指的都是&lt;em&gt;wildcard&lt;/em&gt;而不是&lt;em&gt;regular expression&lt;/em&gt;&lt;/li&gt;
+&lt;/ol&gt;
+    
+    </summary>
+    
+      <category term="code snippet" scheme="https://rivers-shall.github.io/categories/code-snippet/"/>
+    
+    
+      <category term="Linux" scheme="https://rivers-shall.github.io/tags/Linux/"/>
+    
+      <category term="bash" scheme="https://rivers-shall.github.io/tags/bash/"/>
+    
+  </entry>
+  
+  <entry>
     <title>JavaScript中箭头函数与普通函数</title>
     <link href="https://rivers-shall.github.io/2020/06/01/JavaScript%E4%B8%AD%E7%AE%AD%E5%A4%B4%E5%87%BD%E6%95%B0%E4%B8%8E%E6%99%AE%E9%80%9A%E5%87%BD%E6%95%B0/"/>
     <id>https://rivers-shall.github.io/2020/06/01/JavaScript中箭头函数与普通函数/</id>
     <published>2020-06-01T12:26:38.000Z</published>
-    <updated>2020-06-01T12:46:06.898Z</updated>
+    <updated>2020-06-01T12:46:58.992Z</updated>
     
     <content type="html"><![CDATA[<p>本文记录了作者在使用mongoose的过程中，因为箭头函数与普通函数的区别而引起的一个bug，以及因此而学会的有关箭头函数与普通函数的区别，简单来说：</p><ol><li>箭头函数不能使用<code>arguments</code>参数，普通函数可以</li><li>箭头函数的<code>this</code>关键字是lexically bound，也就是<code>this</code>是和<strong>最近的外层普通函数</strong>所具有的<code>this</code>一致(如果没有这样的函数，就和文件本身代表的对象绑定)；普通函数的<code>this</code>是dynamically bound，视运行时环境而确定</li></ol><p>其实还有什么<code>new</code>之类的，作者觉得不大重要，就算了</p><a id="more"></a><h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>在使用mongoose的过程中，需要对schema构造一个“虚字段”，参考实现中使用如下代码:</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">itemSchema.virtual(<span class="string">"id"</span>).get(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>._id.toHexString();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><p>我寻思着可以少写点东西，更精简一些，于是在我的实现里使用了:</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">itemSchema.virtual(<span class="string">"id"</span>).get(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>._id.toHexString();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><p>运行时报错:</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">undefined 没有 toHexString 成员函数</span><br></pre></td></tr></table></figure><p>这才意识到，原来使用箭头函数的时候，<code>this</code>的绑定规则和普通函数不一致</p><h2 id="箭头函数和普通函数的区别"><a href="#箭头函数和普通函数的区别" class="headerlink" title="箭头函数和普通函数的区别"></a>箭头函数和普通函数的区别</h2><h3 id="arguments"><a href="#arguments" class="headerlink" title="arguments"></a>arguments</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">arguments</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> f2 = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">arguments</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">f1(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">f2(<span class="number">1</span>, <span class="number">2</span>)</span><br></pre></td></tr></table></figure><p>这段代码<strong>在浏览器中</strong>，<code>f1</code>可以正常打印，<code>f2</code>会报<code>undefined</code>，当然，在node.js环境下，还会有些不同，可以自己试试</p><h3 id="this"><a href="#this" class="headerlink" title="this"></a>this</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">exports.mod = <span class="string">"mod"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> user = &#123;</span><br><span class="line">    f1() &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> user2 = &#123;</span><br><span class="line">    f1 : <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">user.f1()</span><br><span class="line">user2.f1()</span><br></pre></td></tr></table></figure><p>这段代码在node.js下，打印出如下结果</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; node test2.js</span><br><span class="line">&#123; f1: [Function: f1] &#125;</span><br><span class="line">&#123; mod: <span class="string">'mod'</span> &#125;</span><br></pre></td></tr></table></figure><p>可见，普通函数绑定的是运行时的对象，箭头函数绑定的是静态的编译时的对象</p>]]></content>
     
@@ -67,9 +98,9 @@
     
       <category term="Linux" scheme="https://rivers-shall.github.io/tags/Linux/"/>
     
-      <category term="sed" scheme="https://rivers-shall.github.io/tags/sed/"/>
-    
       <category term="grep" scheme="https://rivers-shall.github.io/tags/grep/"/>
+    
+      <category term="sed" scheme="https://rivers-shall.github.io/tags/sed/"/>
     
   </entry>
   
@@ -500,33 +531,6 @@
     
     
       <category term="Programming Language" scheme="https://rivers-shall.github.io/tags/Programming-Language/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java开发编译器(1)-LexerDemo</title>
-    <link href="https://rivers-shall.github.io/2019/10/07/Java%E5%BC%80%E5%8F%91%E7%BC%96%E8%AF%91%E5%99%A8-1-LexerDemo/"/>
-    <id>https://rivers-shall.github.io/2019/10/07/Java开发编译器-1-LexerDemo/</id>
-    <published>2019-10-07T12:27:12.000Z</published>
-    <updated>2020-05-28T06:56:19.810Z</updated>
-    
-    <content type="html"><![CDATA[<p><a href="https://github.com/Rivers-Shall/Compiler-Principle-Code/tree/master/LexerDemo" target="_blank" rel="noopener">Github链接</a></p><h3 id="编写目的"><a href="#编写目的" class="headerlink" title="编写目的"></a>编写目的</h3><p>在观看了几份视频后决定先开发一个<code>LexerDemo</code>类，用于展示词法分析的含义，也即<code>LexerDemo</code>类仅展示词法分析的输入和词法分析的输出，不展示其余任何东西，开放的接口仅有无参构造函数和用于返回词法分析结果的<code>lex</code>方法。<code>LexerDemo</code>用于对仅含非负整数，加减乘除的运算表达式做词法分析。</p><a id="more"></a><h3 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h3><h4 id="确定需求"><a href="#确定需求" class="headerlink" title="确定需求"></a>确定需求</h4><p>第一天做主要是写文档，确定需求，本来打算按照视频中的完成一个可以基本和语法分析器一起工作的<code>Lexer</code>类，但是后来还是算了，原因是词法分析和语法分析的合作方式有两种</p><ol><li>词法分析和语法分析交替工作，也即语法分析需要Token时，向词法分析索要，词法分析再向前运作</li><li>词法分析首先完成工作，然后将所有的Token存放起来，以便语法分析使用</li></ol><p>两种方式各有优劣：</p><ol><li>第一种方式不需要在内存中存放一个Token List，节约空间，但是只能有常数级(通常是一个)的lookahead</li><li>第二种方式便于语法分析，可以在已完成的Token List上跑多遍的语法分析，获得更好的结果</li></ol><p>视频中的合作方式是第一种，我打算到时候再看能实现哪一种或者两种</p><h4 id="JavaDoc编写中的问题"><a href="#JavaDoc编写中的问题" class="headerlink" title="JavaDoc编写中的问题"></a>JavaDoc编写中的问题</h4><hr><p>Q: javadoc中如何加入 inline code？<br>A: &lt;code>.  最早发现这个问题是因为插入代码时都是用的&lt;pre>，但是这是用来插入代码块的，搜索之后发现应该使用&lt;code></p><hr><p>Q: javadoc中如何加入字符 &lt;, &gt;?<br>A: &amp; lt; &amp; gt; (分号不能忘记)由于javadoc实际上是html，所以这两个字符有特殊含义，需要这样转义。</p><hr><h4 id="如何引入JUnit"><a href="#如何引入JUnit" class="headerlink" title="如何引入JUnit"></a>如何引入JUnit</h4><p>在eclipse中，可以使用 Project &gt; Properties &gt; Java Build Path &gt; Libraries &gt; add library…</p><p>在IntelliJ IDEA中，可以直接 <code>@Test</code> 然后在报错后将鼠标移动到上面，会有引入Junit的选项出现</p><h3 id="编后感"><a href="#编后感" class="headerlink" title="编后感"></a>编后感</h3><p>其实也没啥，由于只是一个Demo，用来展示词法分析的大概含义的，没有考虑到和语法分析器合作的问题，<br>而且选定的对象也是包含加减乘除的四则算术表达式，本身词法规则就很简单，结果写下来只是个70来行的小程序(晕～)。</p><p>但是硬生生配了100+行的测试，测试实在是太方便了，只需要Run一下就可以一键测试，基本的测试策略是将输入分为几个维度:</p><ol><li>包含 +，-，*，/，数字，非法字符</li><li>单行或多行</li><li>单次输入分析和多次输入分析</li></ol><p>最终每个纬度的每个方面都至少有一个测试样例覆盖到了，代码覆盖率(分支覆盖率)也达到了百分之百。</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;&lt;a href=&quot;https://github.com/Rivers-Shall/Compiler-Principle-Code/tree/master/LexerDemo&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Github链接&lt;/a&gt;&lt;/p&gt;
-&lt;h3 id=&quot;编写目的&quot;&gt;&lt;a href=&quot;#编写目的&quot; class=&quot;headerlink&quot; title=&quot;编写目的&quot;&gt;&lt;/a&gt;编写目的&lt;/h3&gt;&lt;p&gt;在观看了几份视频后决定先开发一个&lt;code&gt;LexerDemo&lt;/code&gt;类，用于展示词法分析的含义，也即&lt;code&gt;LexerDemo&lt;/code&gt;类仅展示词法分析的输入和词法分析的输出，不展示其余任何东西，开放的接口仅有无参构造函数和用于返回词法分析结果的&lt;code&gt;lex&lt;/code&gt;方法。&lt;code&gt;LexerDemo&lt;/code&gt;用于对仅含非负整数，加减乘除的运算表达式做词法分析。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Open Course" scheme="https://rivers-shall.github.io/categories/Open-Course/"/>
-    
-      <category term="163-自己动手用Java写编译器" scheme="https://rivers-shall.github.io/categories/Open-Course/163-%E8%87%AA%E5%B7%B1%E5%8A%A8%E6%89%8B%E7%94%A8Java%E5%86%99%E7%BC%96%E8%AF%91%E5%99%A8/"/>
-    
-    
-      <category term="Java" scheme="https://rivers-shall.github.io/tags/Java/"/>
-    
-      <category term="Compiler" scheme="https://rivers-shall.github.io/tags/Compiler/"/>
     
   </entry>
   
