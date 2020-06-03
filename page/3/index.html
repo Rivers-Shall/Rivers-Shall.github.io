@@ -199,6 +199,108 @@
   
   
   <article itemscope="" itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2019/10/15/PL-Part-A-Section-1-Extra-Practice/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/龙卷1.jpeg">
+      <meta itemprop="name" content="碧漾">
+      <meta itemprop="description" content="心中的自我永远也不能实现，所以才要鞭策现实的自我啊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="碧漾的自我">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/10/15/PL-Part-A-Section-1-Extra-Practice/" class="post-title-link" itemprop="url">PL-Part-A-Section-1-Extra-Practice</a>
+        </h2>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-10-15 11:40:51" itemprop="dateCreated datePublished" datetime="2019-10-15T11:40:51+08:00">2019-10-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-05-28 14:56:19" itemprop="dateModified" datetime="2020-05-28T14:56:19+08:00">2020-05-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Open-Course/" itemprop="url" rel="index">
+                    <span itemprop="name">Open Course</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Open-Course/Programming-Language-By-Dan-Grossman/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming Language By Dan Grossman</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="函数式编程实现各类排序算法"><a href="#函数式编程实现各类排序算法" class="headerlink" title="函数式编程实现各类排序算法"></a>函数式编程实现各类排序算法</h2><p><a href="https://github.com/Rivers-Shall/PL-Extra-Practice" target="_blank" rel="noopener">Github仓库链接(长期更新)</a></p>
+<h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>在Coursera网站上的Programming Languages, Part A课程的第一节的额外练习中，有引导同学实现快速排序和归并排序的过程(事实上在正式作业的challenge部分也用到了排序进行去重，当然可以使用简单的$O(n^2)$算法进行去重，不过排序后去重能提升到$O(n\log n)$而已)，就我个人来看，这也是很有意思的一件事，所以写了博文记录下来。</p>
+<h3 id="使用到的函数式编程介绍"><a href="#使用到的函数式编程介绍" class="headerlink" title="使用到的函数式编程介绍"></a>使用到的函数式编程介绍</h3><p>这次使用的语言是Programming Languages, Part A课程的Standard ML语言。</p>
+<p>其实在传统的命令式编程中，我们应该已经比较熟悉各类排序算法的实现了，那么函数式编程有什么区别呢？</p>
+<p>在这篇博文中中，我们暂时不使用函数式编程中比较高人气的<code>map</code>, <code>reduce</code>, <code>filter</code>等(第一节的课程也没有涉及，当然，日后可能回来更新也说不定)</p>
+<p>我们主要使用的函数式编程功能如下：</p>
+<ul>
+<li>不可更改的列表(存储同一类型的数据)</li>
+<li>对列表的操作 <code>hd</code>, <code>tl</code>(<code>hd</code>返回列表第一个元素，<code>tl</code>返回删除了列表第一个元素的新列表)</li>
+<li>元组，可以使用 <code>#&lt;number&gt;</code>的方式进行索引的不可变数据(可存储不同类型的数据)</li>
+<li>递归</li>
+<li>少量pattern-matching(在<code>val binding</code>里)，类似于python中的<code>x, y = y, x</code></li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/10/15/PL-Part-A-Section-1-Extra-Practice/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2019/10/07/Java开发编译器-1-LexerDemo/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1001,87 +1103,6 @@
   
   
 
-        
-  
-  
-  <article itemscope="" itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2019/03/05/NJU-OS-M1-pstree/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/龙卷1.jpeg">
-      <meta itemprop="name" content="碧漾">
-      <meta itemprop="description" content="心中的自我永远也不能实现，所以才要鞭策现实的自我啊">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="碧漾的自我">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/03/05/NJU-OS-M1-pstree/" class="post-title-link" itemprop="url">NJU-OS-M1-pstree</a>
-        </h2>
-
-        <div class="post-meta">
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-03-05 22:14:41" itemprop="dateCreated datePublished" datetime="2019-03-05T22:14:41+08:00">2019-03-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-05-28 14:56:19" itemprop="dateModified" datetime="2020-05-28T14:56:19+08:00">2020-05-28</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="Intro"><a href="#Intro" class="headerlink" title="Intro"></a>Intro</h2><p><code>pstree</code> is a program in the package <code>psmisc</code> and can be downloaded on <a href="https://packages.ubuntu.com/bionic/psmisc" target="_blank" rel="noopener">the site of Ubuntu packages</a>.  And now it is used as a Minilab(M1) of OS Course in NJU.</p>
-<p>According to the handout of M1, I only need to implement a simplified version of <code>pstree</code>, including option <code>Vpn</code> and the corresponding long options.  To accomplish the target, the whole program can be divided into three parts:</p>
-<ol>
-<li>Read and process the options</li>
-<li>Read the info of processes(pid, ppid(pid of the parent process), name)</li>
-<li>Save the info of processes and build the data structure of them</li>
-<li>Print the processes as a tree</li>
-</ol>
-<p>Actually, the 2nd and 3rd parts are done simultaneously.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/03/05/NJU-OS-M1-pstree/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1153,7 +1174,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">40</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1166,7 +1187,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
