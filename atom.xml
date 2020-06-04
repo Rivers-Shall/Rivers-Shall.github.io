@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://rivers-shall.github.io/"/>
-  <updated>2020-06-03T12:26:58.028Z</updated>
+  <updated>2020-06-04T08:37:43.540Z</updated>
   <id>https://rivers-shall.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>oop大作业总结与从中看到的未来计划</title>
+    <link href="https://rivers-shall.github.io/2020/06/04/oop%E5%A4%A7%E4%BD%9C%E4%B8%9A%E6%80%BB%E7%BB%93%E4%B8%8E%E4%BB%8E%E4%B8%AD%E7%9C%8B%E5%88%B0%E7%9A%84%E6%9C%AA%E6%9D%A5%E8%AE%A1%E5%88%92/"/>
+    <id>https://rivers-shall.github.io/2020/06/04/oop大作业总结与从中看到的未来计划/</id>
+    <published>2020-06-04T03:12:09.000Z</published>
+    <updated>2020-06-04T08:37:43.540Z</updated>
+    
+    <content type="html"><![CDATA[<p>这篇文章是在我完成了oop大作业之后，重新审视自己的开发流程与系统设计的一点总结与展望，简单来说：</p><ol><li>这是个”154/“(一无是处)的项目</li><li>好在能够让我感受到一些努力的方向</li></ol><p>代码就不开源了，实在太差了，就在这里口嗨一下就好</p><a id="more"></a><h2 id="存在的问题与未来的计划"><a href="#存在的问题与未来的计划" class="headerlink" title="存在的问题与未来的计划"></a>存在的问题与未来的计划</h2><h3 id="前端问题"><a href="#前端问题" class="headerlink" title="前端问题"></a>前端问题</h3><ol><li>没有对界面做任何的优化</li><li>没有任何的自动化测试，没有任何的后端分离的测试</li><li>模块化做的很差</li></ol><h4 id="没有对界面做任何的优化"><a href="#没有对界面做任何的优化" class="headerlink" title="没有对界面做任何的优化"></a>没有对界面做任何的优化</h4><p>CSS，是前端三大件中，我认为最复杂的一件，重点在于，CSS并不能被称为一门”编程语言”，应该来说，它是一门”设计用语”，在大学计算机科学中接触到的训练，可以说对CSS的学习是没有任何帮助的，这就导致即便看了很多CSS相关的资料，到了要实现界面效果的时候，还是会出现无从下手的情况</p><p>这次的大作业中，我几乎没有涉及到任何的CSS，只有在数个<code>div</code>需要并列做出类似column的效果时，使用了<code>display: inline-block</code>这样的属性设置，其他的我也想不到什么了</p><p>虽然离提交还有两三个星期，这个时间拿来上手一下element-ui之类的高层库，也是可能优化界面的，但是我觉得简约也是一种特色吧，另外，布置大作业时，长度不到一页纸的需求文档，我也没有太大的兴趣做出一个炫酷的界面，简约的界面反而和这样简约的需求很配呢</p><h4 id="没有任何的自动化测试，没有任何的后端分离测试"><a href="#没有任何的自动化测试，没有任何的后端分离测试" class="headerlink" title="没有任何的自动化测试，没有任何的后端分离测试"></a>没有任何的自动化测试，没有任何的后端分离测试</h4><p>前端的开发流程中，当然会需要测试</p><p>而我这次开发，测试的手段就是把后端服务起来，然后把前端dev-server起来，在界面上点来点去</p><p>这样子的效率低到令人发指，还需要后端的配合：</p><ol><li>点来点去，人傻了都</li><li>如果几次操作之间记忆出现错误，很有可能上一回测到的路径，这次又没有测到</li><li>如果后端接口没有准备好，前端就没有办法测试</li></ol><h4 id="模块化做的很差"><a href="#模块化做的很差" class="headerlink" title="模块化做的很差"></a>模块化做的很差</h4><p>前端的模块化一直以来都是问题挺大的，说实在的设计类要做出非常好的模块化也有点尴尬，另外一方面没有使用高层框架，也会使得模块化更加困难</p><p>首先，vue中的各个模组就已经出现了类似的结构，但是我并没有很好地方法来模块化，做的也有点烦躁</p><p>其次，前端存储和请求发送没有能够很好的模块化，尤其是请求发送模块，完全耦合在了vue的代码里，前端存储模块由于使用的是vuex框架，模块性还好一些，但是由于使用上经验不足，在引入到vue中的时候，出现了一些可读性较差的冗余代码</p><h3 id="前端未来的计划"><a href="#前端未来的计划" class="headerlink" title="前端未来的计划"></a>前端未来的计划</h3><ol><li>basic knowledge + code snippet 学习界面设计</li><li>了解前端的测试方式方法</li><li>了解好的前端架构与模块化开发方式</li></ol><h4 id="basic-knowledge-code-snippet-学习界面设计"><a href="#basic-knowledge-code-snippet-学习界面设计" class="headerlink" title="basic knowledge + code snippet 学习界面设计"></a>basic knowledge + code snippet 学习界面设计</h4><p>如何学习界面的设计？如何用CSS+JS或者高层框架实现设计？这两个问题，每个人都有不同的答案</p><p>我的答案是: basic knowledge + code snippet</p><h5 id="basic-knowledge"><a href="#basic-knowledge" class="headerlink" title="basic knowledge"></a>basic knowledge</h5><p>这就是指对CSS+JS或者高层框架的基础知识要了解，不需要深入，只要能够做到，看到代码，不会感到一头雾水，而是明白，这个属性/样式作用在了哪里，至于效果如何，怎么配置，知道去那里可以查文档就行</p><h5 id="code-snippet"><a href="#code-snippet" class="headerlink" title="code snippet"></a>code snippet</h5><p>这个才是重头戏，毕竟设计类的，只要不是强要求，大部分都可以通过修改他人的设计，而后达到自己的目的</p><p>所以平时要多积累：</p><ol><li>页面经典的布局(导航栏，登录界面，展示界面等)与实现代码</li><li>特殊的交互逻辑(固定在顶部的导航栏，顶部页面滑动进度显示等)与实现代码</li></ol><p>到时候自己想要做炫酷的功能，就直接去code snippet库里找一找，改一改就好</p><h4 id="了解前端的测试方式与方法"><a href="#了解前端的测试方式与方法" class="headerlink" title="了解前端的测试方式与方法"></a>了解前端的测试方式与方法</h4><p>最重要的几个问题：</p><ol><li>如何自动化？<ul><li>如何模拟鼠标，键盘等的交互操作？</li><li>如何验证测试结果？</li><li>前端JS逻辑代码如何测试？如何单元测试？</li></ul></li><li>如何与后端分离？<ul><li>如何模拟(mock)后端接口？</li><li>怎样设计</li></ul></li></ol><h4 id="了解好的前端架构与模块化开发方式"><a href="#了解好的前端架构与模块化开发方式" class="headerlink" title="了解好的前端架构与模块化开发方式"></a>了解好的前端架构与模块化开发方式</h4><p>去看看好的开源项目，他们是</p><ol><li>如何联动使用vue，vuex，vue-router，axios的</li><li>如何将前端存储，请求发送包装成为独立的模块</li><li>如何包装前端框架中的各种模组</li><li>其他的优秀设计理念</li></ol><h3 id="后端的问题"><a href="#后端的问题" class="headerlink" title="后端的问题"></a>后端的问题</h3><ol><li>没有自动化测试</li><li>没有使用数据库事务</li><li>后端REST接口设计的不好</li></ol><h4 id="没有自动化测试"><a href="#没有自动化测试" class="headerlink" title="没有自动化测试"></a>没有自动化测试</h4><p>没有，真的没有，为了快速开发，测试代码为零</p><h4 id="没有使用数据库事务"><a href="#没有使用数据库事务" class="headerlink" title="没有使用数据库事务"></a>没有使用数据库事务</h4><p>这有需求文档的问题(其实大作业布置下来的要求根本没资格被称为需求文档，只能说是非常模糊的甲方需求，<del>啊！万恶的甲方</del>)</p><p>也有个人的问题，本身是有情景需要事务的，但是由于对技术栈不熟悉(JS的express.js+mongoose)，在尝试了几下之后，就放弃了，毕竟还要优先保证完成业务逻辑，现在想想实际上并不是很困难，完全可以做</p><h4 id="后端REST接口设计的不好"><a href="#后端REST接口设计的不好" class="headerlink" title="后端REST接口设计的不好"></a>后端REST接口设计的不好</h4><p>这个”不好”，指的是什么方面呢？</p><p>首先，后端接口在开发过程中还几经变迁，基本上是开发到哪算到哪，最终导致接口变来变去，同时REST的”面向资源的操作”特性不明显</p><p>特性不明显这一点倒感觉未必非常重要，但是几经变迁这件事槽点比较大</p><h3 id="后端未来的计划"><a href="#后端未来的计划" class="headerlink" title="后端未来的计划"></a>后端未来的计划</h3><ol><li>学会自动化测试</li><li>了解各类数据库的使用</li><li>学习各种后端接口的设计</li></ol><h4 id="学会自动化测试"><a href="#学会自动化测试" class="headerlink" title="学会自动化测试"></a>学会自动化测试</h4><ul><li>如何在框架内使用单元测试？</li><li>如何mock HTTP请求?(postman)</li><li>如何自动化mock HTTP请求并验证response？</li></ul><h4 id="了解各类数据库的使用"><a href="#了解各类数据库的使用" class="headerlink" title="了解各类数据库的使用"></a>了解各类数据库的使用</h4><ul><li>SQL与NoSQL</li><li>数据库事务</li><li>数据库底层的实现，各类锁</li></ul><h4 id="学习各种后端接口的设计"><a href="#学习各种后端接口的设计" class="headerlink" title="学习各种后端接口的设计"></a>学习各种后端接口的设计</h4><ul><li>REST风格</li><li>GraphQL接口设计</li><li>RPC调用接口设计</li></ul><h3 id="开发流程上的问题与计划"><a href="#开发流程上的问题与计划" class="headerlink" title="开发流程上的问题与计划"></a>开发流程上的问题与计划</h3><p>主要是文档和git的workflow</p><p>文档方面，要养成良好的习惯，多写点注释，使用文档，需求文档，接口文档，设计的优先级一定是要高于编码的</p><p>git的workflow，要采用master/dev/feature/hotfix的开发方式，保持主分支的干净</p><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这次的开发活动，需求不明确，开发者也缺少经验，同时缺少动力(既不能赚钱，也不是自己感兴趣的产品)，所以最终的成品是比较惨的</p><p>总的来说，需要多读，读开源项目的代码，多写，自己找到有兴趣的项目，做一些完整的，良好的开发活动</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;这篇文章是在我完成了oop大作业之后，重新审视自己的开发流程与系统设计的一点总结与展望，简单来说：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;这是个”154/“(一无是处)的项目&lt;/li&gt;
+&lt;li&gt;好在能够让我感受到一些努力的方向&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;代码就不开源了，实在太差了，就在这里口嗨一下就好&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="程序人生" scheme="https://rivers-shall.github.io/categories/%E7%A8%8B%E5%BA%8F%E4%BA%BA%E7%94%9F/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>goland中Run与Debug里working-directory的含义</title>
@@ -503,28 +528,6 @@
     
       <category term="计算机网络" scheme="https://rivers-shall.github.io/categories/NJU-Class/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
     
-    
-  </entry>
-  
-  <entry>
-    <title>2019年总结</title>
-    <link href="https://rivers-shall.github.io/2019/12/19/2019%E5%B9%B4%E6%80%BB%E7%BB%93/"/>
-    <id>https://rivers-shall.github.io/2019/12/19/2019年总结/</id>
-    <published>2019-12-18T16:59:54.000Z</published>
-    <updated>2020-05-28T06:56:19.810Z</updated>
-    
-    <content type="html"><![CDATA[<p>很快就要元旦了，提前总结2019年</p><a id="more"></a><h2 id="2019重要事件简单复盘"><a href="#2019重要事件简单复盘" class="headerlink" title="2019重要事件简单复盘"></a>2019重要事件简单复盘</h2><p>2019.1 - 2019.2 寒假，开学前交换</p><p>2019.3 - 2019.6 二年级下，在校就读</p><ul><li>2019.4 N大程序设计校赛普及组冠军</li><li>2019.5 江苏省大学生程序设计大赛一等奖，感谢队友xnr和yzy实力carry</li></ul><p>2019.7 - 2019.8</p><ul><li>担任《汇编语言》课程助教</li><li>Alibaba Summer of Code 参与 Spring-Cloud-Alibaba 开源项目</li><li>2019.8.2X - 2019.8.31 字节跳动夏令营Byte Camp工程赛道一等奖，感谢四位队友和辛勤导师fcj</li></ul><p>2019.9 - 2019.12 三年级上，在校就读，同时忙于实习投简历，面试</p><h2 id="2019年思考与评价"><a href="#2019年思考与评价" class="headerlink" title="2019年思考与评价"></a>2019年思考与评价</h2><h3 id="2019年是幸运的一年"><a href="#2019年是幸运的一年" class="headerlink" title="2019年是幸运的一年"></a>2019年是幸运的一年</h3><p>两次程序设计大赛的获奖，Alibaba Summer of Code的参与，Byte Camp的参与和获奖使得我的简历不再过于单薄</p><p>Alibaba Summer of Code 成功走出了向开源社区的第一步(或许念念不忘，真的会有回响)，也是第一次接触工业级的代码，对Spring，开源文化理解更加深刻</p><p>Byte Camp 第一次真正意义上的多人合作开发，尝试着理解程序猿之间相爱相杀的故事</p><h3 id="2019是技术上的低产年，习性上的高产年"><a href="#2019是技术上的低产年，习性上的高产年" class="headerlink" title="2019是技术上的低产年，习性上的高产年"></a>2019是技术上的低产年，习性上的高产年</h3><p>大一时其实并未成功正视，只是选择性忽视，习性妥协极少，刚则易折，反馈到大二时面对突如其来的变化，将妥协作为主要手段，于是妥协井喷式增加，也可以认为是技术低产的主要诱因</p><p>好在经过一整年的打磨，渐渐的接受了心中的设定，同时正视设定和现实，妥协次数渐渐减少，习性上有明显的产出</p><h3 id="技术博客的写作比想象中的困难"><a href="#技术博客的写作比想象中的困难" class="headerlink" title="技术博客的写作比想象中的困难"></a>技术博客的写作比想象中的困难</h3><p>断断续续写过数篇博客，但是多个系列都处在僵尸状态，独立的博文数量也较少，总结思考了一下，写技术博客其实比我预想的困难，主要是因为：</p><ul><li>一个完整系列的博文，对于写作者对系列内容的掌握程度要求是较高的，否则很难理清一个脉络出来</li><li>我的开始，往往采取边学边写的状态<ul><li>本身心中的“完美的博文”设定很容易导致对之前的博文不满意</li><li>写到后几份容易出现突发情况，比如原先认定的系列目标突然消失</li></ul></li></ul><p>对此，我觉得应该现对系列内容进行学习，学习到一定阶段，或者学习彻底完成后，以博文写作的方式来进行复习和整理</p><p>同时对于博文，没有必要想太多，简单地作为一个学习笔记，分享知识就好，总想着完美地表达概念或者内涵是不现实的</p><h3 id="与2018的比较"><a href="#与2018的比较" class="headerlink" title="与2018的比较"></a>与2018的比较</h3><p><a href="/2019/02/05/戊戌年总结/" title="戊戌年总结">戊戌年总结</a>为农历年份的总结，从2019年开始，使用公历年份进行总结</p><p>相比于2018，总结中记录的琐事渐渐减少，心中的“设定”作用渐渐体现，将关注逐渐转移到所认为的重点上来了</p><p>2018年对在校生活的关注较多，2019年对个人活动的关注较多，或许到了该往外走走闯闯的时候了</p><h2 id="即将开启的故事"><a href="#即将开启的故事" class="headerlink" title="即将开启的故事"></a>即将开启的故事</h2><p>本想将2020的目标一并发上来，似乎并不合适，不如等待2020的年终总结更好，哈哈</p><p>对2020，还是要说一句 - A wind of change is blowing!</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;很快就要元旦了，提前总结2019年&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="程序人生" scheme="https://rivers-shall.github.io/categories/%E7%A8%8B%E5%BA%8F%E4%BA%BA%E7%94%9F/"/>
-    
-    
-      <category term="年终总结" scheme="https://rivers-shall.github.io/tags/%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/"/>
     
   </entry>
   
