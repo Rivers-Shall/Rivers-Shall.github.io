@@ -46,26 +46,20 @@
   };
 </script>
 <script data-ad-client="ca-pub-6100092033271048" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-  <meta name="description" content="寒假还未开始，家里人就已经决定要集体出游，上次出游去的是帝都，在茫茫人海中行色匆匆地游览了一些名胜，现在想来，还是应该修完中国近现代史而后再去，了解的会多一些，收获会大一些。 加上帝都主要都是文化名胜，自然风景尚可，但不是主要，于是今年决定去看点风景，思来想去决定爬山，一开始说要去泰山，后来决定去黄山，说到底还是因为徐霞客的”五岳归来不看山，黄山归来不看岳”。 在汤口镇住了三天，第一天爬黄山，第二">
-<meta name="keywords" content="游记">
+  <meta name="description" content="本文记录了作者在使用goland提供的提取方法(Extract Method)功能时，由于...interface{}的类型问题而遭遇到的bug和一点感悟，简单来说:  可变长的参数会被goland的Extract Method转化为切片(slice)，比如...interface{}会被转化为[]interface{} 由于interface{}的特殊性，需要额外注意">
+<meta name="keywords" content="golang,goland">
 <meta property="og:type" content="article">
-<meta property="og:title" content="黄山游记">
-<meta property="og:url" content="https://rivers-shall.github.io/2019/02/10/黄山游记/index.html">
+<meta property="og:title" content="goland提取方法与...interface{}类型的注意点">
+<meta property="og:url" content="https://rivers-shall.github.io/2020/06/08/goland提取方法与-interface-类型的注意点/index.html">
 <meta property="og:site_name" content="碧漾的自我">
-<meta property="og:description" content="寒假还未开始，家里人就已经决定要集体出游，上次出游去的是帝都，在茫茫人海中行色匆匆地游览了一些名胜，现在想来，还是应该修完中国近现代史而后再去，了解的会多一些，收获会大一些。 加上帝都主要都是文化名胜，自然风景尚可，但不是主要，于是今年决定去看点风景，思来想去决定爬山，一开始说要去泰山，后来决定去黄山，说到底还是因为徐霞客的”五岳归来不看山，黄山归来不看岳”。 在汤口镇住了三天，第一天爬黄山，第二">
+<meta property="og:description" content="本文记录了作者在使用goland提供的提取方法(Extract Method)功能时，由于...interface{}的类型问题而遭遇到的bug和一点感悟，简单来说:  可变长的参数会被goland的Extract Method转化为切片(slice)，比如...interface{}会被转化为[]interface{} 由于interface{}的特殊性，需要额外注意">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://rivers-shall.github.io/2019/02/10/黄山游记/Cloud-Sea-1.jpg">
-<meta property="og:image" content="https://rivers-shall.github.io/2019/02/10/黄山游记/Three-Islands.jpg">
-<meta property="og:image" content="https://rivers-shall.github.io/2019/02/10/黄山游记/Cloud-Sea-2.jpg">
-<meta property="og:image" content="https://rivers-shall.github.io/2019/02/10/黄山游记/Cloud-Sea-3.jpg">
-<meta property="og:image" content="https://rivers-shall.github.io/2019/02/10/黄山游记/Cloud-Sea-4.jpg">
-<meta property="og:updated_time" content="2020-05-28T06:56:19.763Z">
+<meta property="og:updated_time" content="2020-06-08T09:28:36.185Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="黄山游记">
-<meta name="twitter:description" content="寒假还未开始，家里人就已经决定要集体出游，上次出游去的是帝都，在茫茫人海中行色匆匆地游览了一些名胜，现在想来，还是应该修完中国近现代史而后再去，了解的会多一些，收获会大一些。 加上帝都主要都是文化名胜，自然风景尚可，但不是主要，于是今年决定去看点风景，思来想去决定爬山，一开始说要去泰山，后来决定去黄山，说到底还是因为徐霞客的”五岳归来不看山，黄山归来不看岳”。 在汤口镇住了三天，第一天爬黄山，第二">
-<meta name="twitter:image" content="https://rivers-shall.github.io/2019/02/10/黄山游记/Cloud-Sea-1.jpg">
+<meta name="twitter:title" content="goland提取方法与...interface{}类型的注意点">
+<meta name="twitter:description" content="本文记录了作者在使用goland提供的提取方法(Extract Method)功能时，由于...interface{}的类型问题而遭遇到的bug和一点感悟，简单来说:  可变长的参数会被goland的Extract Method转化为切片(slice)，比如...interface{}会被转化为[]interface{} 由于interface{}的特殊性，需要额外注意">
 
-<link rel="canonical" href="https://rivers-shall.github.io/2019/02/10/黄山游记/">
+<link rel="canonical" href="https://rivers-shall.github.io/2020/06/08/goland提取方法与-interface-类型的注意点/">
 
 
 <script id="page-configurations">
@@ -77,7 +71,7 @@
   };
 </script>
 
-  <title>黄山游记 | 碧漾的自我</title>
+  <title>goland提取方法与...interface{}类型的注意点 | 碧漾的自我</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129500136-1"></script>
     <script>
@@ -207,7 +201,7 @@
   
   
   <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2019/02/10/黄山游记/">
+    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2020/06/08/goland提取方法与-interface-类型的注意点/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/龙卷1.jpeg">
@@ -220,7 +214,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          黄山游记
+          goland提取方法与...interface{}类型的注意点
         </h2>
 
         <div class="post-meta">
@@ -230,24 +224,18 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2019-02-10 08:28:01" itemprop="dateCreated datePublished" datetime="2019-02-10T08:28:01+08:00">2019-02-10</time>
+              <time title="创建时间：2020-06-08 17:15:04 / 修改时间：17:28:36" itemprop="dateCreated datePublished" datetime="2020-06-08T17:15:04+08:00">2020-06-08</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-05-28 14:56:19" itemprop="dateModified" datetime="2020-05-28T14:56:19+08:00">2020-05-28</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/程序人生/" itemprop="url" rel="index">
-                    <span itemprop="name">程序人生</span>
+                  <a href="/categories/basic-knowledge/" itemprop="url" rel="index">
+                    <span itemprop="name">basic knowledge</span>
                   </a>
                 </span>
             </span>
@@ -263,26 +251,29 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>寒假还未开始，家里人就已经决定要集体出游，上次出游去的是帝都，在茫茫人海中行色匆匆地游览了一些名胜，现在想来，还是应该修完中国近现代史而后再去，了解的会多一些，收获会大一些。</p>
-<p>加上帝都主要都是文化名胜，自然风景尚可，但不是主要，于是今年决定去看点风景，思来想去决定爬山，一开始说要去泰山，后来决定去黄山，说到底还是因为徐霞客的”五岳归来不看山，黄山归来不看岳”。</p>
-<p>在汤口镇住了三天，第一天爬黄山，第二天游宏村，第三天在跑路之前去了屯溪老街。</p>
-<p>都说黄山有四绝，奇松，怪石，云海，温泉，但是温泉需要一定的经济基础，穷游的我果断放弃了，而剩下的三绝倒的的确确是体会到了。</p>
-<p>为了爬山，早上五点多就起了床，但事实证明还是不够早，听说有许多人三点就起床走了，黄山上山有两个入口，一个是前山的慈光阁，一个是后山的云谷寺，经典的线路似乎是从云谷寺上山，而后从慈光阁下山，因为前山比后山要难以攀爬，但是听到云谷寺接送车站前的大喇叭不断地喊着:”此处登山等待时间约为两个小时，建议从慈光阁上山”，就打消了随大流的念头。</p>
-<p>后来的经历证明前山确实比后山更加陡峭，但是这个发现在我的团队里意义不大，因为在玉屏楼的时候，四个人里就有三个提出下山了，明明只走了四分之一<del>(或许还不到)</del>的道路。</p>
-<p>从慈光阁到玉屏楼的路上，也是第一次见到黄山云海(或许叫云雾更合适)的时候，确实清逸缥缈，如梦似幻，比那日南京，镇江等地的大雾多了几分生气和仙气。</p>
-<p><img src="Cloud-Sea-1.jpg" alt=""></p>
-<p>如果说在慈光阁到玉屏楼的路上还有什么令人难忘的景色的话，首当其冲的就是蓬莱三岛，而且到达蓬莱三岛时，太阳悬空而照，正对着游览的人群，将三岛的轮廓化作了幽深的影子。</p>
-<p><img src="Three-Islands.jpg" alt=""></p>
-<p>而后的旅行，便是直上玉屏楼，玉屏楼上有整个黄山的象征与标志–迎客松，但是似乎是为了不知名的原因，迎客松下被搭起了一个丑陋的脚手架。但是玉屏楼确实是整个黄山之旅中景色最好的一处，一方面是视野开阔，另一方面是当我到达玉屏楼时仍然留有余力，并不觉得有多累。</p>
-<p><img src="Cloud-Sea-2.jpg" alt=""><br><img src="Cloud-Sea-3.jpg" alt=""></p>
-<p>玉屏楼之后，我便一人独行，后来路上的人逐渐变多，甚至有几次拥堵的经历，我的体力也渐渐耗尽，最后的一半左右的旅程与其说是游览，不如说是赶路，我要做的，就是完成我原定的计划，于慈光阁上山，于云谷寺下山，能够说得出名字的景色就是那块飞来石，不过飞来石旁有点奇怪，整块石头立于悬崖峭壁之上，但是只有一半的地方有护栏，另外一半没有。而且有许多好景色并没有明确的标出名字。</p>
-<p><img src="Cloud-Sea-4.jpg" alt=""></p>
+        <p>本文记录了作者在使用goland提供的提取方法(Extract Method)功能时，由于<code>...interface{}</code>的类型问题而遭遇到的bug和一点感悟，简单来说:</p>
+<ul>
+<li>可变长的参数会被goland的Extract Method转化为切片(slice)，比如<code>...interface{}</code>会被转化为<code>[]interface{}</code></li>
+<li>由于<code>interface{}</code>的特殊性，需要额外注意</li>
+</ul>
 <a id="more"></a>
-<p>整个爬黄山的过程留下了两点遗憾:</p>
-<p>一是天都峰和莲花峰全部封了，不允许攀登，我最后只是登上了鳌鱼峰，但是峰顶的景色并没有想象中的那么好。</p>
-<p>二是没有雨雪，这点不解释。</p>
-<p>总的来说，云海为最，奇松和怪石也见到了，但是这二者都对想象力提出了一定的要求，并没有像云海那样让我切实的感到快乐。</p>
-<p>与黄山相比，后两日的宏村和屯溪都有些黯然失色，但是这两个景点确实值得一去，尤其是宏村。</p>
+<h2 id="bug的产生"><a href="#bug的产生" class="headerlink" title="bug的产生"></a>bug的产生</h2><p>在代码中有如下片段</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">f</span><span class="params">(payload ...<span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> _, p := <span class="keyword">range</span> payload &#123;</span><br><span class="line">        <span class="comment">// do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在想要将循环提取出来，作为一个方法，在goland中可以直接选中文本然后Extract Method，但是结果是这样的</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">f</span><span class="params">(payload ...<span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    ExtractedMethod(payload)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ExtractedMethod</span><span class="params">(payload []<span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> _, p := <span class="keyword">range</span> payload &#123;</span><br><span class="line">        <span class="comment">// do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>期望中的函数签名是<code>ExtractedMethod(payload ...interface{})</code>，不符合预期，所以要进行修改</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// WRONG!!!!!!!!</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">f</span><span class="params">(payload ...<span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    ExtractedMethod(payload)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ExtractedMethod</span><span class="params">(payload ...<span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> _, p := <span class="keyword">range</span> payload &#123;</span><br><span class="line">        <span class="comment">// do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述的代码不会有编译错误，但是是完全不符合预期的，为什么呢？</p>
+<h2 id="bug的原因"><a href="#bug的原因" class="headerlink" title="bug的原因"></a>bug的原因</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// WRONG!!!!!!!!</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">f</span><span class="params">(payload ...<span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    <span class="comment">// we need to unpack payload</span></span><br><span class="line">    ExtractedMethod(payload)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ExtractedMethod</span><span class="params">(payload ...<span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> _, p := <span class="keyword">range</span> payload &#123;</span><br><span class="line">        <span class="comment">// do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上述注释所说，我们需要对<code>f</code>中传递给<code>ExtractedMethod</code>的参数<code>payload</code>做一个解包工作，因为</p>
+<ul>
+<li>我们<code>f</code>函数的本意是要用<code>ExtractedMehtod</code>对<code>payload</code>中的每一个元素做处理</li>
+<li>现在不解包，<code>payload</code>原本一个<code>[]interface{}</code>又被<strong>额外自动包装了一层</strong>，成为了<code>interface{}</code>传递给了<code>ExtractedMethod</code>，只会对整个<code>payload</code>做一次处理</li>
+</ul>
+<h2 id="bug的解决与思考"><a href="#bug的解决与思考" class="headerlink" title="bug的解决与思考"></a>bug的解决与思考</h2><p>将代码修改为如下后正确</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">f</span><span class="params">(payload ...<span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    ExtractedMethod(payload...)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ExtractedMethod</span><span class="params">(payload ...<span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> _, p := <span class="keyword">range</span> payload &#123;</span><br><span class="line">        <span class="comment">// do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以后可以采取的方法是，先将传参的地方<code>payload</code>改为<code>payload...</code>，这样的话如果忘记修改参数<code>[]interface{}</code>为<code>...interface{}</code>，是会有编译器报错的</p>
+<p>这个修改顺序可以让编译器为我们保驾</p>
 
     </div>
 
@@ -292,7 +283,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/游记/" rel="tag"># 游记</a>
+              <a href="/tags/golang/" rel="tag"># golang</a>
+              <a href="/tags/goland/" rel="tag"># goland</a>
           </div>
 
         
@@ -301,13 +293,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/02/05/戊戌年总结/" rel="prev" title="戊戌年总结">
-      <i class="fa fa-chevron-left"></i> 戊戌年总结
+    <a href="/2020/06/07/常见的git工作流/" rel="prev" title="常见的git工作流">
+      <i class="fa fa-chevron-left"></i> 常见的git工作流
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2019/02/27/Introduction-to-Probability-MIT-01/" rel="next" title="Introduction-to-Probability-MIT(01)">
-      Introduction-to-Probability-MIT(01) <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -368,6 +357,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#bug的产生"><span class="nav-number">1.</span> <span class="nav-text">bug的产生</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bug的原因"><span class="nav-number">2.</span> <span class="nav-text">bug的原因</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bug的解决与思考"><span class="nav-number">3.</span> <span class="nav-text">bug的解决与思考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -544,7 +534,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo: 'blog-comment',
       owner: 'Rivers-Shall',
       admin: ['Rivers-Shall'],
-      id: '3e47cbe7f5f9de0fe89a73df6dcc2a38',
+      id: '856bbd2639062058a8061b5eaeeb2804',
         language: 'zh-CN',
       distractionFreeMode: 'true'
     });
