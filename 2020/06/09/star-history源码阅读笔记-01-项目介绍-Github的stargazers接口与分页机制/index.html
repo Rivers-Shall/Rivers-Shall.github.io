@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.8.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://rivers-shall.github.io').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+<script data-ad-client="ca-pub-6100092033271048" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <meta name="description" content="本文是star-history项目源码阅读的第一篇文章，会包含:  作者对项目的介绍，这个系列博文的目的 Github的stargazers接口 Github接口的分页策略 获取star历史的思路  本次对代码的分析基于Commit - first commit deecd92 timqian">
+<meta name="keywords" content="Github">
+<meta property="og:type" content="article">
+<meta property="og:title" content="star-history源码阅读笔记(01)-项目介绍,Github的stargazers接口与分页机制，获取star历史的思路">
+<meta property="og:url" content="https://rivers-shall.github.io/2020/06/09/star-history源码阅读笔记-01-项目介绍-Github的stargazers接口与分页机制/index.html">
+<meta property="og:site_name" content="碧漾的自我">
+<meta property="og:description" content="本文是star-history项目源码阅读的第一篇文章，会包含:  作者对项目的介绍，这个系列博文的目的 Github的stargazers接口 Github接口的分页策略 获取star历史的思路  本次对代码的分析基于Commit - first commit deecd92 timqian">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-06-10T11:54:36.544Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="star-history源码阅读笔记(01)-项目介绍,Github的stargazers接口与分页机制，获取star历史的思路">
+<meta name="twitter:description" content="本文是star-history项目源码阅读的第一篇文章，会包含:  作者对项目的介绍，这个系列博文的目的 Github的stargazers接口 Github接口的分页策略 获取star历史的思路  本次对代码的分析基于Commit - first commit deecd92 timqian">
+
+<link rel="canonical" href="https://rivers-shall.github.io/2020/06/09/star-history源码阅读笔记-01-项目介绍-Github的stargazers接口与分页机制/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>star-history源码阅读笔记(01)-项目介绍,Github的stargazers接口与分页机制，获取star历史的思路 | 碧漾的自我</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129500136-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-129500136-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">碧漾的自我</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">beyond myself</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2020/06/09/star-history源码阅读笔记-01-项目介绍-Github的stargazers接口与分页机制/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/龙卷1.jpeg">
+      <meta itemprop="name" content="碧漾">
+      <meta itemprop="description" content="心中的自我永远也不能实现，所以才要鞭策现实的自我啊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="碧漾的自我">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          star-history源码阅读笔记(01)-项目介绍,Github的stargazers接口与分页机制，获取star历史的思路
+        </h2>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-06-09 16:20:00" itemprop="dateCreated datePublished" datetime="2020-06-09T16:20:00+08:00">2020-06-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-06-10 19:54:36" itemprop="dateModified" datetime="2020-06-10T19:54:36+08:00">2020-06-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/good-practice/" itemprop="url" rel="index">
+                    <span itemprop="name">good practice</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/basic-knowledge/" itemprop="url" rel="index">
+                    <span itemprop="name">basic knowledge</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/star-history源码阅读笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">star-history源码阅读笔记</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文是<a href="https://github.com/timqian/star-history" target="_blank" rel="noopener">star-history项目</a>源码阅读的第一篇文章，会包含:</p>
+<ul>
+<li>作者对项目的介绍，这个系列博文的目的</li>
+<li>Github的stargazers接口</li>
+<li>Github接口的分页策略</li>
+<li>获取star历史的思路</li>
+</ul>
+<p>本次对代码的分析基于Commit - <a href="https://github.com/timqian/star-history/tree/deecd92097809f39cd0ccd521b85ad54ac8fad24" target="_blank" rel="noopener">first commit deecd92 timqian</a></p>
+<a id="more"></a>
+<h2 id="项目的介绍与系列博文的目的"><a href="#项目的介绍与系列博文的目的" class="headerlink" title="项目的介绍与系列博文的目的"></a>项目的介绍与系列博文的目的</h2><h3 id="项目介绍"><a href="#项目介绍" class="headerlink" title="项目介绍"></a>项目介绍</h3><p>首先说明，本文作者并非项目作者，各种介绍和分析，如有不当，还请谅解。</p>
+<p><a href="https://github.com/timqian/star-history" target="_blank" rel="noopener">star-history项目</a>(<a href="https://star-history.t9t.io/" target="_blank" rel="noopener">体验地址</a>)是一个用于统计github项目获得star历史的组件，包括web app网页版本和chrome extension版本</p>
+<p>产生这个项目的原因，是Github官方并没有提供查看项目star历史的功能</p>
+<h3 id="博文目的"><a href="#博文目的" class="headerlink" title="博文目的"></a>博文目的</h3><ul>
+<li>留作知识沉淀<ul>
+<li>从体验界面来看，前端效果和功能都很不错，希望学习一下</li>
+</ul>
+</li>
+<li>将我三次元的时间，尽！情！挥！霍！</li>
+</ul>
+<h2 id="Github的stargazers接口"><a href="#Github的stargazers接口" class="headerlink" title="Github的stargazers接口"></a>Github的stargazers接口</h2><p>Github官方提供了一系列REST API(现在有向graphql上迁移的趋势)，通过REST API，可以获得许多Github上的信息，以此为基础，我们可以构建各式各样的APP，star-history这个项目也是这样建立起来的</p>
+<p>Github虽然没有提供直接查看项目star历史的功能，但是却提供了<a href="https://developer.github.com/v3/activity/starring/" target="_blank" rel="noopener">stargazers接口</a>，这个接口有两种形式</p>
+<ol>
+<li>查看star了一个项目的所有用户</li>
+<li>同上，并且加入该用户star该项目的时间</li>
+</ol>
+<p>这二者共用同一个rest url，不同的是：</p>
+<blockquote>
+<p>方法2需要在HTTP请求头中加入<code>Accept: application/vnd.github.v3.star+json</code></p>
+</blockquote>
+<p>其rest url和返回的json格式分别是</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">GET /repos/:owner/:repo/stargazers</span><br><span class="line"># 没有时间</span><br><span class="line">[</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">"login"</span>: <span class="string">"octocat"</span>,</span><br><span class="line">    <span class="attr">"id"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">"node_id"</span>: <span class="string">"MDQ6VXNlcjE="</span>,</span><br><span class="line">    <span class="attr">"avatar_url"</span>: <span class="string">"https://github.com/images/error/octocat_happy.gif"</span>,</span><br><span class="line">    <span class="attr">"gravatar_id"</span>: <span class="string">""</span>,</span><br><span class="line">    <span class="attr">"url"</span>: <span class="string">"https://api.github.com/users/octocat"</span>,</span><br><span class="line">    <span class="attr">"html_url"</span>: <span class="string">"https://github.com/octocat"</span>,</span><br><span class="line">    <span class="attr">"followers_url"</span>: <span class="string">"https://api.github.com/users/octocat/followers"</span>,</span><br><span class="line">    <span class="attr">"following_url"</span>: <span class="string">"https://api.github.com/users/octocat/following&#123;/other_user&#125;"</span>,</span><br><span class="line">    <span class="attr">"gists_url"</span>: <span class="string">"https://api.github.com/users/octocat/gists&#123;/gist_id&#125;"</span>,</span><br><span class="line">    <span class="attr">"starred_url"</span>: <span class="string">"https://api.github.com/users/octocat/starred&#123;/owner&#125;&#123;/repo&#125;"</span>,</span><br><span class="line">    <span class="attr">"subscriptions_url"</span>: <span class="string">"https://api.github.com/users/octocat/subscriptions"</span>,</span><br><span class="line">    <span class="attr">"organizations_url"</span>: <span class="string">"https://api.github.com/users/octocat/orgs"</span>,</span><br><span class="line">    <span class="attr">"repos_url"</span>: <span class="string">"https://api.github.com/users/octocat/repos"</span>,</span><br><span class="line">    <span class="attr">"events_url"</span>: <span class="string">"https://api.github.com/users/octocat/events&#123;/privacy&#125;"</span>,</span><br><span class="line">    <span class="attr">"received_events_url"</span>: <span class="string">"https://api.github.com/users/octocat/received_events"</span>,</span><br><span class="line">    <span class="attr">"type"</span>: <span class="string">"User"</span>,</span><br><span class="line">    <span class="attr">"site_admin"</span>: <span class="literal">false</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">GET /repos/:owner/:repo/stargazers</span><br><span class="line">Header:</span><br><span class="line">Accept: application/vnd.github.v3.star+json</span><br><span class="line"># 有star时间</span><br><span class="line">[</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">"starred_at"</span>: <span class="string">"2011-01-16T19:06:43Z"</span>,</span><br><span class="line">    <span class="attr">"user"</span>: &#123;</span><br><span class="line">      <span class="attr">"login"</span>: <span class="string">"octocat"</span>,</span><br><span class="line">      <span class="attr">"id"</span>: <span class="number">1</span>,</span><br><span class="line">      <span class="attr">"node_id"</span>: <span class="string">"MDQ6VXNlcjE="</span>,</span><br><span class="line">      <span class="attr">"avatar_url"</span>: <span class="string">"https://github.com/images/error/octocat_happy.gif"</span>,</span><br><span class="line">      <span class="attr">"gravatar_id"</span>: <span class="string">""</span>,</span><br><span class="line">      <span class="attr">"url"</span>: <span class="string">"https://api.github.com/users/octocat"</span>,</span><br><span class="line">      <span class="attr">"html_url"</span>: <span class="string">"https://github.com/octocat"</span>,</span><br><span class="line">      <span class="attr">"followers_url"</span>: <span class="string">"https://api.github.com/users/octocat/followers"</span>,</span><br><span class="line">      <span class="attr">"following_url"</span>: <span class="string">"https://api.github.com/users/octocat/following&#123;/other_user&#125;"</span>,</span><br><span class="line">      <span class="attr">"gists_url"</span>: <span class="string">"https://api.github.com/users/octocat/gists&#123;/gist_id&#125;"</span>,</span><br><span class="line">      <span class="attr">"starred_url"</span>: <span class="string">"https://api.github.com/users/octocat/starred&#123;/owner&#125;&#123;/repo&#125;"</span>,</span><br><span class="line">      <span class="attr">"subscriptions_url"</span>: <span class="string">"https://api.github.com/users/octocat/subscriptions"</span>,</span><br><span class="line">      <span class="attr">"organizations_url"</span>: <span class="string">"https://api.github.com/users/octocat/orgs"</span>,</span><br><span class="line">      <span class="attr">"repos_url"</span>: <span class="string">"https://api.github.com/users/octocat/repos"</span>,</span><br><span class="line">      <span class="attr">"events_url"</span>: <span class="string">"https://api.github.com/users/octocat/events&#123;/privacy&#125;"</span>,</span><br><span class="line">      <span class="attr">"received_events_url"</span>: <span class="string">"https://api.github.com/users/octocat/received_events"</span>,</span><br><span class="line">      <span class="attr">"type"</span>: <span class="string">"User"</span>,</span><br><span class="line">      <span class="attr">"site_admin"</span>: <span class="literal">false</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<h2 id="Github接口的分页策略"><a href="#Github接口的分页策略" class="headerlink" title="Github接口的分页策略"></a>Github接口的分页策略</h2><p>对于stargazers接口，一个仓库很可能有数万甚至数十万个用户star过，如果我们在一次请求<br><code>GET /repos/:owner/:repo/stargazers</code><br>中，就将所有的信息全部都拿出来，会导致:</p>
+<ul>
+<li>网络IO和内存IO负荷过大</li>
+<li>不灵活，也许有些接口调用方并不想要全部的数据，只想要部分的，这样的请求IO就全部浪费了</li>
+</ul>
+<p>为此，Github的很多API都引入了分页机制</p>
+<p>分页机制中，比较重要的有几点：</p>
+<ul>
+<li>如何知道一个url的资源被分成了多少页？</li>
+<li>如何知道目前是哪一页？</li>
+<li>如何知道一个url的资源在一页上有多少个？</li>
+<li>如何获取一个url任意一页的资源？</li>
+</ul>
+<p>我们先来看看Github的REST API是如何接受和提供分页信息的</p>
+<h3 id="接受分页信息"><a href="#接受分页信息" class="headerlink" title="接受分页信息"></a>接受分页信息</h3><p>对于每一个url，我们可以在后面加上<code>page</code>和<code>per_page</code>参数:</p>
+<ul>
+<li><code>per_page</code>参数指定了一页上有多少个资源<ul>
+<li>这个参数可以没有，不同的url接口会有不同的默认值，有的是30，有的是100，具体靠阅读文档</li>
+<li>并不是所有的url接口都接受这个参数，有些url接口不接受，具体靠阅读文档</li>
+</ul>
+</li>
+<li><code>page</code>参数指定了需要拿哪一页的资源</li>
+</ul>
+<h3 id="提供分页信息"><a href="#提供分页信息" class="headerlink" title="提供分页信息"></a>提供分页信息</h3><p>在HTTP响应中，Github接口加入一个响应头<code>Link</code>，这个响应头的样式大概是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 注意这个请求没有加上page参数，也能获得Link响应头</span><br><span class="line">GET https://api.github.com/search/code?q=addClass+user%3Amozilla</span><br><span class="line"></span><br><span class="line"># HTTP响应的响应头</span><br><span class="line">Link: &lt;https://api.github.com/search/code?q=addClass+user%3Amozilla&amp;page=15&gt;; rel=&quot;next&quot;,</span><br><span class="line">  &lt;https://api.github.com/search/code?q=addClass+user%3Amozilla&amp;page=34&gt;; rel=&quot;last&quot;,</span><br><span class="line">  &lt;https://api.github.com/search/code?q=addClass+user%3Amozilla&amp;page=1&gt;; rel=&quot;first&quot;,</span><br><span class="line">  &lt;https://api.github.com/search/code?q=addClass+user%3Amozilla&amp;page=13&gt;; rel=&quot;prev&quot;</span><br></pre></td></tr></table></figure>
+<p>其中<code>rel</code>表示的是url和当前url的关系:</p>
+<ul>
+<li><code>prev</code>，前一页的url</li>
+<li><code>next</code>，下一页的url</li>
+<li><code>last</code>，最后一页的url，也就是总页数</li>
+<li><code>first</code>，第一页的url</li>
+</ul>
+<h3 id="疑问的解答"><a href="#疑问的解答" class="headerlink" title="疑问的解答"></a>疑问的解答</h3><p>所以我们之前的数个疑问就可以得到解答</p>
+<ul>
+<li>如何知道一个url的资源被分成了多少页？<ul>
+<li>首先不带<code>page</code>参数进行请求，而后通过响应头，提取出<code>last</code>对应的url中的<code>page</code>参数即可</li>
+</ul>
+</li>
+<li>如何知道目前是哪一页？<ul>
+<li>当前url的<code>page</code>参数就是当前页数</li>
+<li>响应头中的<code>next</code>对应的url中的<code>page</code>参数是下一页</li>
+</ul>
+</li>
+<li>如何知道一个url的资源在一页上有多少个？<ul>
+<li>查看文档，会有默认值</li>
+<li>查看文档，如果url接口接受<code>per_page</code>参数，就可以自行设置(注意可能会有最大值限制)</li>
+</ul>
+</li>
+<li>如何获取一个url任意一页的资源？<ul>
+<li>加入<code>page</code>参数</li>
+</ul>
+</li>
+</ul>
+<h2 id="获取star历史的思路"><a href="#获取star历史的思路" class="headerlink" title="获取star历史的思路"></a>获取star历史的思路</h2><p>了解了Github的stargazers接口及分页策略，我们就可以来分析一下获取star历史的方法:</p>
+<ol>
+<li>调用stargazers接口，要带star日期的</li>
+<li>根据star日期进行排序</li>
+<li>统计出star发生改变的时间(也就是某个用户star了仓库的时间)和当时的star数目(就是排序后的索引值)</li>
+<li>以改变的时间作为横轴，改变当时的star数目作为纵轴，绘制图像</li>
+</ol>
+<p>这样来看，基本上是没错的，但是还要考虑一点</p>
+<blockquote>
+<p>如果一个仓库有数千数万数十万star，我们就要绘制数千数万数十万的点吗？</p>
+</blockquote>
+<p>可以当然是可以的，但是这么做，对于高star的项目，内存和网络消耗过大，处理时间过长，项目初期，不利于我们开发和调试</p>
+<p>所以我们可以利用分页机制进行<strong>取样</strong></p>
+<p>比如，我们选定取样点数为20，那么，</p>
+<ul>
+<li>对于star数目不足20的项目，<ul>
+<li>我们获取所有的信息，并绘制出所有的点</li>
+</ul>
+</li>
+<li>对于star数目高于20的项目(假设star数为N)，<ul>
+<li>我们获取0, N/20, 2N/20, 3N/20, …, N时的时间</li>
+<li>然后以这二十个时间点和star数，绘制20个点即可</li>
+</ul>
+</li>
+</ul>
+<p>上面描述的是如何取样，那么<strong>取样</strong>与<strong>分页</strong>有什么关系呢？</p>
+<p>那就是——我们不需要获取<em>总star数目</em>，我们只需要获取<em>总页数</em></p>
+<ul>
+<li>对于一个stargazers接口页数为N的项目<ul>
+<li>我们获取0, N/20, 2N/20, 3N/20, …, N页上最早的时间</li>
+<li>然后以这二十个时间点和star数(页编号 * 每页资源数目)，绘制20个点即可</li>
+</ul>
+</li>
+</ul>
+<h2 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h2><p>事实上，项目代码中也是这么操作的(事实上刚才的思路是我从代码中倒推出来的，尬笑)</p>
+<p><code>generateUrls.js</code>中</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> getConfig = &#123;</span><br><span class="line">  headers: &#123;</span><br><span class="line">    Accept: <span class="string">'application/vnd.github.v3.star+json'</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span>(<span class="params">repo</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> initUrl = <span class="string">`https://api.github.com/repos/<span class="subst">$&#123;repo&#125;</span>/stargazers`</span>;</span><br><span class="line">  <span class="keyword">const</span> res = <span class="keyword">await</span> axios.get(initUrl, getConfig).catch(<span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">//...</span></span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="comment">//</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这表明我们使用的是stargazers的带时间的接口</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> link = res.headers.link;</span><br><span class="line"><span class="keyword">if</span> (!link) &#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> pageNumArray = <span class="regexp">/next.*?page=(\d*).*?last/</span>.exec(link);</span><br><span class="line">  <span class="keyword">const</span> pageNum = pageNumArray[<span class="number">1</span>];</span><br><span class="line">  <span class="keyword">let</span> samplePageUrls = [];</span><br><span class="line">  <span class="keyword">let</span> pageIndexes = [];</span><br><span class="line">  <span class="keyword">if</span> (pageNum &lt;= sampleNum) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">2</span>; i &lt;= pageNum; i++) &#123;</span><br><span class="line">      pageIndexes.push(i);</span><br><span class="line">      samplePageUrls.push(initUrl + <span class="string">'?page='</span> + i);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt; sampleNum; i++) &#123;</span><br><span class="line">      <span class="keyword">let</span> pageIndex = <span class="built_in">Math</span>.round(i / sampleNum * pageNum);</span><br><span class="line">      pageIndexes.push(pageIndex);</span><br><span class="line">      samplePageUrls.push(initUrl + <span class="string">'?page='</span> + pageIndex);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    samplePageUrls, pageIndexes,</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>显然这一段代码是通过响应头<code>Link</code>，使用正则表达式提取出总页数，然后取样<code>sampleNum</code>个点</p>
+<p><code>getStarHistory.js</code>中</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span>(<span class="params">repo</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> &#123;</span><br><span class="line">    samplePageUrls, pageIndexes</span><br><span class="line">  &#125; = <span class="keyword">await</span> generateUrls(repo).catch(<span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(e); <span class="comment">// throw don't work</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> getArray = samplePageUrls.map(<span class="function"><span class="params">url</span> =&gt;</span> axios.get(url, getConfig));</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> resArray = <span class="keyword">await</span> <span class="built_in">Promise</span>.all(getArray).catch(<span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(e); <span class="comment">// throw don't work</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> starHistory = pageIndexes.map(<span class="function">(<span class="params">p, i</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      date: resArray[i].data[<span class="number">0</span>].starred_at.slice(<span class="number">0</span>, <span class="number">10</span>),</span><br><span class="line">      starNum: <span class="number">30</span> * (p - <span class="number">1</span>),</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="built_in">console</span>.log(starHistory);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> starHistory;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这一段代码，</p>
+<ol>
+<li>通过<code>generateUrls.js</code>的接口获取所有采样的url接口，而后进行请求</li>
+<li>请求后获得每一页最小的时间，并把最小的时间和当页代表的star数组合起来返回</li>
+</ol>
+<p>这样，就得到了一个项目的star历史</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Github/" rel="tag"># Github</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/06/08/goland提取方法与-interface-类型的注意点/" rel="prev" title="goland提取方法与...interface{}类型的注意点">
+      <i class="fa fa-chevron-left"></i> goland提取方法与...interface{}类型的注意点
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#项目的介绍与系列博文的目的"><span class="nav-number">1.</span> <span class="nav-text">项目的介绍与系列博文的目的</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#项目介绍"><span class="nav-number">1.1.</span> <span class="nav-text">项目介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#博文目的"><span class="nav-number">1.2.</span> <span class="nav-text">博文目的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Github的stargazers接口"><span class="nav-number">2.</span> <span class="nav-text">Github的stargazers接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Github接口的分页策略"><span class="nav-number">3.</span> <span class="nav-text">Github接口的分页策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#接受分页信息"><span class="nav-number">3.1.</span> <span class="nav-text">接受分页信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提供分页信息"><span class="nav-number">3.2.</span> <span class="nav-text">提供分页信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#疑问的解答"><span class="nav-number">3.3.</span> <span class="nav-text">疑问的解答</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取star历史的思路"><span class="nav-number">4.</span> <span class="nav-text">获取star历史的思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码分析"><span class="nav-number">5.</span> <span class="nav-text">代码分析</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="碧漾" src="/images/龙卷1.jpeg">
+  <p class="site-author-name" itemprop="name">碧漾</p>
+  <div class="site-description" itemprop="description">心中的自我永远也不能实现，所以才要鞭策现实的自我啊</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:riversshall@qq.com" title="E-Mail → mailto:riversshall@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → /atom.xml"><i class="fa fa-fw fa-rss"></i>RSS</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">碧漾</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.6.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'e4755b6b14b374b3c19b',
+      clientSecret: 'e84c0b701bf42f9e8a2d98009f3fe3044b611529',
+      repo: 'blog-comment',
+      owner: 'Rivers-Shall',
+      admin: ['Rivers-Shall'],
+      id: '41eccc56e046c419f344285e8fe1439e',
+        language: 'zh-CN',
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
