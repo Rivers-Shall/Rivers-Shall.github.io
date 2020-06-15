@@ -46,20 +46,20 @@
   };
 </script>
 <script data-ad-client="ca-pub-6100092033271048" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-  <meta name="description" content="本文记录了作者在使用goland提供的提取方法(Extract Method)功能时，由于...interface{}的类型问题而遭遇到的bug和一点感悟，简单来说:  可变长的参数会被goland的Extract Method转化为切片(slice)，比如...interface{}会被转化为[]interface{} 由于interface{}的特殊性，需要额外注意">
-<meta name="keywords" content="golang,goland">
+  <meta name="description" content="本篇文章介绍了CORS和CSRF的概念(作者前几天在和带佬们聊天的时候把两个概念搞混了，所以才想要了解)，简单来说:  CORS(Cross Origin Resource Sharing)跨域资源分享 是一种机制，通过在HTTP响应头中加入特定字段限制不同域的资源请求 CSRF(Cross Site Request Forgery)跨站请求伪造 是一种web攻击手段，通过向服务器发送伪造请求，进">
+<meta name="keywords" content="CORS,CSRF">
 <meta property="og:type" content="article">
-<meta property="og:title" content="goland提取方法与...interface{}类型的注意点">
-<meta property="og:url" content="https://rivers-shall.github.io/2020/06/08/goland提取方法与-interface-类型的注意点/index.html">
+<meta property="og:title" content="CORS与CSRF">
+<meta property="og:url" content="https://rivers-shall.github.io/2020/06/15/CORS与CSRF/index.html">
 <meta property="og:site_name" content="碧漾的自我">
-<meta property="og:description" content="本文记录了作者在使用goland提供的提取方法(Extract Method)功能时，由于...interface{}的类型问题而遭遇到的bug和一点感悟，简单来说:  可变长的参数会被goland的Extract Method转化为切片(slice)，比如...interface{}会被转化为[]interface{} 由于interface{}的特殊性，需要额外注意">
+<meta property="og:description" content="本篇文章介绍了CORS和CSRF的概念(作者前几天在和带佬们聊天的时候把两个概念搞混了，所以才想要了解)，简单来说:  CORS(Cross Origin Resource Sharing)跨域资源分享 是一种机制，通过在HTTP响应头中加入特定字段限制不同域的资源请求 CSRF(Cross Site Request Forgery)跨站请求伪造 是一种web攻击手段，通过向服务器发送伪造请求，进">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-06-08T11:50:33.943Z">
+<meta property="og:updated_time" content="2020-06-15T12:44:19.032Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="goland提取方法与...interface{}类型的注意点">
-<meta name="twitter:description" content="本文记录了作者在使用goland提供的提取方法(Extract Method)功能时，由于...interface{}的类型问题而遭遇到的bug和一点感悟，简单来说:  可变长的参数会被goland的Extract Method转化为切片(slice)，比如...interface{}会被转化为[]interface{} 由于interface{}的特殊性，需要额外注意">
+<meta name="twitter:title" content="CORS与CSRF">
+<meta name="twitter:description" content="本篇文章介绍了CORS和CSRF的概念(作者前几天在和带佬们聊天的时候把两个概念搞混了，所以才想要了解)，简单来说:  CORS(Cross Origin Resource Sharing)跨域资源分享 是一种机制，通过在HTTP响应头中加入特定字段限制不同域的资源请求 CSRF(Cross Site Request Forgery)跨站请求伪造 是一种web攻击手段，通过向服务器发送伪造请求，进">
 
-<link rel="canonical" href="https://rivers-shall.github.io/2020/06/08/goland提取方法与-interface-类型的注意点/">
+<link rel="canonical" href="https://rivers-shall.github.io/2020/06/15/CORS与CSRF/">
 
 
 <script id="page-configurations">
@@ -71,7 +71,7 @@
   };
 </script>
 
-  <title>goland提取方法与...interface{}类型的注意点 | 碧漾的自我</title>
+  <title>CORS与CSRF | 碧漾的自我</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129500136-1"></script>
     <script>
@@ -201,7 +201,7 @@
   
   
   <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2020/06/08/goland提取方法与-interface-类型的注意点/">
+    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2020/06/15/CORS与CSRF/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/龙卷1.jpeg">
@@ -214,7 +214,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          goland提取方法与...interface{}类型的注意点
+          CORS与CSRF
         </h2>
 
         <div class="post-meta">
@@ -226,7 +226,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-06-08 17:15:04 / 修改时间：19:50:33" itemprop="dateCreated datePublished" datetime="2020-06-08T17:15:04+08:00">2020-06-08</time>
+              <time title="创建时间：2020-06-15 20:15:26 / 修改时间：20:44:19" itemprop="dateCreated datePublished" datetime="2020-06-15T20:15:26+08:00">2020-06-15</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -251,29 +251,74 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>本文记录了作者在使用goland提供的提取方法(Extract Method)功能时，由于<code>...interface{}</code>的类型问题而遭遇到的bug和一点感悟，简单来说:</p>
+        <p>本篇文章介绍了CORS和CSRF的概念(<del>作者前几天在和带佬们聊天的时候把两个概念搞混了，所以才想要了解</del>)，简单来说:</p>
 <ul>
-<li>可变长的参数会被goland的Extract Method转化为切片(slice)，比如<code>...interface{}</code>会被转化为<code>[]interface{}</code></li>
-<li>由于<code>interface{}</code>的特殊性，需要额外注意</li>
+<li>CORS(Cross Origin Resource Sharing)跨域资源分享 是一种机制，通过在HTTP响应头中加入特定字段限制不同域的资源请求</li>
+<li>CSRF(Cross Site Request Forgery)跨站请求伪造 是一种web攻击手段，通过向服务器发送伪造请求，进行恶意行为的攻击手段</li>
 </ul>
 <a id="more"></a>
-<h2 id="bug的产生"><a href="#bug的产生" class="headerlink" title="bug的产生"></a>bug的产生</h2><p>在代码中有如下片段</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">f</span><span class="params">(payload ...<span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> _, p := <span class="keyword">range</span> payload &#123;</span><br><span class="line">        <span class="comment">// do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>现在想要将循环提取出来，作为一个方法，在goland中可以直接选中文本然后Extract Method，但是结果是这样的</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">f</span><span class="params">(payload ...<span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    ExtractedMethod(payload)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ExtractedMethod</span><span class="params">(payload []<span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> _, p := <span class="keyword">range</span> payload &#123;</span><br><span class="line">        <span class="comment">// do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>期望中的函数签名是<code>ExtractedMethod(payload ...interface{})</code>，不符合预期，所以要进行修改</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// WRONG!!!!!!!!</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">f</span><span class="params">(payload ...<span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    ExtractedMethod(payload)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ExtractedMethod</span><span class="params">(payload ...<span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> _, p := <span class="keyword">range</span> payload &#123;</span><br><span class="line">        <span class="comment">// do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上述的代码不会有编译错误，但是是完全不符合预期的，为什么呢？</p>
-<h2 id="bug的原因"><a href="#bug的原因" class="headerlink" title="bug的原因"></a>bug的原因</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// WRONG!!!!!!!!</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">f</span><span class="params">(payload ...<span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    <span class="comment">// we need to unpack payload</span></span><br><span class="line">    ExtractedMethod(payload)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ExtractedMethod</span><span class="params">(payload ...<span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> _, p := <span class="keyword">range</span> payload &#123;</span><br><span class="line">        <span class="comment">// do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>如上述注释所说，我们需要对<code>f</code>中传递给<code>ExtractedMethod</code>的参数<code>payload</code>做一个解包工作，因为</p>
+<h2 id="CORS-Cross-Origin-Resource-Sharing-跨域资源分享"><a href="#CORS-Cross-Origin-Resource-Sharing-跨域资源分享" class="headerlink" title="CORS(Cross Origin Resource Sharing)跨域资源分享"></a>CORS(Cross Origin Resource Sharing)跨域资源分享</h2><h3 id="什么是域与跨域"><a href="#什么是域与跨域" class="headerlink" title="什么是域与跨域"></a>什么是域与跨域</h3><p>在讨论跨域之前，我们需要知道<strong>域</strong>是什么</p>
+<blockquote>
+<p>域是(scheme, host, port)三元组，也就是协议+主机+端口</p>
+</blockquote>
+<p>只要上述三者中有任何一个不同，就说是两个<strong>不同的域</strong></p>
+<p>在web app中，经常会有一个站点请求另一个站点的资源的情况，比如</p>
 <ul>
-<li>我们<code>f</code>函数的本意是要用<code>ExtractedMehtod</code>对<code>payload</code>中的每一个元素做处理</li>
-<li>现在不解包，<code>payload</code>原本一个<code>[]interface{}</code>又被<strong>额外自动包装了一层</strong>，成为了<code>interface{}</code>传递给了<code>ExtractedMethod</code>，只会对整个<code>payload</code>做一次处理</li>
+<li>前端App运行在<code>localhost:3000</code>上</li>
+<li>后端App运行在<code>localhost:8080</code>上</li>
+<li>前端调用<code>axios</code>向后端发起API请求，也就是<code>localhost:3000</code>到<code>localhost:8080</code>的请求</li>
+<li>这样的请求就是<strong>跨域请求</strong></li>
 </ul>
-<h2 id="bug的解决与思考"><a href="#bug的解决与思考" class="headerlink" title="bug的解决与思考"></a>bug的解决与思考</h2><p>将代码修改为如下后正确</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">f</span><span class="params">(payload ...<span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    ExtractedMethod(payload...)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ExtractedMethod</span><span class="params">(payload ...<span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> _, p := <span class="keyword">range</span> payload &#123;</span><br><span class="line">        <span class="comment">// do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>以后可以采取的方法是，先将传参的地方<code>payload</code>改为<code>payload...</code>，这样的话如果忘记修改参数<code>[]interface{}</code>为<code>...interface{}</code>，是会有编译器报错的</p>
-<p>这个修改顺序可以让编译器为我们保驾</p>
+<h3 id="CORS-跨域资源分享-的目的和实现思想"><a href="#CORS-跨域资源分享-的目的和实现思想" class="headerlink" title="CORS(跨域资源分享)的目的和实现思想"></a>CORS(跨域资源分享)的目的和实现思想</h3><p>因为服务器方不希望随便一个什么域都能够想自己发送请求，或者通过请求获取资源，所以想出了CORS机制进行限制</p>
+<p>首先我们细数一下一个web app进行请求的过程:</p>
+<ul>
+<li>app发起请求</li>
+<li>浏览器收到app发起的请求，将真正的网络请求发到另外的站点上</li>
+<li>浏览器收到站点的响应</li>
+<li>浏览器将响应交给app处理</li>
+</ul>
+<p>CORS的实现思想就是在请求过程中做手脚，达到限制站点发送请求或者接受响应的目的</p>
+<h3 id="CORS对于普通HTTP请求的修改"><a href="#CORS对于普通HTTP请求的修改" class="headerlink" title="CORS对于普通HTTP请求的修改"></a>CORS对于普通HTTP请求的修改</h3><p>所谓<strong>普通HTTP请求</strong>，就是指GET这种请求</p>
+<p>HTTP协议认为GET应该只会从服务器获取资源，不会对服务器本身数据做出改变，所以基本上是安全的</p>
+<p>原先请求的流程被修改为:</p>
+<ul>
+<li>app发起请求</li>
+<li>浏览器收到app发起的请求，将真正的网络请求发到另外的站点上</li>
+<li>浏览器收到站点的响应</li>
+<li>浏览器检查响应头是否允许当前域执行GET请求<ul>
+<li>如不允许，就报错并丢弃数据</li>
+<li>如果允许，浏览器将响应交给app处理</li>
+</ul>
+</li>
+</ul>
+<p>所以浏览器是在<strong>执行请求之后</strong>进行了检查和限制</p>
+<h3 id="CORS对于preflight请求的修改"><a href="#CORS对于preflight请求的修改" class="headerlink" title="CORS对于preflight请求的修改"></a>CORS对于preflight请求的修改</h3><p>preflight请求，指的是POST这种会对服务器本身数据做出改变的请求，很可能会造成严重恶意后果</p>
+<p>原先请求的流程修改为:</p>
+<ul>
+<li>app发起请求</li>
+<li>浏览器收到app发起的请求(比如POST)，先发送一个正常请求(OPTIONS请求)到目标站点上</li>
+<li>收到响应后，检查响应头是否允许当前站点向目标站点发起POST请求，<ul>
+<li>如果允许，将真正的网络请求发到另外的站点上<ul>
+<li>浏览器收到站点的响应</li>
+<li>浏览器将数据交给app处理</li>
+</ul>
+</li>
+<li>如果不允许，直接报错</li>
+</ul>
+</li>
+</ul>
+<p>所以浏览器是在<strong>执行请求之前</strong>进行了检查和限制</p>
+<h2 id="CSRF-Cross-Site-Request-Forgery-跨站请求伪造"><a href="#CSRF-Cross-Site-Request-Forgery-跨站请求伪造" class="headerlink" title="CSRF(Cross Site Request Forgery)跨站请求伪造"></a>CSRF(Cross Site Request Forgery)跨站请求伪造</h2><p>CSRF是一种攻击手段，CORS的一个重要作用就是防范CSRF</p>
+<p>由于我们的浏览器只是个发送请求的<strong>代发工具人</strong>，所以服务器收到请求时，并不能知道请求是如何被制造出来的</p>
+<p>那么可以有这样的场景:</p>
+<ul>
+<li>我要上<a href="http://www.aabbcc.com网站" target="_blank" rel="noopener">www.aabbcc.com网站</a></li>
+<li>结果点到了<a href="http://www.aabbccc.com网站" target="_blank" rel="noopener">www.aabbccc.com网站</a></li>
+<li>我输入了<a href="http://www.aabbcc.com的用户名和密码" target="_blank" rel="noopener">www.aabbcc.com的用户名和密码</a></li>
+<li><a href="http://www.aabbccc.com利用我输入的用户名密码向www.aabbcc.com的服务器地址(假设为123.123.123.123:3000)发送恶意请求" target="_blank" rel="noopener">www.aabbccc.com利用我输入的用户名密码向www.aabbcc.com的服务器地址(假设为123.123.123.123:3000)发送恶意请求</a></li>
+</ul>
+<p>这样就是<code>www.aabbccc.com</code>伪造了<code>www.aabbcc.com</code>的请求，并发送了，这就是CSRF(跨站请求伪造)</p>
+<p>但是如果我们有CORS，在<code>123.123.123.123:3000</code>的响应头中指出只有<code>www.aabbcc.com</code>可以发送请求过来，那么<code>www.aabbccc.com</code>发送的请求就会被CORS和浏览器协作清除掉，<code>www.aabbccc.com</code>也就无法恶意攻击了</p>
 
     </div>
 
@@ -283,8 +328,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/golang/" rel="tag"># golang</a>
-              <a href="/tags/goland/" rel="tag"># goland</a>
+              <a href="/tags/CORS/" rel="tag"># CORS</a>
+              <a href="/tags/CSRF/" rel="tag"># CSRF</a>
           </div>
 
         
@@ -293,13 +338,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/06/07/常见的git工作流/" rel="prev" title="常见的git工作流">
-      <i class="fa fa-chevron-left"></i> 常见的git工作流
+    <a href="/2020/06/15/数据结构与算法复习-02-链表/" rel="prev" title="数据结构与算法复习-02-链表">
+      <i class="fa fa-chevron-left"></i> 数据结构与算法复习-02-链表
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/06/09/star-history源码阅读笔记-01-项目介绍-Github的stargazers接口与分页机制/" rel="next" title="star-history源码阅读笔记(01)-项目介绍,Github的stargazers接口与分页机制，获取star历史的思路">
-      star-history源码阅读笔记(01)-项目介绍,Github的stargazers接口与分页机制，获取star历史的思路 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -360,7 +402,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#bug的产生"><span class="nav-number">1.</span> <span class="nav-text">bug的产生</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bug的原因"><span class="nav-number">2.</span> <span class="nav-text">bug的原因</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bug的解决与思考"><span class="nav-number">3.</span> <span class="nav-text">bug的解决与思考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CORS-Cross-Origin-Resource-Sharing-跨域资源分享"><span class="nav-number">1.</span> <span class="nav-text">CORS(Cross Origin Resource Sharing)跨域资源分享</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是域与跨域"><span class="nav-number">1.1.</span> <span class="nav-text">什么是域与跨域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CORS-跨域资源分享-的目的和实现思想"><span class="nav-number">1.2.</span> <span class="nav-text">CORS(跨域资源分享)的目的和实现思想</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CORS对于普通HTTP请求的修改"><span class="nav-number">1.3.</span> <span class="nav-text">CORS对于普通HTTP请求的修改</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CORS对于preflight请求的修改"><span class="nav-number">1.4.</span> <span class="nav-text">CORS对于preflight请求的修改</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CSRF-Cross-Site-Request-Forgery-跨站请求伪造"><span class="nav-number">2.</span> <span class="nav-text">CSRF(Cross Site Request Forgery)跨站请求伪造</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -537,7 +579,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo: 'blog-comment',
       owner: 'Rivers-Shall',
       admin: ['Rivers-Shall'],
-      id: '856bbd2639062058a8061b5eaeeb2804',
+      id: '8c6b2bb28b05476f0f9a594df069e192',
         language: 'zh-CN',
       distractionFreeMode: 'true'
     });
