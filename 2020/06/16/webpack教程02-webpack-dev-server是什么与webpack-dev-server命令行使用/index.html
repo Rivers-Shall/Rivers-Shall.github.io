@@ -46,20 +46,20 @@
   };
 </script>
 <script data-ad-client="ca-pub-6100092033271048" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-  <meta name="description" content="This is a post about the extra practice of an open course on Coursera, Programming Language Part B Week1.  This post will present code snippets and corresponding explanations of practice 7 and 8.  The">
-<meta name="keywords" content="Programming Language">
+  <meta name="description" content="本文是webpack教程的第二篇文章，会介绍:  webpack-dev-server的概念和作用 webpack-dev-server的基本命令行使用和一个坑点  本次相关代码在Github仓库 commit bbaea1bc">
+<meta name="keywords" content="webpack,webpack-dev-server">
 <meta property="og:type" content="article">
-<meta property="og:title" content="PL-Part-B-Extra-Practice-Week1">
-<meta property="og:url" content="https://rivers-shall.github.io/2019/03/20/PL-Part-B-Extra-Practice/index.html">
+<meta property="og:title" content="webpack教程02-webpack-dev-server是什么与webpack-dev-server命令行使用">
+<meta property="og:url" content="https://rivers-shall.github.io/2020/06/16/webpack教程02-webpack-dev-server是什么与webpack-dev-server命令行使用/index.html">
 <meta property="og:site_name" content="碧漾的自我">
-<meta property="og:description" content="This is a post about the extra practice of an open course on Coursera, Programming Language Part B Week1.  This post will present code snippets and corresponding explanations of practice 7 and 8.  The">
+<meta property="og:description" content="本文是webpack教程的第二篇文章，会介绍:  webpack-dev-server的概念和作用 webpack-dev-server的基本命令行使用和一个坑点  本次相关代码在Github仓库 commit bbaea1bc">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-05-28T06:56:19.808Z">
+<meta property="og:updated_time" content="2020-06-16T12:05:20.844Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="PL-Part-B-Extra-Practice-Week1">
-<meta name="twitter:description" content="This is a post about the extra practice of an open course on Coursera, Programming Language Part B Week1.  This post will present code snippets and corresponding explanations of practice 7 and 8.  The">
+<meta name="twitter:title" content="webpack教程02-webpack-dev-server是什么与webpack-dev-server命令行使用">
+<meta name="twitter:description" content="本文是webpack教程的第二篇文章，会介绍:  webpack-dev-server的概念和作用 webpack-dev-server的基本命令行使用和一个坑点  本次相关代码在Github仓库 commit bbaea1bc">
 
-<link rel="canonical" href="https://rivers-shall.github.io/2019/03/20/PL-Part-B-Extra-Practice/">
+<link rel="canonical" href="https://rivers-shall.github.io/2020/06/16/webpack教程02-webpack-dev-server是什么与webpack-dev-server命令行使用/">
 
 
 <script id="page-configurations">
@@ -71,7 +71,7 @@
   };
 </script>
 
-  <title>PL-Part-B-Extra-Practice-Week1 | 碧漾的自我</title>
+  <title>webpack教程02-webpack-dev-server是什么与webpack-dev-server命令行使用 | 碧漾的自我</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129500136-1"></script>
     <script>
@@ -201,7 +201,7 @@
   
   
   <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2019/03/20/PL-Part-B-Extra-Practice/">
+    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2020/06/16/webpack教程02-webpack-dev-server是什么与webpack-dev-server命令行使用/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/龙卷1.jpeg">
@@ -214,7 +214,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          PL-Part-B-Extra-Practice-Week1
+          webpack教程02-webpack-dev-server是什么与webpack-dev-server命令行使用
         </h2>
 
         <div class="post-meta">
@@ -224,30 +224,24 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2019-03-20 15:44:14" itemprop="dateCreated datePublished" datetime="2019-03-20T15:44:14+08:00">2019-03-20</time>
+              <time title="创建时间：2020-06-16 15:37:30 / 修改时间：20:05:20" itemprop="dateCreated datePublished" datetime="2020-06-16T15:37:30+08:00">2020-06-16</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-05-28 14:56:19" itemprop="dateModified" datetime="2020-05-28T14:56:19+08:00">2020-05-28</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Open-Course/" itemprop="url" rel="index">
-                    <span itemprop="name">Open Course</span>
+                  <a href="/categories/basic-knowledge/" itemprop="url" rel="index">
+                    <span itemprop="name">basic knowledge</span>
                   </a>
                 </span>
                   ，
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/Open-Course/Programming-Language-By-Dan-Grossman/" itemprop="url" rel="index">
-                    <span itemprop="name">Programming Language By Dan Grossman</span>
+                  <a href="/categories/webpack教程/" itemprop="url" rel="index">
+                    <span itemprop="name">webpack教程</span>
                   </a>
                 </span>
             </span>
@@ -263,24 +257,53 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>This is a post about the extra practice of an open course on Coursera, Programming Language Part B Week1.  This post will present code snippets and corresponding explanations of practice 7 and 8.  The whole code is available on <a href="https://github.com/Rivers-Shall/PL-Extra-Practice" target="_blank" rel="noopener">Github</a>.</p>
-<p>This is also my first post about extra practice of PL.  Dan tells us not to present code of homework online, so I won’t.  But it feels like presenting code of extra practice is OK.</p>
-<a id="more"></a>
-<h2 id="Practice-7"><a href="#Practice-7" class="headerlink" title="Practice 7"></a>Practice 7</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">; 7.</span><br><span class="line">(define (interleave strms)</span><br><span class="line">  (define (f old-strms new-strms)</span><br><span class="line">    (cond [(null? old-strms) (define real-new-strms (reverse new-strms null))</span><br><span class="line">                             (define pr ((car real-new-strms)))</span><br><span class="line">                             (lambda ()</span><br><span class="line">                               (cons (car pr) (f (cdr real-new-strms) (list (cdr pr)))))]</span><br><span class="line">          [#t                (define pr ((car old-strms)))</span><br><span class="line">                             (lambda ()</span><br><span class="line">                               (cons (car pr) (f (cdr old-strms) (cons (cdr pr) new-strms))))]))</span><br><span class="line">                              </span><br><span class="line">  (f strms null))</span><br></pre></td></tr></table></figure>
-<p>The requirement of this practice is:</p>
-<ol>
-<li><p>Write a function <code>interleave</code> that takes a list of streams and produces a new stream that takes one element from each stream in sequence. So it will first produce the first value of the first stream, then the first value of the second stream and so on, and it will go back to the first stream when it reaches the end of the list. </p>
-</li>
-<li><p>Try to do this without ever adding an element to the end of a list.</p>
-</li>
-</ol>
-<p>Since we need a new stream to <em>loop around</em> the given list of streams, a basic idea is that we get the element of the first stream by <code>(car ((car strms)))</code> and add the new stream of the first stream <code>(cdr ((car strms))</code> (of course we can precompute <code>((car strms))</code>) to the end of the list.  But this is inproper in this case because:</p>
+        <p>本文是webpack教程的第二篇文章，会介绍:</p>
 <ul>
-<li>The second requirement is not ever adding an element to the end of a list</li>
-<li>Adding an element to the end of a list may cost more than to the head of a list</li>
+<li>webpack-dev-server的概念和作用</li>
+<li>webpack-dev-server的基本命令行使用和一个坑点</li>
 </ul>
-<p>Thus I use two lists, one to produce elements and the other to store the streams for the next round.  The code is a little ugly since we need a special case for <code>(null? old-strms)</code>.</p>
-<h2 id="Practice-8"><a href="#Practice-8" class="headerlink" title="Practice 8"></a>Practice 8</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">; 8.</span><br><span class="line">; @first-n-ele-and-last-strm given n and s, return a pair where</span><br><span class="line">;   the car part is a list of first n elements of s and</span><br><span class="line">;   the cdr part is the stream starting from the (n+1)th element</span><br><span class="line">(define (pack n s)</span><br><span class="line">  (define (first-n-ele-and-last-strm n s)</span><br><span class="line">    (cond [(= n 0) (cons null s)]</span><br><span class="line">          [#t (define spr (s))</span><br><span class="line">              (define restpr (first-n-ele-and-last-strm (- n 1) (cdr spr)))</span><br><span class="line">              (cons (cons (car spr)</span><br><span class="line">                          (car restpr))</span><br><span class="line">                    (cdr restpr))]))</span><br><span class="line">  (lambda ()</span><br><span class="line">    (define restpr (first-n-ele-and-last-strm n s))</span><br><span class="line">    (cons (car restpr) (pack n (cdr restpr)))))</span><br></pre></td></tr></table></figure>
+<p>本次相关代码在<a href="https://github.com/Rivers-Shall/webpack-demo/commit/bbaea1bca75a4e6870b42d993e490415f8f4f253" target="_blank" rel="noopener">Github仓库 commit bbaea1bc</a></p>
+<a id="more"></a>
+<h2 id="webpack-dev-server的概念与作用"><a href="#webpack-dev-server的概念与作用" class="headerlink" title="webpack-dev-server的概念与作用"></a>webpack-dev-server的概念与作用</h2><h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>webpack-dev-server，顾名思义，这是一个<strong>server</strong>，也就是说，<code>webpack-dev-server</code>命令能够用来启动一个本地服务器，接受HTTP请求</p>
+<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><h4 id="不使用webpack-dev-server的场景"><a href="#不使用webpack-dev-server的场景" class="headerlink" title="不使用webpack-dev-server的场景"></a>不使用webpack-dev-server的场景</h4><p>在上一次的教程中，我们是采用直接打开<code>index.html</code>文件的方式来查看我们web app的实现效果</p>
+<p>但是，这样的话我们的浏览器地址栏中会是<code>file://path/to/index.html</code></p>
+<p>也就是说，使用的协议是<em>文件协议</em>，并不会发起HTTP请求，只会从本地文件系统将文件加载到浏览器里</p>
+<p>这样的话，我们就无法使用很多HTTP协议特性，无法使用也就无法测试，调试，对开发工作有很大的阻碍</p>
+<h4 id="使用webpack-dev-server"><a href="#使用webpack-dev-server" class="headerlink" title="使用webpack-dev-server"></a>使用webpack-dev-server</h4><p>通过webpack-dev-server，我们能够直接启动一个简易的服务器，通过这个服务器，可以使用HTTP协议进行web app的效果测试</p>
+<p>除此之外，还能够实现许多额外的功能，比如热加载(一旦修改项目文件，就自动重新加载服务器)</p>
+<h2 id="webpack-dev-server的基本命令行使用和一个坑点"><a href="#webpack-dev-server的基本命令行使用和一个坑点" class="headerlink" title="webpack-dev-server的基本命令行使用和一个坑点"></a>webpack-dev-server的基本命令行使用和一个坑点</h2><h3 id="基本命令行使用"><a href="#基本命令行使用" class="headerlink" title="基本命令行使用"></a>基本命令行使用</h3><p>想要从webpack转向webpack-dev-server是比较简单的，因为webpack-dev-server兼容了webpack所有的命令行选项</p>
+<p>这也是很合理的，因为webpack-dev-server基本上就是”webpack打包 + 启动简易服务器”</p>
+<p>所以我尝试直接将npm配置中的<code>webpack</code>命令修改为<code>webpack-dev-server</code>命令</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">"build": "webpack-dev-server ./js/app.js -o bundle.js --mode development"</span><br></pre></td></tr></table></figure>
+<p>而后<code>npm run build</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; npm run build</span><br><span class="line"> ｢wds｣: Project is running at http://localhost:8081/</span><br><span class="line"> ｢wds｣: webpack output is served from /</span><br><span class="line"> ｢wds｣: Content not from webpack is served from /path/to/working-dir</span><br></pre></td></tr></table></figure>
+<p>打开<code>localhost:8081</code>，发现代码运行正常，且浏览器使用的是HTTP协议</p>
+<h3 id="一个坑点"><a href="#一个坑点" class="headerlink" title="一个坑点"></a>一个坑点</h3><h4 id="坑点总结"><a href="#坑点总结" class="headerlink" title="坑点总结"></a>坑点总结</h4><ol>
+<li><code>webpack-dev-server</code>不会在文件系统中生成打包后的文件，而是直接将文件加载到内存里</li>
+<li>对于打包后的文件，默认会放置在host的<code>/</code>路径下，需要配置<code>publicPath</code>来自定义host路径</li>
+</ol>
+<h4 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h4><p>但是，当我希望将生成的<code>bundle.js</code>放入固定文件夹<code>dist</code>时，问题出现了</p>
+<p>npm配置</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">"build": "webpack-dev-server ./js/app.js -o ./dist/bundle.js --mode development"</span><br></pre></td></tr></table></figure>
+<p>HTML文件</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- .... --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"dist/bundle.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>但是在打开<code>localhost:8081</code>之后，代码运行异常(按钮不起作用)，console报错</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET http://localhost:8081/dist/bundle.js net::ERR_ABORTED 404 (Not Found)</span><br></pre></td></tr></table></figure>
+<p>这说明<code>dist/bundle.js</code>没有能被加载，且磁盘上没有<code>dist/bundle.js</code>文件生成</p>
+<p>查看<code>npm run build</code>的日志输出</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; npm run build</span><br><span class="line">ℹ ｢wds｣: Project is running at http://localhost:8081/</span><br><span class="line">ℹ ｢wds｣: webpack output is served from /</span><br><span class="line">ℹ ｢wds｣: Content not from webpack is served from</span><br></pre></td></tr></table></figure>
+<p>其中</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ℹ ｢wds｣: webpack output is served from /</span><br></pre></td></tr></table></figure>
+<p>这一行比较引人注意，因为<code>dist/bundle.js</code>正是<code>webpack output</code></p>
+<p>于是我访问了<code>localhost:8081/bundle.js</code>，发现可以正常访问</p>
+<p>于是去webpack的官网文档中寻找解决方案，在<a href="https://webpack.js.org/guides/development/#using-webpack-dev-server" target="_blank" rel="noopener">这个文档</a>上找到了这么一个提示</p>
+<blockquote>
+<p>webpack-dev-server doesn’t write any output files after compiling. Instead, it keeps bundle files in memory and serves them as if they were real files mounted at the server’s root path. If your page expects to find the bundle files on a different path, you can change this with the publicPath option in the dev server’s configuration.</p>
+</blockquote>
+<p>对于配置文件，我们需要指定<code>publicPath</code></p>
+<p>对于webpack-dev-server CLI，我们需要指定<code>output-public-path</code>，所以将npm配置修改为</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">"build": "webpack-dev-server ./js/app.js -o ./dist/bundle.js --output-public-path /dist/  --mode development"</span><br></pre></td></tr></table></figure>
+<p>代码运行就可以恢复正常，<code>localhost:8081/dist/bundle.js</code>也可以正常访问</p>
 
     </div>
 
@@ -290,7 +313,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Programming-Language/" rel="tag"># Programming Language</a>
+              <a href="/tags/webpack/" rel="tag"># webpack</a>
+              <a href="/tags/webpack-dev-server/" rel="tag"># webpack-dev-server</a>
           </div>
 
         
@@ -299,13 +323,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2019/03/19/PL-5-Part-B-Week1/" rel="prev" title="PL(5) Part-B-Week1">
-      <i class="fa fa-chevron-left"></i> PL(5) Part-B-Week1
+    <a href="/2020/06/15/CORS与CSRF/" rel="prev" title="CORS与CSRF">
+      <i class="fa fa-chevron-left"></i> CORS与CSRF
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2019/03/25/UULP-Chapter01/" rel="next" title="Chapter01 --- 编写自己的 `more` 程序(1)">
-      Chapter01 --- 编写自己的 `more` 程序(1) <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -366,7 +387,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Practice-7"><span class="nav-number">1.</span> <span class="nav-text">Practice 7</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Practice-8"><span class="nav-number">2.</span> <span class="nav-text">Practice 8</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#webpack-dev-server的概念与作用"><span class="nav-number">1.</span> <span class="nav-text">webpack-dev-server的概念与作用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概念"><span class="nav-number">1.1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作用"><span class="nav-number">1.2.</span> <span class="nav-text">作用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#不使用webpack-dev-server的场景"><span class="nav-number">1.2.1.</span> <span class="nav-text">不使用webpack-dev-server的场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用webpack-dev-server"><span class="nav-number">1.2.2.</span> <span class="nav-text">使用webpack-dev-server</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#webpack-dev-server的基本命令行使用和一个坑点"><span class="nav-number">2.</span> <span class="nav-text">webpack-dev-server的基本命令行使用和一个坑点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本命令行使用"><span class="nav-number">2.1.</span> <span class="nav-text">基本命令行使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一个坑点"><span class="nav-number">2.2.</span> <span class="nav-text">一个坑点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#坑点总结"><span class="nav-number">2.2.1.</span> <span class="nav-text">坑点总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#过程"><span class="nav-number">2.2.2.</span> <span class="nav-text">过程</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -543,7 +564,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo: 'blog-comment',
       owner: 'Rivers-Shall',
       admin: ['Rivers-Shall'],
-      id: '1d3154e744da5ef113c33a4408d289be',
+      id: 'c098e72325f4ab202abe83fec50b386c',
         language: 'zh-CN',
       distractionFreeMode: 'true'
     });
