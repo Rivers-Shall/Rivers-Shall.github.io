@@ -10,11 +10,13 @@ categories:
 - [basic knowledge]
 ---
 
-本文是[star-history项目](https://github.com/timqian/star-history)源码阅读的第一篇文章，会包含:
+本文是[star-history项目](https://github.com/timqian/star-history)源码阅读的第二篇文章，会包含:
 
 - 搜索栏+大图的HTML与CSS排版
 
 本次对代码的分析基于Commit - [first commit deecd92 timqian](https://github.com/timqian/star-history/tree/deecd92097809f39cd0ccd521b85ad54ac8fad24)
+
+<!-- more -->
 
 ## 项目页面排版
 
