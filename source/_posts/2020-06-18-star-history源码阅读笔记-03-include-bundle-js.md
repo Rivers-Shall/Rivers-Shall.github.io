@@ -8,7 +8,7 @@ categories:
 - [good practice]
 ---
 
-本文是[star-history项目](https://github.com/timqian/star-history)源码阅读的第二篇文章，会包含:
+本文是[star-history项目](https://github.com/timqian/star-history)源码阅读的第三篇文章，会包含:
 
 - 项目仓库中是否需要保存被构建文件的讨论
 
