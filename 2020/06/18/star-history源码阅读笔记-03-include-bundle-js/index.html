@@ -46,18 +46,18 @@
   };
 </script>
 <script data-ad-client="ca-pub-6100092033271048" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-  <meta name="description" content="本文是star-history项目源码阅读的第二篇文章，会包含:  项目仓库中是否需要保存被构建文件的讨论  简单来说:  为了项目仓库的整洁，一般不保存被构建文件 如果有项目本身不是非常复杂，有展示需求且构建文件为跨平台文件，可以考虑直接保存在项目仓库中  本次对代码的分析基于 commit cb4d5828d5147df1d3db79ce728e6fb1f088e38b">
+  <meta name="description" content="本文是star-history项目源码阅读的第三篇文章，会包含:  项目仓库中是否需要保存被构建文件的讨论  简单来说:  为了项目仓库的整洁，一般不保存被构建文件 如果有项目本身不是非常复杂，有展示需求且构建文件为跨平台文件，可以考虑直接保存在项目仓库中  本次对代码的分析基于 commit cb4d5828d5147df1d3db79ce728e6fb1f088e38b">
 <meta name="keywords" content="git">
 <meta property="og:type" content="article">
 <meta property="og:title" content="star-history源码阅读笔记(03)-include bundle.js">
 <meta property="og:url" content="https://rivers-shall.github.io/2020/06/18/star-history源码阅读笔记-03-include-bundle-js/index.html">
 <meta property="og:site_name" content="碧漾的自我">
-<meta property="og:description" content="本文是star-history项目源码阅读的第二篇文章，会包含:  项目仓库中是否需要保存被构建文件的讨论  简单来说:  为了项目仓库的整洁，一般不保存被构建文件 如果有项目本身不是非常复杂，有展示需求且构建文件为跨平台文件，可以考虑直接保存在项目仓库中  本次对代码的分析基于 commit cb4d5828d5147df1d3db79ce728e6fb1f088e38b">
+<meta property="og:description" content="本文是star-history项目源码阅读的第三篇文章，会包含:  项目仓库中是否需要保存被构建文件的讨论  简单来说:  为了项目仓库的整洁，一般不保存被构建文件 如果有项目本身不是非常复杂，有展示需求且构建文件为跨平台文件，可以考虑直接保存在项目仓库中  本次对代码的分析基于 commit cb4d5828d5147df1d3db79ce728e6fb1f088e38b">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-06-18T08:36:52.293Z">
+<meta property="og:updated_time" content="2020-06-19T09:35:35.547Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="star-history源码阅读笔记(03)-include bundle.js">
-<meta name="twitter:description" content="本文是star-history项目源码阅读的第二篇文章，会包含:  项目仓库中是否需要保存被构建文件的讨论  简单来说:  为了项目仓库的整洁，一般不保存被构建文件 如果有项目本身不是非常复杂，有展示需求且构建文件为跨平台文件，可以考虑直接保存在项目仓库中  本次对代码的分析基于 commit cb4d5828d5147df1d3db79ce728e6fb1f088e38b">
+<meta name="twitter:description" content="本文是star-history项目源码阅读的第三篇文章，会包含:  项目仓库中是否需要保存被构建文件的讨论  简单来说:  为了项目仓库的整洁，一般不保存被构建文件 如果有项目本身不是非常复杂，有展示需求且构建文件为跨平台文件，可以考虑直接保存在项目仓库中  本次对代码的分析基于 commit cb4d5828d5147df1d3db79ce728e6fb1f088e38b">
 
 <link rel="canonical" href="https://rivers-shall.github.io/2020/06/18/star-history源码阅读笔记-03-include-bundle-js/">
 
@@ -224,10 +224,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-06-18 16:19:21 / 修改时间：16:36:52" itemprop="dateCreated datePublished" datetime="2020-06-18T16:19:21+08:00">2020-06-18</time>
+              <time title="创建时间：2020-06-18 16:19:21" itemprop="dateCreated datePublished" datetime="2020-06-18T16:19:21+08:00">2020-06-18</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-06-19 17:35:35" itemprop="dateModified" datetime="2020-06-19T17:35:35+08:00">2020-06-19</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -257,7 +263,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>本文是<a href="https://github.com/timqian/star-history" target="_blank" rel="noopener">star-history项目</a>源码阅读的第二篇文章，会包含:</p>
+        <p>本文是<a href="https://github.com/timqian/star-history" target="_blank" rel="noopener">star-history项目</a>源码阅读的第三篇文章，会包含:</p>
 <ul>
 <li>项目仓库中是否需要保存被构建文件的讨论</li>
 </ul>
@@ -308,7 +314,10 @@
     <a href="/2020/06/17/star-history源码阅读笔记-02-搜索栏-大图的HTML与CSS排版/" rel="prev" title="star-history源码阅读笔记(02)-搜索栏+大图的HTML与CSS排版">
       <i class="fa fa-chevron-left"></i> star-history源码阅读笔记(02)-搜索栏+大图的HTML与CSS排版
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/06/19/star-history源码阅读笔记-04-github-buttons/" rel="next" title="star-history源码阅读笔记(04)-github-buttons">
+      star-history源码阅读笔记(04)-github-buttons <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -384,7 +393,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">53</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

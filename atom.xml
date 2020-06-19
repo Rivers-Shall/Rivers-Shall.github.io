@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://rivers-shall.github.io/"/>
-  <updated>2020-06-18T08:36:52.293Z</updated>
+  <updated>2020-06-19T09:55:28.626Z</updated>
   <id>https://rivers-shall.github.io/</id>
   
   <author>
@@ -17,17 +17,45 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>star-history源码阅读笔记(04)-github-buttons</title>
+    <link href="https://rivers-shall.github.io/2020/06/19/star-history%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-04-github-buttons/"/>
+    <id>https://rivers-shall.github.io/2020/06/19/star-history源码阅读笔记-04-github-buttons/</id>
+    <published>2020-06-19T09:34:12.000Z</published>
+    <updated>2020-06-19T09:55:28.626Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文是<a href="https://github.com/timqian/star-history" target="_blank" rel="noopener">star-history项目</a>源码阅读的第四篇文章，会包含:</p><ul><li>github button介绍与使用</li></ul><p>本次对代码的分析基于 <a href="https://github.com/timqian/star-history/commit/dca63d05369886573843839c08722d93a96cb047" target="_blank" rel="noopener">commit dca63d05369886573843839c08722d93a96cb047</a></p><a id="more"></a><h2 id="github-button"><a href="#github-button" class="headerlink" title="github button"></a>github button</h2><p>所谓的Github Button，可以认为是一种前端组件，效果如下，这个是<code>twbs/bootstrap</code>的star button</p><iframe src="https://ghbtns.com/github-btn.html?user=twbs&repo=bootstrap&type=star&count=true&size=large" frameborder="0" scrolling="0" width="170" height="30" title="GitHub"></iframe><p>Github Button主要有两个作用:</p><ul><li>展示数据<ul><li>根据类型的不同，展示star数，fork数，watch数等等</li></ul></li><li>点击后跳转到对应的Github仓库页面</li></ul><h2 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h2><p>由于这样的Github Button使用非常广泛，所以已经有很多的开源库提供了这一组件功能</p><p>star-history仓库中使用的是<a href="https://github.com/mdo/github-buttons" target="_blank" rel="noopener">mdo/github-buttons</a></p><p>使用方式也非常简单，只要在需要的界面插入一个HTML标签，在属性<code>src</code>中填上对应的参数就可以了</p><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">"https://ghbtns.com/github-btn.html?user=twbs&amp;repo=bootstrap&amp;type=star&amp;count=true&amp;size=large"</span> <span class="attr">frameborder</span>=<span class="string">"0"</span> <span class="attr">scrolling</span>=<span class="string">"0"</span> <span class="attr">width</span>=<span class="string">"170"</span> <span class="attr">height</span>=<span class="string">"30"</span> <span class="attr">title</span>=<span class="string">"GitHub"</span>&gt;</span><span class="tag">&lt;/<span class="name">iframe</span>&gt;</span></span><br></pre></td></tr></table></figure><p>同时，还有许多开源项目提供了和Vue, Angular等前端框架相适用的组件，也可以试试</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文是&lt;a href=&quot;https://github.com/timqian/star-history&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;star-history项目&lt;/a&gt;源码阅读的第四篇文章，会包含:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;github button介绍与使用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;本次对代码的分析基于 &lt;a href=&quot;https://github.com/timqian/star-history/commit/dca63d05369886573843839c08722d93a96cb047&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;commit dca63d05369886573843839c08722d93a96cb047&lt;/a&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="code snippet" scheme="https://rivers-shall.github.io/categories/code-snippet/"/>
+    
+      <category term="star-history源码阅读笔记" scheme="https://rivers-shall.github.io/categories/star-history%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Github" scheme="https://rivers-shall.github.io/tags/Github/"/>
+    
+  </entry>
+  
+  <entry>
     <title>star-history源码阅读笔记(03)-include bundle.js</title>
     <link href="https://rivers-shall.github.io/2020/06/18/star-history%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-03-include-bundle-js/"/>
     <id>https://rivers-shall.github.io/2020/06/18/star-history源码阅读笔记-03-include-bundle-js/</id>
     <published>2020-06-18T08:19:21.000Z</published>
-    <updated>2020-06-18T08:36:52.293Z</updated>
+    <updated>2020-06-19T09:35:35.547Z</updated>
     
-    <content type="html"><![CDATA[<p>本文是<a href="https://github.com/timqian/star-history" target="_blank" rel="noopener">star-history项目</a>源码阅读的第二篇文章，会包含:</p><ul><li>项目仓库中是否需要保存被构建文件的讨论</li></ul><p>简单来说:</p><ul><li>为了项目仓库的整洁，一般不保存被构建文件</li><li>如果有项目本身不是非常复杂，有展示需求且构建文件为跨平台文件，可以考虑直接保存在项目仓库中</li></ul><p>本次对代码的分析基于 <a href="https://github.com/timqian/star-history/commit/cb4d5828d5147df1d3db79ce728e6fb1f088e38b" target="_blank" rel="noopener">commit cb4d5828d5147df1d3db79ce728e6fb1f088e38b</a></p><a id="more"></a><h2 id="gitignore的改变"><a href="#gitignore的改变" class="headerlink" title="gitignore的改变"></a>gitignore的改变</h2><p>在<a href="https://github.com/timqian/star-history/commit/cb4d5828d5147df1d3db79ce728e6fb1f088e38b" target="_blank" rel="noopener">这个commit</a>中，做出的唯一改变就是将<code>bundle.js</code>从<code>.gitignore</code>中删除了</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git commit remove</span><br><span class="line">- # Built by webpack</span><br><span class="line">- bundle.js</span><br></pre></td></tr></table></figure><p>这就意味着，以后的仓库中可以存储webpack构建的<code>bundle.js</code></p><h3 id="构建文件一般不会放置在代码仓库中"><a href="#构建文件一般不会放置在代码仓库中" class="headerlink" title="构建文件一般不会放置在代码仓库中"></a>构建文件一般不会放置在代码仓库中</h3><p>但是我们知道，对于这一类的构建文件，一般是不会直接存放在代码仓库中的</p><p>就好像用C/C++编写的项目，却把可执行文件放到了仓库里，或者Java编写的项目，却把Jar文件放到了仓库里</p><p>这违背了<strong>代码</strong>仓库的原则</p><h3 id="正常的做法"><a href="#正常的做法" class="headerlink" title="正常的做法"></a>正常的做法</h3><p>正常情况下，被构建文件当然可以公开，但是一般是以</p><ul><li>发布(Release)</li></ul><p>的方式进行公开，Github本身也提供了<a href="https://help.github.com/en/enterprise/2.13/user/articles/creating-releases" target="_blank" rel="noopener">产品发布</a>的<br>功能</p><p>比如C/C++编写，那么就将不同平台下编译好的可执行文件分别发布，Java编写的项目就考虑将Jar/War文件发布</p><h3 id="这里操作的合理性"><a href="#这里操作的合理性" class="headerlink" title="这里操作的合理性"></a>这里操作的合理性</h3><p>但是star-history选择了直接将构建文件放置在代码仓库里，我觉得是出于以下考虑:</p><ul><li>项目本身较小，处于起步阶段，还没有达到版本发布的级别</li><li>但是希望感兴趣的用户在下载了源代码后无需额外操作(安装webpack并构建)，立刻能够使用web app</li><li>Javascript代码仅依赖于浏览器，直接发布，不会有平台问题</li></ul><p>以上，有时我会觉得我<a href="https://zh.moegirl.org/zh-hans/%E5%A4%A7%E5%B8%88%E6%95%88%E5%BA%94" target="_blank" rel="noopener">迪化</a>了</p>]]></content>
+    <content type="html"><![CDATA[<p>本文是<a href="https://github.com/timqian/star-history" target="_blank" rel="noopener">star-history项目</a>源码阅读的第三篇文章，会包含:</p><ul><li>项目仓库中是否需要保存被构建文件的讨论</li></ul><p>简单来说:</p><ul><li>为了项目仓库的整洁，一般不保存被构建文件</li><li>如果有项目本身不是非常复杂，有展示需求且构建文件为跨平台文件，可以考虑直接保存在项目仓库中</li></ul><p>本次对代码的分析基于 <a href="https://github.com/timqian/star-history/commit/cb4d5828d5147df1d3db79ce728e6fb1f088e38b" target="_blank" rel="noopener">commit cb4d5828d5147df1d3db79ce728e6fb1f088e38b</a></p><a id="more"></a><h2 id="gitignore的改变"><a href="#gitignore的改变" class="headerlink" title="gitignore的改变"></a>gitignore的改变</h2><p>在<a href="https://github.com/timqian/star-history/commit/cb4d5828d5147df1d3db79ce728e6fb1f088e38b" target="_blank" rel="noopener">这个commit</a>中，做出的唯一改变就是将<code>bundle.js</code>从<code>.gitignore</code>中删除了</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git commit remove</span><br><span class="line">- # Built by webpack</span><br><span class="line">- bundle.js</span><br></pre></td></tr></table></figure><p>这就意味着，以后的仓库中可以存储webpack构建的<code>bundle.js</code></p><h3 id="构建文件一般不会放置在代码仓库中"><a href="#构建文件一般不会放置在代码仓库中" class="headerlink" title="构建文件一般不会放置在代码仓库中"></a>构建文件一般不会放置在代码仓库中</h3><p>但是我们知道，对于这一类的构建文件，一般是不会直接存放在代码仓库中的</p><p>就好像用C/C++编写的项目，却把可执行文件放到了仓库里，或者Java编写的项目，却把Jar文件放到了仓库里</p><p>这违背了<strong>代码</strong>仓库的原则</p><h3 id="正常的做法"><a href="#正常的做法" class="headerlink" title="正常的做法"></a>正常的做法</h3><p>正常情况下，被构建文件当然可以公开，但是一般是以</p><ul><li>发布(Release)</li></ul><p>的方式进行公开，Github本身也提供了<a href="https://help.github.com/en/enterprise/2.13/user/articles/creating-releases" target="_blank" rel="noopener">产品发布</a>的<br>功能</p><p>比如C/C++编写，那么就将不同平台下编译好的可执行文件分别发布，Java编写的项目就考虑将Jar/War文件发布</p><h3 id="这里操作的合理性"><a href="#这里操作的合理性" class="headerlink" title="这里操作的合理性"></a>这里操作的合理性</h3><p>但是star-history选择了直接将构建文件放置在代码仓库里，我觉得是出于以下考虑:</p><ul><li>项目本身较小，处于起步阶段，还没有达到版本发布的级别</li><li>但是希望感兴趣的用户在下载了源代码后无需额外操作(安装webpack并构建)，立刻能够使用web app</li><li>Javascript代码仅依赖于浏览器，直接发布，不会有平台问题</li></ul><p>以上，有时我会觉得我<a href="https://zh.moegirl.org/zh-hans/%E5%A4%A7%E5%B8%88%E6%95%88%E5%BA%94" target="_blank" rel="noopener">迪化</a>了</p>]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;本文是&lt;a href=&quot;https://github.com/timqian/star-history&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;star-history项目&lt;/a&gt;源码阅读的第二篇文章，会包含:&lt;/p&gt;
+      &lt;p&gt;本文是&lt;a href=&quot;https://github.com/timqian/star-history&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;star-history项目&lt;/a&gt;源码阅读的第三篇文章，会包含:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;项目仓库中是否需要保存被构建文件的讨论&lt;/li&gt;
 &lt;/ul&gt;
@@ -592,33 +620,6 @@
     
     
       <category term="Linux" scheme="https://rivers-shall.github.io/tags/Linux/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>git-status中文乱码问题</title>
-    <link href="https://rivers-shall.github.io/2020/05/29/git-status%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98/"/>
-    <id>https://rivers-shall.github.io/2020/05/29/git-status中文乱码问题/</id>
-    <published>2020-05-29T10:21:28.000Z</published>
-    <updated>2020-06-01T10:43:31.134Z</updated>
-    
-    <content type="html"><![CDATA[<p>本文记录了作者解决<code>git status</code>命令中出现中文名乱码问题的方法，简单来说</p><blockquote><p>配置 core.quotepath 为 false 即可</p></blockquote><a id="more"></a><h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>当我们的修改文件中出现中文文件名时，<code>git status</code>就会出现乱码</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">➜  project git:(master) ✗ git status -s</span><br><span class="line">?? <span class="string">"\344\270\255\346\226\207\346\226\207\344\273\266"</span></span><br></pre></td></tr></table></figure><p>这是由于Git默认会对ASCII以外的编码进行转义，只要将这个转义关掉，就可以恢复正常了，关掉的方式就是</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">➜  project git:(master) ✗ git config core.quotepath <span class="literal">false</span></span><br><span class="line">➜  project git:(master) ✗ git status -s</span><br><span class="line">?? 中文文件</span><br></pre></td></tr></table></figure><p>当然，如果希望让这个设定在所有的Git本地仓库里都生效，可以加上<code>--global</code>选项</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">➜  project git:(master) ✗ git config --global core.quotepath <span class="literal">false</span></span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;本文记录了作者解决&lt;code&gt;git status&lt;/code&gt;命令中出现中文名乱码问题的方法，简单来说&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;配置 core.quotepath 为 false 即可&lt;/p&gt;
-&lt;/blockquote&gt;
-    
-    </summary>
-    
-      <category term="code snippet" scheme="https://rivers-shall.github.io/categories/code-snippet/"/>
-    
-    
-      <category term="git" scheme="https://rivers-shall.github.io/tags/git/"/>
-    
-      <category term="中文乱码" scheme="https://rivers-shall.github.io/tags/%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81/"/>
     
   </entry>
   
