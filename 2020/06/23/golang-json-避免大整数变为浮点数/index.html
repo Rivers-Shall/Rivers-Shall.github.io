@@ -46,20 +46,20 @@
   };
 </script>
 <script data-ad-client="ca-pub-6100092033271048" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-  <meta name="description" content="本文是star-history项目源码阅读的第二篇文章，会包含:  搜索栏+大图的HTML与CSS排版  本次对代码的分析基于Commit - first commit deecd92 timqian">
-<meta name="keywords" content="HTML,CSS">
+  <meta name="description" content="本文介绍了作者在使用golang中的json库时，为了避免大整数(int64)在经历Marshal-Unmarshal的过程后变成浮点数float64而做出的处理，简单来说:  使用Decoder而不是Unmarshal来获得更多定制化特性 Decoder.UseNumber()可以避免大整数被处理为浮点数  可参考stackoverflow相关问答">
+<meta name="keywords" content="golang,json">
 <meta property="og:type" content="article">
-<meta property="og:title" content="star-history源码阅读笔记(02)-搜索栏+大图的HTML与CSS排版">
-<meta property="og:url" content="https://rivers-shall.github.io/2020/06/17/star-history源码阅读笔记-02-搜索栏-大图的HTML与CSS排版/index.html">
+<meta property="og:title" content="golang json 避免大整数变为浮点数">
+<meta property="og:url" content="https://rivers-shall.github.io/2020/06/23/golang-json-避免大整数变为浮点数/index.html">
 <meta property="og:site_name" content="碧漾的自我">
-<meta property="og:description" content="本文是star-history项目源码阅读的第二篇文章，会包含:  搜索栏+大图的HTML与CSS排版  本次对代码的分析基于Commit - first commit deecd92 timqian">
+<meta property="og:description" content="本文介绍了作者在使用golang中的json库时，为了避免大整数(int64)在经历Marshal-Unmarshal的过程后变成浮点数float64而做出的处理，简单来说:  使用Decoder而不是Unmarshal来获得更多定制化特性 Decoder.UseNumber()可以避免大整数被处理为浮点数  可参考stackoverflow相关问答">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-06-18T08:21:22.240Z">
+<meta property="og:updated_time" content="2020-06-23T10:32:59.761Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="star-history源码阅读笔记(02)-搜索栏+大图的HTML与CSS排版">
-<meta name="twitter:description" content="本文是star-history项目源码阅读的第二篇文章，会包含:  搜索栏+大图的HTML与CSS排版  本次对代码的分析基于Commit - first commit deecd92 timqian">
+<meta name="twitter:title" content="golang json 避免大整数变为浮点数">
+<meta name="twitter:description" content="本文介绍了作者在使用golang中的json库时，为了避免大整数(int64)在经历Marshal-Unmarshal的过程后变成浮点数float64而做出的处理，简单来说:  使用Decoder而不是Unmarshal来获得更多定制化特性 Decoder.UseNumber()可以避免大整数被处理为浮点数  可参考stackoverflow相关问答">
 
-<link rel="canonical" href="https://rivers-shall.github.io/2020/06/17/star-history源码阅读笔记-02-搜索栏-大图的HTML与CSS排版/">
+<link rel="canonical" href="https://rivers-shall.github.io/2020/06/23/golang-json-避免大整数变为浮点数/">
 
 
 <script id="page-configurations">
@@ -71,7 +71,7 @@
   };
 </script>
 
-  <title>star-history源码阅读笔记(02)-搜索栏+大图的HTML与CSS排版 | 碧漾的自我</title>
+  <title>golang json 避免大整数变为浮点数 | 碧漾的自我</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129500136-1"></script>
     <script>
@@ -201,7 +201,7 @@
   
   
   <article itemscope="" itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2020/06/17/star-history源码阅读笔记-02-搜索栏-大图的HTML与CSS排版/">
+    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2020/06/23/golang-json-避免大整数变为浮点数/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/龙卷1.jpeg">
@@ -214,7 +214,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          star-history源码阅读笔记(02)-搜索栏+大图的HTML与CSS排版
+          golang json 避免大整数变为浮点数
         </h2>
 
         <div class="post-meta">
@@ -224,16 +224,10 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2020-06-17 19:44:13" itemprop="dateCreated datePublished" datetime="2020-06-17T19:44:13+08:00">2020-06-17</time>
+              <time title="创建时间：2020-06-23 18:17:49 / 修改时间：18:32:59" itemprop="dateCreated datePublished" datetime="2020-06-23T18:17:49+08:00">2020-06-23</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-06-18 16:21:22" itemprop="dateModified" datetime="2020-06-18T16:21:22+08:00">2020-06-18</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -242,18 +236,6 @@
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
                   <a href="/categories/code-snippet/" itemprop="url" rel="index">
                     <span itemprop="name">code snippet</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/basic-knowledge/" itemprop="url" rel="index">
-                    <span itemprop="name">basic knowledge</span>
-                  </a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/star-history源码阅读笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">star-history源码阅读笔记</span>
                   </a>
                 </span>
             </span>
@@ -269,27 +251,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>本文是<a href="https://github.com/timqian/star-history" target="_blank" rel="noopener">star-history项目</a>源码阅读的第二篇文章，会包含:</p>
+        <p>本文介绍了作者在使用golang中的json库时，为了避免大整数(<code>int64</code>)在经历<code>Marshal-Unmarshal</code>的过程后变成浮点数<code>float64</code>而做出的处理，简单来说:</p>
 <ul>
-<li>搜索栏+大图的HTML与CSS排版</li>
+<li>使用<code>Decoder</code>而不是<code>Unmarshal</code>来获得更多定制化特性</li>
+<li><code>Decoder.UseNumber()</code>可以避免大整数被处理为浮点数</li>
 </ul>
-<p>本次对代码的分析基于Commit - <a href="https://github.com/timqian/star-history/tree/deecd92097809f39cd0ccd521b85ad54ac8fad24" target="_blank" rel="noopener">first commit deecd92 timqian</a></p>
+<p>可参考<a href="https://stackoverflow.com/questions/22343083/json-unmarshaling-with-long-numbers-gives-floating-point-number" target="_blank" rel="noopener">stackoverflow相关问答</a></p>
 <a id="more"></a>
-<h2 id="项目页面排版"><a href="#项目页面排版" class="headerlink" title="项目页面排版"></a>项目页面排版</h2><p>在<a href="https://github.com/timqian/star-history/tree/deecd92097809f39cd0ccd521b85ad54ac8fad24" target="_blank" rel="noopener">这个commit</a>上，项目的外观还不是很美观，但是已经具备了一种模式，那就是”搜索栏+大图”的模式</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">+----------------------------------------------------------------+</span><br><span class="line">|                   |search input|||search button|               |</span><br><span class="line">+----------------------------------------------------------------+</span><br><span class="line">|                                                                |</span><br><span class="line">|                                                                |</span><br><span class="line">|                                                                |</span><br><span class="line">|                                                                |</span><br><span class="line">|                           svg picture                          |</span><br><span class="line">|                                                                |</span><br><span class="line">|                                                                |</span><br><span class="line">|                                                                |</span><br><span class="line">|                                                                |</span><br><span class="line">|                                                                |</span><br><span class="line">|                                                                |</span><br><span class="line">+----------------------------------------------------------------+</span><br></pre></td></tr></table></figure>
-<h2 id="排版的HTML与CSS实现"><a href="#排版的HTML与CSS实现" class="headerlink" title="排版的HTML与CSS实现"></a>排版的HTML与CSS实现</h2><p>首先，我们可以看到整个页面被分做了两块，一块是搜索栏，另一块是svg图片(用于展示star历史)，也就是</p>
-<ul>
-<li>搜索栏<ul>
-<li>搜索输入栏</li>
-<li>搜索点击按钮</li>
-</ul>
-</li>
-<li>svg图片</li>
-</ul>
-<p>项目使用的HTML结构则是</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span>&gt;</span><span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">svg</span>&gt;</span><span class="tag">&lt;/<span class="name">svg</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>为了界面的美观，当然还会使用CSS，这里选取一些比较重要的属性设置进行注解</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">h1</span> &#123;</span><br><span class="line">    # text-align使得input和button居中显示</span><br><span class="line">    <span class="selector-tag">text-align</span>: <span class="selector-tag">center</span>,</span><br><span class="line">    # 设置背景色</span><br><span class="line">    <span class="selector-tag">background-color</span>: <span class="selector-tag">rgba</span>(46, 137, 216, 0<span class="selector-class">.88</span>),</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">input</span> &#123;</span><br><span class="line">    # 形状</span><br><span class="line">    <span class="selector-tag">width</span>: 350<span class="selector-tag">px</span>;</span><br><span class="line">    <span class="selector-tag">height</span>: 23<span class="selector-tag">px</span>;</span><br><span class="line">    # 字体大小</span><br><span class="line">    <span class="selector-tag">font-size</span>: 15<span class="selector-tag">pt</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">button</span> &#123;</span><br><span class="line">    # 原生文字格式</span><br><span class="line">    <span class="selector-tag">text-decoration</span>: <span class="selector-tag">none</span>;</span><br><span class="line">    # 文字居中</span><br><span class="line">    <span class="selector-tag">text-align</span>: <span class="selector-tag">center</span>;</span><br><span class="line">    # 文字大小</span><br><span class="line">    <span class="selector-tag">font-size</span>: 16<span class="selector-tag">pt</span>;</span><br><span class="line">    # 背景色</span><br><span class="line">    <span class="selector-tag">background-color</span>: <span class="selector-id">#01A94C</span>;</span><br><span class="line">    # 字体色</span><br><span class="line">    <span class="selector-tag">color</span>: <span class="selector-tag">white</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>存在一<code>map[string]interface{}</code>需要进行json的Marshal和Unmarshal，但是其中可能会出现大整数，比如<code>&quot;big_number&quot; : 13060000000000</code>，在直接使用json的Marshal和Unmarshal时，会出现整数被处理为了浮点数的情况</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"encoding/json"</span></span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    m1 := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;</span><br><span class="line">        <span class="string">"big_number"</span>: <span class="number">13060000000000</span>,</span><br><span class="line">    &#125;</span><br><span class="line">    b, _ := json.Marshal(m1)</span><br><span class="line">    m2 := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;&#125;</span><br><span class="line">    json.Unmarshal(b, &amp;m2)</span><br><span class="line">    <span class="comment">// map[big_number:1.306e+13]</span></span><br><span class="line">    <span class="comment">// 大整数成为了浮点数</span></span><br><span class="line">    fmt.Println(m2)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个结果其实是可以预见的，毕竟Marshal了之后就变成了普通的字符串，重新Unmarshal时，由于没有办法指定<code>interface{}</code>为<code>int64</code>，就会出现将大整数默认转化为浮点数的行为</p>
+<p>为了处理这种情况，我们不能使用默认的Marshal和Unmarshal，而应该使用更加定制化的动作，比如<code>Decoder</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"encoding/json"</span></span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"strings"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    m1 := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;</span><br><span class="line">        <span class="string">"big_number"</span>: <span class="number">13060000000000</span>,</span><br><span class="line">    &#125;</span><br><span class="line">    b, _ := json.Marshal(m1)</span><br><span class="line">    m2 := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;&#125;</span><br><span class="line"></span><br><span class="line">    d := json.NewDecoder(strings.NewReader(<span class="keyword">string</span>(b)))</span><br><span class="line">    d.UseNumber()</span><br><span class="line">    d.Decode(&amp;m2)</span><br><span class="line">    <span class="comment">// map[big_number:13060000000000]</span></span><br><span class="line">    <span class="comment">// 大整数仍然是大整数</span></span><br><span class="line">    fmt.Println(m2)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用<code>Decoder</code>，我们可以调用其方法进行更多定制化设置，比如这里就调用了<code>UseNumber</code>来避免大整数被转化为浮点数</p>
 
     </div>
 
@@ -299,8 +273,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/HTML/" rel="tag"># HTML</a>
-              <a href="/tags/CSS/" rel="tag"># CSS</a>
+              <a href="/tags/golang/" rel="tag"># golang</a>
+              <a href="/tags/json/" rel="tag"># json</a>
           </div>
 
         
@@ -309,13 +283,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/06/16/webpack教程02-webpack-dev-server是什么与webpack-dev-server命令行使用/" rel="prev" title="webpack教程02-webpack-dev-server是什么与webpack-dev-server命令行使用">
-      <i class="fa fa-chevron-left"></i> webpack教程02-webpack-dev-server是什么与webpack-dev-server命令行使用
+    <a href="/2020/06/23/golang-json-多次Unmarshal至map的坑/" rel="prev" title="golang json 多次Unmarshal至map/struct的坑">
+      <i class="fa fa-chevron-left"></i> golang json 多次Unmarshal至map/struct的坑
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/06/18/star-history源码阅读笔记-03-include-bundle-js/" rel="next" title="star-history源码阅读笔记(03)-include bundle.js">
-      star-history源码阅读笔记(03)-include bundle.js <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -376,7 +347,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#项目页面排版"><span class="nav-number">1.</span> <span class="nav-text">项目页面排版</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#排版的HTML与CSS实现"><span class="nav-number">2.</span> <span class="nav-text">排版的HTML与CSS实现</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#场景"><span class="nav-number">1.</span> <span class="nav-text">场景</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -553,7 +524,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo: 'blog-comment',
       owner: 'Rivers-Shall',
       admin: ['Rivers-Shall'],
-      id: '2c80dc82963d8423aedb04f35640936a',
+      id: '390ae796006675921f0242f24758ecbd',
         language: 'zh-CN',
       distractionFreeMode: 'true'
     });

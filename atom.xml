@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://rivers-shall.github.io/"/>
-  <updated>2020-06-23T09:36:36.238Z</updated>
+  <updated>2020-06-23T10:32:59.761Z</updated>
   <id>https://rivers-shall.github.io/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>golang json 避免大整数变为浮点数</title>
+    <link href="https://rivers-shall.github.io/2020/06/23/golang-json-%E9%81%BF%E5%85%8D%E5%A4%A7%E6%95%B4%E6%95%B0%E5%8F%98%E4%B8%BA%E6%B5%AE%E7%82%B9%E6%95%B0/"/>
+    <id>https://rivers-shall.github.io/2020/06/23/golang-json-避免大整数变为浮点数/</id>
+    <published>2020-06-23T10:17:49.000Z</published>
+    <updated>2020-06-23T10:32:59.761Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文介绍了作者在使用golang中的json库时，为了避免大整数(<code>int64</code>)在经历<code>Marshal-Unmarshal</code>的过程后变成浮点数<code>float64</code>而做出的处理，简单来说:</p><ul><li>使用<code>Decoder</code>而不是<code>Unmarshal</code>来获得更多定制化特性</li><li><code>Decoder.UseNumber()</code>可以避免大整数被处理为浮点数</li></ul><p>可参考<a href="https://stackoverflow.com/questions/22343083/json-unmarshaling-with-long-numbers-gives-floating-point-number" target="_blank" rel="noopener">stackoverflow相关问答</a></p><a id="more"></a><h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>存在一<code>map[string]interface{}</code>需要进行json的Marshal和Unmarshal，但是其中可能会出现大整数，比如<code>&quot;big_number&quot; : 13060000000000</code>，在直接使用json的Marshal和Unmarshal时，会出现整数被处理为了浮点数的情况</p><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"encoding/json"</span></span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    m1 := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;</span><br><span class="line">        <span class="string">"big_number"</span>: <span class="number">13060000000000</span>,</span><br><span class="line">    &#125;</span><br><span class="line">    b, _ := json.Marshal(m1)</span><br><span class="line">    m2 := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;&#125;</span><br><span class="line">    json.Unmarshal(b, &amp;m2)</span><br><span class="line">    <span class="comment">// map[big_number:1.306e+13]</span></span><br><span class="line">    <span class="comment">// 大整数成为了浮点数</span></span><br><span class="line">    fmt.Println(m2)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>这个结果其实是可以预见的，毕竟Marshal了之后就变成了普通的字符串，重新Unmarshal时，由于没有办法指定<code>interface{}</code>为<code>int64</code>，就会出现将大整数默认转化为浮点数的行为</p><p>为了处理这种情况，我们不能使用默认的Marshal和Unmarshal，而应该使用更加定制化的动作，比如<code>Decoder</code></p><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"encoding/json"</span></span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"strings"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    m1 := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;</span><br><span class="line">        <span class="string">"big_number"</span>: <span class="number">13060000000000</span>,</span><br><span class="line">    &#125;</span><br><span class="line">    b, _ := json.Marshal(m1)</span><br><span class="line">    m2 := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;&#125;</span><br><span class="line"></span><br><span class="line">    d := json.NewDecoder(strings.NewReader(<span class="keyword">string</span>(b)))</span><br><span class="line">    d.UseNumber()</span><br><span class="line">    d.Decode(&amp;m2)</span><br><span class="line">    <span class="comment">// map[big_number:13060000000000]</span></span><br><span class="line">    <span class="comment">// 大整数仍然是大整数</span></span><br><span class="line">    fmt.Println(m2)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>使用<code>Decoder</code>，我们可以调用其方法进行更多定制化设置，比如这里就调用了<code>UseNumber</code>来避免大整数被转化为浮点数</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文介绍了作者在使用golang中的json库时，为了避免大整数(&lt;code&gt;int64&lt;/code&gt;)在经历&lt;code&gt;Marshal-Unmarshal&lt;/code&gt;的过程后变成浮点数&lt;code&gt;float64&lt;/code&gt;而做出的处理，简单来说:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;使用&lt;code&gt;Decoder&lt;/code&gt;而不是&lt;code&gt;Unmarshal&lt;/code&gt;来获得更多定制化特性&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Decoder.UseNumber()&lt;/code&gt;可以避免大整数被处理为浮点数&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;可参考&lt;a href=&quot;https://stackoverflow.com/questions/22343083/json-unmarshaling-with-long-numbers-gives-floating-point-number&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;stackoverflow相关问答&lt;/a&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="code snippet" scheme="https://rivers-shall.github.io/categories/code-snippet/"/>
+    
+    
+      <category term="golang" scheme="https://rivers-shall.github.io/tags/golang/"/>
+    
+      <category term="json" scheme="https://rivers-shall.github.io/tags/json/"/>
+    
+  </entry>
   
   <entry>
     <title>golang json 多次Unmarshal至map/struct的坑</title>
@@ -583,33 +612,6 @@
 &lt;li&gt;使用&lt;code&gt;echo &amp;#39;  string  &amp;#39; | sed -e &amp;#39;s/[[:space:]]*$//&amp;#39;&lt;/code&gt;去除结尾的空格&lt;/li&gt;
 &lt;li&gt;将二者用管道结合，去除头尾空格&lt;code&gt;echo &amp;#39;  string  &amp;#39; | sed -e &amp;#39;s/[[:space:]]*$//&amp;#39; | sed -e &amp;#39;s/^[[:space:]]*//&amp;#39;&lt;/code&gt;&lt;/li&gt;
 &lt;/ol&gt;
-    
-    </summary>
-    
-      <category term="code snippet" scheme="https://rivers-shall.github.io/categories/code-snippet/"/>
-    
-    
-      <category term="Linux" scheme="https://rivers-shall.github.io/tags/Linux/"/>
-    
-      <category term="sed" scheme="https://rivers-shall.github.io/tags/sed/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>转义sed替换模式字符串</title>
-    <link href="https://rivers-shall.github.io/2020/06/01/%E8%BD%AC%E4%B9%89sed%E6%9B%BF%E6%8D%A2%E6%A8%A1%E5%BC%8F%E5%AD%97%E7%AC%A6%E4%B8%B2/"/>
-    <id>https://rivers-shall.github.io/2020/06/01/转义sed替换模式字符串/</id>
-    <published>2020-06-01T05:47:34.000Z</published>
-    <updated>2020-06-01T10:43:41.406Z</updated>
-    
-    <content type="html"><![CDATA[<p>本文记录了作者在使用<code>sed</code>命令进行文本替换时，对于使用到的替换模式进行转义处理使用到的<code>sed</code>命令，简单来说：</p><ul><li>使用<code>sed -e &#39;s/[]\/$*.^[]/\\&amp;/g&#39;</code>即可对输入字符串进行转义</li></ul><a id="more"></a><h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p><code>sed</code>命令常常被用来对文本做处理，其中一个最经常用到的处理就是替换，替换的语法如下：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="variable">$STRING</span> | sed -e <span class="string">'s/&lt;match_pattern&gt;/&lt;replace_pattern&gt;/g'</span></span><br></pre></td></tr></table></figure><p>当然也可以有其他的变化，不过这是作者使用的最多的方式。</p><p>在使用这些的时候，我们可能会在<code>match_pattern</code>和<code>replace_pattern</code>中引用变量，已达到分别管理和增强可读性的目的，比如</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dummy text</span></span><br><span class="line">TEXT=<span class="string">"affaflns,fakfnakn"</span></span><br><span class="line">REPLACE=<span class="string">"ff"</span></span><br><span class="line">REPLACED_TEXT=$(<span class="built_in">echo</span> <span class="variable">$TEXT</span> | sed -e <span class="string">"s/a/<span class="variable">$REPLACE</span>/g"</span>)</span><br></pre></td></tr></table></figure><p>但是，如果上面引用的<code>REPLACE</code>里面有特殊字符，我们就会遇到问题，比如</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dummy text</span></span><br><span class="line">TEXT=<span class="string">"affaflns,fakfnakn"</span></span><br><span class="line">REPLACE=<span class="string">"/a"</span></span><br><span class="line"><span class="comment"># 有问题</span></span><br><span class="line">REPLACED_TEXT=$(<span class="built_in">echo</span> <span class="variable">$TEXT</span> | sed -e <span class="string">"s/a/<span class="variable">$REPLACE</span>/g"</span>)</span><br></pre></td></tr></table></figure><p>我们的本意是将<code>a</code>替换为<code>/a</code>，但是，使用这几条命令，会得到</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sed: 1: <span class="string">"s/a//a/g</span></span><br><span class="line"><span class="string">"</span>: bad flag <span class="keyword">in</span> substitute <span class="built_in">command</span>: <span class="string">'a'</span></span><br></pre></td></tr></table></figure><p>这里的原因就是<code>/a</code>中的<code>/</code>是一个特殊字符，如果希望得到我们上述的效果，应该这么操作</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dummy text</span></span><br><span class="line">TEXT=<span class="string">"affaflns,fakfnakn"</span></span><br><span class="line">REPLACE=<span class="string">"\/a"</span></span><br><span class="line"><span class="comment"># 成功</span></span><br><span class="line">REPLACED_TEXT=$(<span class="built_in">echo</span> <span class="variable">$TEXT</span> | sed -e <span class="string">"s/a/<span class="variable">$REPLACE</span>/g"</span>)</span><br></pre></td></tr></table></figure><p>我们通过<code>\/</code>进行转义，取得了成功，但是这种方式使得我们编写<code>replace_pattern</code>变得麻烦，而且很不直观，我们希望有一个函数来达到如下效果</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dummy text</span></span><br><span class="line">TEXT=<span class="string">"affaflns,fakfnakn"</span></span><br><span class="line">REPLACE=<span class="string">"/a"</span></span><br><span class="line">REPLACE=$(func <span class="variable">$REPLACE</span>)</span><br><span class="line">REPLACED_TEXT=$(<span class="built_in">echo</span> <span class="variable">$TEXT</span> | sed -e <span class="string">"s/a/<span class="variable">$REPLACE</span>/g"</span>)</span><br></pre></td></tr></table></figure><p>也就是说，编写<code>replace_pattern</code>时，可以直接编写，而后使用一个函数或者命令自动转义再使用</p><h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p><a href="https://stackoverflow.com/questions/407523/escape-a-string-for-a-sed-replace-pattern" target="_blank" rel="noopener">stackoverflow</a></p><p>使用<code>sed -e &#39;s/[]\/$*.^[]/\\&amp;/g&#39;</code>即可</p><h3 id="方案解析"><a href="#方案解析" class="headerlink" title="方案解析"></a>方案解析</h3><p>我们这次的方案就是对原生的<code>replace_pattern</code>做一次替换:</p><ul><li><code>match_pattern</code>为<code>[]\/$*.^[]</code><ul><li>这个正则表达式的结构很具有迷惑性，其实它是一个大的<em>bracket group</em></li><li>也就是说，实际上是<code>[</code> <code>]\/$*.^[</code> <code>]</code>的结构</li><li>意味着匹配<code>]\/$*.^[</code>中的任一字符</li></ul></li><li><code>replace_pattern</code>为<code>\\&amp;</code><ul><li>这个<code>replace_pattern</code>用到了一个转义字符和一个特殊字符</li><li>转义字符<code>\\</code>表示的就是<code>\</code></li><li>特殊字符<code>&amp;</code>表示的是<code>match_pattern</code>匹配到的内容</li></ul></li></ul><p>综合起来，这个替换语句就是把<code>]\/$*.^[</code>前面全部加上一个斜杠，进行转义</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;本文记录了作者在使用&lt;code&gt;sed&lt;/code&gt;命令进行文本替换时，对于使用到的替换模式进行转义处理使用到的&lt;code&gt;sed&lt;/code&gt;命令，简单来说：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;使用&lt;code&gt;sed -e &amp;#39;s/[]\/$*.^[]/\\&amp;amp;/g&amp;#39;&lt;/code&gt;即可对输入字符串进行转义&lt;/li&gt;
-&lt;/ul&gt;
     
     </summary>
     
