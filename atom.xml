@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://rivers-shall.github.io/"/>
-  <updated>2020-06-19T09:55:28.626Z</updated>
+  <updated>2020-06-23T09:36:36.238Z</updated>
   <id>https://rivers-shall.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>golang json 多次Unmarshal至map/struct的坑</title>
+    <link href="https://rivers-shall.github.io/2020/06/23/golang-json-%E5%A4%9A%E6%AC%A1Unmarshal%E8%87%B3map%E7%9A%84%E5%9D%91/"/>
+    <id>https://rivers-shall.github.io/2020/06/23/golang-json-多次Unmarshal至map的坑/</id>
+    <published>2020-06-23T09:13:29.000Z</published>
+    <updated>2020-06-23T09:36:36.238Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文介绍的是作者在使用golang的json库时发现的一个坑点，简单来说:</p><ul><li>当json库Unmarshal到map或者struct中时，并不会默认将<code>[]byte</code>中没有提供的字段置为零值</li></ul><a id="more"></a><h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>在服务中有配置以json形式存在于远程配置中心，需要不断拉取配置并Unmarshal到本地配置结构体中</p><p>但是在修改配置，进行功能验证的时候，发现部分配置的删除没有生效</p><p>最终排查发现是被删除的配置项是一个<code>map[string]string</code>，在多次Unmarshal时，map不会被清除，只会加入，导致了问题</p><h2 id="简单复现"><a href="#简单复现" class="headerlink" title="简单复现"></a>简单复现</h2><p>经过试验，发现除了map，对于struct也有同样的问题，且无论是官方json库还是第三方库，都有存在这样的问题</p><p>实验代码</p><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line">    jsoniter <span class="string">"github.com/json-iterator/go"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> test <span class="keyword">struct</span> &#123;</span><br><span class="line">    Str  <span class="keyword">string</span> <span class="string">`json:"str"`</span></span><br><span class="line">    Str2 <span class="keyword">string</span> <span class="string">`json:"str2"`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> m <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span></span><br><span class="line"></span><br><span class="line">    b1 := <span class="string">`&#123; "key1" : "value1", "key2" : "value2" &#125;`</span></span><br><span class="line">    jsoniter.Unmarshal([]<span class="keyword">byte</span>(b1), &amp;m)</span><br><span class="line">    fmt.Println(m)</span><br><span class="line">    <span class="comment">// 仅仅添加了&lt;key3, value3&gt;，没有清除前面的两个kv对</span></span><br><span class="line">    b2 := <span class="string">`&#123; "key3" : "value3"&#125;`</span></span><br><span class="line">    jsoniter.Unmarshal([]<span class="keyword">byte</span>(b2), &amp;m)</span><br><span class="line">    fmt.Println(m)</span><br><span class="line"></span><br><span class="line">    t := test&#123;&#125;</span><br><span class="line">    s1 := <span class="string">`&#123;"str" :"s"&#125;`</span></span><br><span class="line">    jsoniter.Unmarshal([]<span class="keyword">byte</span>(s1), &amp;t)</span><br><span class="line">    fmt.Printf(<span class="string">"%+v\n"</span>, t)</span><br><span class="line">    <span class="comment">// 仅仅将Str2字段置为s2，没有将Str字段置为空字符串</span></span><br><span class="line">    s2 := <span class="string">`&#123;"str2" : "s2"&#125;`</span></span><br><span class="line">    jsoniter.Unmarshal([]<span class="keyword">byte</span>(s2), &amp;t)</span><br><span class="line">    fmt.Printf(<span class="string">"%+v\n"</span>, t)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>其打印结果为</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">map[key1:value1 key2:value2]</span><br><span class="line">map[key1:value1 key2:value2 key3:value3]</span><br><span class="line">&#123;Str:s Str2:&#125;</span><br><span class="line">&#123;Str:s Str2:s2&#125;</span><br></pre></td></tr></table></figure><h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>对于map或者struct，如果存在多次Unmarshal的情况，需要在Unmarshal之前手动清空</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文介绍的是作者在使用golang的json库时发现的一个坑点，简单来说:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;当json库Unmarshal到map或者struct中时，并不会默认将&lt;code&gt;[]byte&lt;/code&gt;中没有提供的字段置为零值&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+      <category term="basic knowledge" scheme="https://rivers-shall.github.io/categories/basic-knowledge/"/>
+    
+    
+      <category term="golang" scheme="https://rivers-shall.github.io/tags/golang/"/>
+    
+  </entry>
   
   <entry>
     <title>star-history源码阅读笔记(04)-github-buttons</title>
@@ -594,32 +619,6 @@
       <category term="Linux" scheme="https://rivers-shall.github.io/tags/Linux/"/>
     
       <category term="sed" scheme="https://rivers-shall.github.io/tags/sed/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>date命令的两种常用法</title>
-    <link href="https://rivers-shall.github.io/2020/06/01/date%E5%91%BD%E4%BB%A4%E7%9A%84%E4%B8%A4%E7%A7%8D%E5%B8%B8%E7%94%A8%E6%B3%95/"/>
-    <id>https://rivers-shall.github.io/2020/06/01/date命令的两种常用法/</id>
-    <published>2020-06-01T03:17:25.000Z</published>
-    <updated>2020-06-01T10:43:59.583Z</updated>
-    
-    <content type="html"><![CDATA[<p>本文记录了作者在平时工作中经常用到的Linux命令<code>date</code>的两种常见使用方式，简单来说：</p><ol><li>打印当前时间，<code>date &quot;+&lt;output_format&gt;&quot;</code></li><li>将Unix时间戳转化为可读的日期+时间<code>date -r &lt;unix-timestamp&gt; &quot;+&lt;output_format&gt;&quot;</code></li></ol><a id="more"></a><h2 id="打印当前时间"><a href="#打印当前时间" class="headerlink" title="打印当前时间"></a>打印当前时间</h2><p>只需要使用<code>date &quot;+&lt;output_format&gt;&quot;</code>就可以打印当前时间，其中，<code>output_format</code>由正常字符和转义字符组成，转义字符用来打印当前的年，月，日等等</p><table><thead><tr><th>转义字符</th><th>含义</th></tr></thead><tbody><tr><td>%Y</td><td>年</td></tr><tr><td>%m</td><td>月</td></tr><tr><td>%d</td><td>日</td></tr><tr><td>%H</td><td>小时</td></tr><tr><td>%M</td><td>分钟</td></tr><tr><td>%S</td><td>秒</td></tr><tr><td>%s</td><td>时间戳</td></tr></tbody></table><p>例如</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; date <span class="string">"+%Y-%m-%d-%H-%M-%S"</span></span><br><span class="line">2020-06-01-11-24-39</span><br></pre></td></tr></table></figure><h2 id="将Unix时间戳转化为可读的日期-时间"><a href="#将Unix时间戳转化为可读的日期-时间" class="headerlink" title="将Unix时间戳转化为可读的日期+时间"></a>将Unix时间戳转化为可读的日期+时间</h2><p>使用<code>date -r &lt;unix-timestamp&gt; &quot;+&lt;output_format&gt;&quot;</code>即可完成转化，其中的<code>output_format</code>和上文中介绍的一样，<code>&lt;unix-timestamp</code>就是一个数字</p><p>例如</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; date -r 0 <span class="string">"+%Y-%m-%d-%H-%M-%S"</span></span><br><span class="line">1970-01-01-08-00-00</span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;本文记录了作者在平时工作中经常用到的Linux命令&lt;code&gt;date&lt;/code&gt;的两种常见使用方式，简单来说：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;打印当前时间，&lt;code&gt;date &amp;quot;+&amp;lt;output_format&amp;gt;&amp;quot;&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;将Unix时间戳转化为可读的日期+时间&lt;code&gt;date -r &amp;lt;unix-timestamp&amp;gt; &amp;quot;+&amp;lt;output_format&amp;gt;&amp;quot;&lt;/code&gt;&lt;/li&gt;
-&lt;/ol&gt;
-    
-    </summary>
-    
-      <category term="code snippet" scheme="https://rivers-shall.github.io/categories/code-snippet/"/>
-    
-    
-      <category term="Linux" scheme="https://rivers-shall.github.io/tags/Linux/"/>
     
   </entry>
   
