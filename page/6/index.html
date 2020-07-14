@@ -199,6 +199,116 @@
   
   
   <article itemscope="" itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2018/12/25/PL-4-Part-A-Week5/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/龙卷1.jpeg">
+      <meta itemprop="name" content="碧漾">
+      <meta itemprop="description" content="心中的自我永远也不能实现，所以才要鞭策现实的自我啊">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="碧漾的自我">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2018/12/25/PL-4-Part-A-Week5/" class="post-title-link" itemprop="url">PL(4)Part-A-Week5</a>
+        </h2>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-12-25 20:39:41" itemprop="dateCreated datePublished" datetime="2018-12-25T20:39:41+08:00">2018-12-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-05-28 14:56:19" itemprop="dateModified" datetime="2020-05-28T14:56:19+08:00">2020-05-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Open-Course/" itemprop="url" rel="index">
+                    <span itemprop="name">Open Course</span>
+                  </a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Open-Course/Programming-Language-By-Dan-Grossman/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming Language By Dan Grossman</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <!-- toc -->
+<h1 id="Ideas-of-Week5"><a href="#Ideas-of-Week5" class="headerlink" title="Ideas of Week5"></a>Ideas of Week5</h1><h2 id="Type-Inference"><a href="#Type-Inference" class="headerlink" title="Type Inference"></a>Type Inference</h2><p>SML has a static type system, i.e., it determines all the types for its bindings before ever executing the program.  But unlike most statically typed programming languages, like C, Java, SML is implicitly typed.  We don’t write down the type of our bindings ever since Week3.  Inside the SML is an algorithm called type inference that figures out the type of the bindings for us.  It may sound magic for the first time, but in this week, Dan explained this mechanics for us.</p>
+<p>The central idea of this algorithm is <strong>do assumptions and deductions as we go</strong>.  It exams the bindings from top to bottom and every time a new thing comes up it first assumes that it is a new type and then infers its type by collecting facts associated with it.  Here is an example:<br><figure class="highlight sml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fun</span> f x =</span><br><span class="line">  <span class="keyword">let</span> <span class="keyword">val</span> (y, z) = x <span class="keyword">in</span></span><br><span class="line">    (abs y) + z</span><br><span class="line">  <span class="keyword">end</span></span><br></pre></td></tr></table></figure></p>
+<p>The whole inference process goes like this:</p>
+<ol>
+<li>Looking at the first line, this is a function binding.  So <code>f</code> has type <code>T1-&gt;T2</code> for being a function.  And <code>x</code> has type <code>T1</code> for being the only parameter of <code>f</code>.</li>
+<li>Looking at the second line, <code>x</code> must have type <code>T3*T4</code> for the pattern matching to type check.  Also, <code>y</code> has type <code>T3</code> and <code>z</code> has type <code>T4</code>.</li>
+<li>Examing the third line.  We know from the standard library <code>abs</code> has type <code>int-&gt;int</code>.  So <code>T3=int</code>.  <code>z</code> must also have type <code>int</code> because only <code>int</code> can be added to <code>int</code>.  So <code>T4=int</code>.</li>
+<li>Looking at the last line, the whole <code>let</code> expression ends with an addition.  So the type of the <code>let</code> expression is <code>int</code>.  Thus the type of the returned value of <code>f</code> is <code>int</code>.</li>
+<li>Combining all the facts together and concluding that <code>f</code> has type <code>int*int-&gt;int</code>.</li>
+</ol>
+<p>Now type inference may seem more easy and simple.  But to have type inference in a programming language requires delicate design.  SML is well designed to have a good type inference algorithm.  Some of the programming languages does not even have a feasible type inference algorithm.  A feasible type inference algorithm must do the following three things:</p>
+<ul>
+<li>Always terminate</li>
+<li>Accept all the programs that type check and give the right type </li>
+<li>Reject all the programs that does not type check</li>
+</ul>
+<p>The question of how difficult the type inference algorithm is does not have a clear relation with how permissive the type system of the language is.  For example, the type system that accepts everything and the type system that rejects everything are both easy to type check and type infer.  Actually, to make the type inference in SML more difficult, we only need small modification to the type system of SML.</p>
+<ol>
+<li>If we admit <em>subtyping</em>(e.g., if every triple can also be a pair), the type inference will be much more difficult because we cannot reach the conclusion <code>x</code> has type <code>T1*T2</code> with the pattern matching <code>(y, z) = x</code>.  <code>x</code> may have two, three or more fields.</li>
+<li>If we disallow polymophic types, the type inference will also be more difficult because the type inference algorithm has to choose one concrete type which depends on the use of the binding.
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/12/25/PL-4-Part-A-Week5/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </li></ol></div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope="" itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://rivers-shall.github.io/2018/12/13/PL-3-Part-A-Week4/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -737,7 +847,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-count">56</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

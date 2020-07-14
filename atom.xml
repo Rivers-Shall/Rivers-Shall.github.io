@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://rivers-shall.github.io/"/>
-  <updated>2020-06-23T10:32:59.761Z</updated>
+  <updated>2020-07-14T08:49:52.111Z</updated>
   <id>https://rivers-shall.github.io/</id>
   
   <author>
@@ -15,6 +15,39 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>webpack教程03-webpack-配置中的重要概念</title>
+    <link href="https://rivers-shall.github.io/2020/07/14/webpack%E6%95%99%E7%A8%8B03-webpack-%E9%85%8D%E7%BD%AE%E4%B8%AD%E7%9A%84%E9%87%8D%E8%A6%81%E6%A6%82%E5%BF%B5/"/>
+    <id>https://rivers-shall.github.io/2020/07/14/webpack教程03-webpack-配置中的重要概念/</id>
+    <published>2020-07-14T06:50:14.000Z</published>
+    <updated>2020-07-14T08:49:52.111Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文是webpack教程的第三篇文章，主要会介绍：</p><ul><li>使用webpack配置文件中的重要概念<ul><li>entry</li><li>output</li><li>module</li><li>plugins</li></ul></li></ul><a id="more"></a><h2 id="使用webpack配置文件"><a href="#使用webpack配置文件" class="headerlink" title="使用webpack配置文件"></a>使用webpack配置文件</h2><p>在之前的系列中，我们都是使用webpack命令行参数进行webpack配置，这不利于我们集中管理配置选项</p><p>我们当然可以使用配置文件:</p><ul><li>webpack本身默认当前文件夹下的<code>webpack.config.js</code>是自己的配置文件</li><li>可以使用<code>--config</code>选项来指定配置文件</li></ul><p>我们这里方便起见，一般就是用<code>webpack.config.js</code></p><h2 id="webpack配置中的重要概念"><a href="#webpack配置中的重要概念" class="headerlink" title="webpack配置中的重要概念"></a>webpack配置中的重要概念</h2><p>首先，我们需要知道一个webpack配置事实上就是一个js对象，通过对这个对象的字段进行赋值，我们也就是配置了webpack</p><p>基本的webpack使用涉及到到的配置字段有四个</p><ul><li>entry</li><li>output</li><li>module / rules</li><li>plugins</li></ul><h3 id="entry"><a href="#entry" class="headerlink" title="entry"></a>entry</h3><p>也就是前文所说的进入点，用于webpack计算依赖关系的起始文件</p><p>直接写上相对路径即可:</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">entry: <span class="string">"./js/app.js"</span>,</span><br></pre></td></tr></table></figure><h3 id="output"><a href="#output" class="headerlink" title="output"></a>output</h3><p>也就是前文所说的打包目标，用于webpack最终输出打包好的文件</p><p>这里的output是一个对象，通过不同的字段进行更加细致的配置:</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'dist'</span>),</span><br><span class="line">    filename: <span class="string">"bundle.js"</span>,</span><br><span class="line">    publicPath: <span class="string">"/dist"</span></span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure><ul><li><code>path</code>字段指打包目标的文件夹，<strong>必须是绝对路径</strong>，使用了nodejs的path库进行操作</li><li><code>filename</code>字段指打包目标的文件名</li><li><code>publicPath</code>是webpack-dev-server启动后，打包文件的挂载路径，比如这里生成了<code>bundle.js</code>，挂载路径为<code>/dist</code>，那么就可以在<code>localhost:8081/dist/bundle.js</code>路径获取打包文件</li></ul><h3 id="module"><a href="#module" class="headerlink" title="module"></a>module</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">        &#123;</span><br><span class="line">            test: <span class="regexp">/\.css/</span>,</span><br><span class="line">            use: [<span class="string">"style-loader"</span>, <span class="string">"css-loader"</span>]</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure><p>这是module的基本用法——“引入loader”</p><blockquote><p>loader是在打包过程中对特定文件进行处理的插件</p></blockquote><p>可以看到:</p><ul><li>module由rules组成</li><li>每个rule有两个部分<ul><li>test，一个正则表达式，用于匹配文件名，确定本条规则是否适用于某个文件</li><li>use，一个loader数组<ul><li><strong>从后往前进行处理</strong></li><li>比如这里，先是”css-loader”进行处理，然后才是”style-loader”处理<ul><li>css-loader处理依赖关系中import的css文件</li><li>style-loader将取出的css文件中的样式作用在引用entry的html文档上</li></ul></li></ul></li></ul></li></ul><h3 id="plugins"><a href="#plugins" class="headerlink" title="plugins"></a>plugins</h3><p>plugins类似于loaders，区别在于</p><blockquote><p>plugins是在打包文件生成了之后进行额外处理的插件</p></blockquote><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">plugins: [</span><br><span class="line">    <span class="keyword">new</span> uglifyJsPlugin(),</span><br><span class="line">]</span><br></pre></td></tr></table></figure><p>这就是一个用于minify生成文件的插件，不同的插件有不同的接入方式，可以去其官网文档查找</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文是webpack教程的第三篇文章，主要会介绍：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;使用webpack配置文件中的重要概念&lt;ul&gt;
+&lt;li&gt;entry&lt;/li&gt;
+&lt;li&gt;output&lt;/li&gt;
+&lt;li&gt;module&lt;/li&gt;
+&lt;li&gt;plugins&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+      <category term="basic knowledge" scheme="https://rivers-shall.github.io/categories/basic-knowledge/"/>
+    
+      <category term="webpack教程" scheme="https://rivers-shall.github.io/categories/webpack%E6%95%99%E7%A8%8B/"/>
+    
+    
+      <category term="webpack" scheme="https://rivers-shall.github.io/tags/webpack/"/>
+    
+  </entry>
   
   <entry>
     <title>golang json 避免大整数变为浮点数</title>
@@ -592,35 +625,6 @@
       <category term="sed" scheme="https://rivers-shall.github.io/tags/sed/"/>
     
       <category term="grep" scheme="https://rivers-shall.github.io/tags/grep/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>bash实现trim字符串</title>
-    <link href="https://rivers-shall.github.io/2020/06/01/bash%E5%AE%9E%E7%8E%B0trim%E5%AD%97%E7%AC%A6%E4%B8%B2/"/>
-    <id>https://rivers-shall.github.io/2020/06/01/bash实现trim字符串/</id>
-    <published>2020-06-01T10:27:53.000Z</published>
-    <updated>2020-06-01T10:43:55.574Z</updated>
-    
-    <content type="html"><![CDATA[<p>本文记录了作者使用<code>sed</code>命令对bash中的字符串进行去头尾空格的操作的方法，简单来说</p><ol><li>使用<code>echo &#39;  string  &#39; | sed -e &#39;s/^[[:space:]]*//&#39;</code>去除开头的空格</li><li>使用<code>echo &#39;  string  &#39; | sed -e &#39;s/[[:space:]]*$//&#39;</code>去除结尾的空格</li><li>将二者用管道结合，去除头尾空格<code>echo &#39;  string  &#39; | sed -e &#39;s/[[:space:]]*$//&#39; | sed -e &#39;s/^[[:space:]]*//&#39;</code></li></ol><a id="more"></a><h2 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h2><p>去除头尾空格的字符串处理操作是非常常用的操作，在许多语言的标准库里都会以<code>trim</code>函数的方式提供出来</p><p>要在bash中实现这一功能，可以使用<code>sed</code>命令的替换子命令</p><p><code>sed -e &#39;s/^[[:space:]]*//&#39;</code>是指匹配所有行开头的空格并将其替换为空字符串</p><p><code>sed -e &#39;s/[[:space:]]*$//&#39;</code>是指匹配所有行结尾的空格并将其替换为空字符串</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;本文记录了作者使用&lt;code&gt;sed&lt;/code&gt;命令对bash中的字符串进行去头尾空格的操作的方法，简单来说&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;使用&lt;code&gt;echo &amp;#39;  string  &amp;#39; | sed -e &amp;#39;s/^[[:space:]]*//&amp;#39;&lt;/code&gt;去除开头的空格&lt;/li&gt;
-&lt;li&gt;使用&lt;code&gt;echo &amp;#39;  string  &amp;#39; | sed -e &amp;#39;s/[[:space:]]*$//&amp;#39;&lt;/code&gt;去除结尾的空格&lt;/li&gt;
-&lt;li&gt;将二者用管道结合，去除头尾空格&lt;code&gt;echo &amp;#39;  string  &amp;#39; | sed -e &amp;#39;s/[[:space:]]*$//&amp;#39; | sed -e &amp;#39;s/^[[:space:]]*//&amp;#39;&lt;/code&gt;&lt;/li&gt;
-&lt;/ol&gt;
-    
-    </summary>
-    
-      <category term="code snippet" scheme="https://rivers-shall.github.io/categories/code-snippet/"/>
-    
-    
-      <category term="Linux" scheme="https://rivers-shall.github.io/tags/Linux/"/>
-    
-      <category term="sed" scheme="https://rivers-shall.github.io/tags/sed/"/>
     
   </entry>
   
